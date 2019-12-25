@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4"
+	lang="en">
+
+<th:block th:replace="layout :: head"></th:block>
+
+<body style="background-color: #000000c9; color: white;">
+
+	<div th:replace="layout :: nav"></div>
+	
+	<div class="container"
+		style="margin: auto; width: 40%; margin-top: 100px; margin-bottom: 5%; text-align: center;">
+
+		<h1 class="text-center">Watch list</h1>
+		<br/>
+		<br/>
+		<table id="myMoviesTable" class="table" style="background: transparent; color: white;">
+			<thead>
+				<tr>
+					<th>Title</th>
+					<th class="text-center">Info</th>
+					<th class="text-center">Mark as watched</th>
+					<th class="text-center">Remove</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr th:each="mov : ${movieWatchList}">
+					<td th:text="${mov.title}"></td>
+					<td class="text-center">
+						<a th:href="@{/movies/details?id=} + ${mov.id}">
+							<i class="fa fa-info-circle" style="color: #ffc107; font-size: 1.3em;"></i>
+						</a>
+					</td>
+					<td class="text-center">
+						<a th:href="@{/movies/watched/put?id=} + ${mov.id}">
+							<i class="fa fa-star" style=" font-size: 1.3em;"></i>
+						</a>
+					</td>
+					<td class="text-center">
+						<a th:href="@{/movies/watchlist/remove?id=} + ${mov.id}">
+							<i class="fa fa-trash" style="color: red; font-size: 1.3em;"></i>
+						</a>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+
+	<th:block th:replace="layout :: script"></th:block>
+</body>
+</html>

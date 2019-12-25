@@ -1,0 +1,31 @@
+package hr.fer.dm.MyMovieApp.controller;
+
+import java.security.Principal;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+
+import hr.fer.dm.MyMovieApp.helpers.SecurityHelper;
+import hr.fer.dm.MyMovieApp.repository.UserRepository;
+import hr.fer.dm.MyMovieApp.service.UserService;
+
+@Controller
+public class HomeController {
+	@Autowired
+    UserRepository userRepository;
+	@Autowired
+	SecurityHelper securityHelper;
+	@Autowired
+	UserService userService;
+	
+	//@RequestMapping(value = "/", method = RequestMethod.GET)
+	@GetMapping("/")
+	public String getHome(Principal principal, Model model) {
+		
+		return "index";
+	}
+	
+
+}

@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4"
+	lang="en">
+<link rel="stylesheet" th:href="@{/app.css}" />
+
+<th:block th:replace="layout :: head"></th:block>
+
+<body style="background-color: #000000c9; color: white;">
+
+	<div th:replace="layout :: nav"></div>
+
+	<div class="container"
+		style="margin: auto; width: 100%; margin-top: 100px; margin-bottom: 5%; text-align: center;">
+		<h1 style="margin-bottom: 30px;">Search for movies:</h1>
+		<div class="row"
+			style="margin: auto; width: 100%; margin-bottom: 40px;">
+			<div style="margin: auto; width: 100%">
+				<form th:action="@{/movies/search}" method="post">
+					<input id="movieTitle" name="movieTitle" type="text"
+						style="width: 50%; border-radius: 10px;"
+						placeholder="  Enter movie title" />
+					<button class="btn" type="submit"
+						style="width: 50px; background-color: #ffffff; color: black; border-radius: 40px;">
+						<i class="fa fa-search" aria-hidden="true"></i>
+					</button>
+				</form>
+			</div>
+		</div>
+
+		<!--
+	<div class="row" style="color: black; width: 50%; margin: auto">
+		<div class="card col-md-5" th:if="${not #lists.isEmpty(movies)}"
+			style="width: 18rem; margin-bottom: 20px; border-radius: 30px; margin-right: auto; margin-left: auto;"
+			th:each="movie: ${movies}">
+			<img class="card-img-top"
+				style="border-radius: 10px; margin-top: 10px;"
+				th:src="${movie.poster_path}" alt="No image" />
+			<div class="card-body">
+				<h2 class="card-title" th:text="${movie.title}"></h2>
+				<p class="card-text"
+					style="overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 5; line-height: 20px; max-height: 100px;"
+					th:text="${movie.overview}"></p>
+				<a th:href="@{/movies/details(id=${movie.id})}"
+					class="btn btn-primary">See movie details</a>
+			</div>
+		</div>
+	</div>
+-->
+		<div th:if="${#lists.isEmpty(movies)} and ${firsttime} == 'n'"
+			style="text-align: center;">
+			<p>No results for searched movie title.</p>
+		</div>
+
+		<div th:if="${#lists.isEmpty(movies)} and ${firsttime} == 'y'"
+			style="width: 100%; margin: auto;">
+			<img
+				src="https://cdn0.iconfinder.com/data/icons/video-movies-tv/24/search-television-movies-find-file-tv-query-video-512.png"
+				style="width: 25%; margin-top: 50px;" />
+		</div>
+
+		<table id="movieTable" class="table"
+			style="color: white; margin-top: 3rem; width: 80%; margin: auto"
+			th:if="${not #lists.isEmpty(movies)}">
+
+			<tbody>
+				<tr th:each="movie: ${movies}">
+					<td>
+						<img style="border-radius: 10px; margin-top: 10px; height: 400px"
+							th:src="${movie.poster_path}" alt="No image" />
+					</td>
+					<td>
+						<div style="position: relative; height: 400px;">
+							<h2 th:text="${movie.title}"></h2>
+							<p class="card-text"
+								style="overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 5; line-height: 20px; max-height: 100px;"
+								th:text="${movie.overview}"></p>
+
+							<div style="position: absolute; bottom: 0px; width: 100%;">
+								<div class="row" style="width: 100%; align-items: center;">
+									<a th:href="@{/movies/details(id=${movie.id})}"
+										class="btn btn-primary"
+										style="background-color: black; border-color: white; margin-right: 5%">See
+										movie details</a>
+
+									<a
+										th:style="${#lists.contains(watchList, movie.id) or #lists.contains(watchedMovies, movie.id) ? 'display:none' : 'display:block'}"
+										th:id="${movie.id}" class="addWatchlist"
+										title="Add to watchlist">
+										<i class="fa fa-plus" aria-hidden="true"
+											style="margin-right: 20px; font-size: 1.7em;"></i>
+									</a>
+									<a
+										th:style="${#lists.contains(watchList, movie.id)  ? 'display:block' : 'display:none'}"
+										th:id="${movie.id}" class="removeWatchlist"
+										title="Remove from watchlist">
+										<i class="fa fa-check" aria-hidden="true"
+											style="margin-right: 20px; font-size: 1.7em; color: green"></i>
+									</a>
+									<a
+										th:style="${#lists.contains(watchedMovies, movie.id) ? 'display:none' : 'display:block'}"
+										th:id="${movie.id}" class="markWatched"
+										title="Mark as watched">
+										<i class="fa fa-star" aria-hidden="true"
+											style="margin-right: 5px; font-size: 1.7em;"></i>
+									</a>
+									<a
+										th:style="${#lists.contains(watchedMovies, movie.id) ? 'display:block' : 'display:none'}"
+										th:id="${movie.id}" class="unmarkWatched"
+										title="Unmark as watched">
+										<i class="fa fa-star" aria-hidden="true"
+											style="margin-right: 5px; font-size: 1.7em; color: yellow"></i>
+									</a>
+								</div>
+							</div>
+						</div>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+
+	<th:block th:replace="layout :: script"></th:block>
+
+</body>
+</html>

@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4"
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	lang="en">
+
+<th:block th:replace="layout :: head"></th:block>
+
+<body style="background-color: black; color: white;">
+
+	<div th:replace="layout :: nav"></div>
+
+	<header class="text-center" name="home">
+		<div class="intro-text">
+			<h1>MovieApp</h1>
+			<p sec:authorize="!isAuthenticated()">Welcome to MovieApp. Login
+				with Facebook to search movies!</p>
+			<p sec:authorize="isAuthenticated()">Welcome to MovieApp. Enjoy
+				searching movies!</p>
+			<!-- <a href="#contact" class="btn btn-default btn-lg page-scroll">Kontaktirajte
+				nas</a>-->
+		</div>
+	</header>
+
+	<th:block th:replace="layout :: script"></th:block>
+</body>
+</html>
