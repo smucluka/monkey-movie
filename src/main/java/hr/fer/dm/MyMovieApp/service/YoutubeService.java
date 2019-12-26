@@ -71,7 +71,9 @@ public class YoutubeService {
             }
         } catch (Exception e) {
             e.printStackTrace();
+            return null;
         } 
+        
         
         return videos.get(0);
     }

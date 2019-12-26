@@ -10,8 +10,11 @@
 
 	<div th:replace="layout :: nav"></div>
 
-	<div class="container"
-		style="margin: auto; width: 80%; margin-top: 100px; margin-bottom: 5%; text-align: center;">
+	<br />
+	<br />
+	<br />
+	<br />
+	<div class="container">
 		<div class="row justify-content-center">
 			<h1 th:text="${movie.omdbMovie.title}"></h1>
 		</div>
@@ -54,25 +57,25 @@
 						<div class="modal-body">
 							<div class="row justify-content-center">
 								<div class="rating" style="color: black">
-									<span th:id="${movie.tmdbMovie.id}" class="markWatched" data-rating="5"
-										style="font-size: 1.7em;">☆</span>
-									<span th:id="${movie.tmdbMovie.id}" class="markWatched" data-rating="4"
-										style="font-size: 1.7em;">☆</span>
-									<span th:id="${movie.tmdbMovie.id}" class="markWatched" data-rating="3"
-										style="font-size: 1.7em;">☆</span>
-									<span th:id="${movie.tmdbMovie.id}" class="markWatched" data-rating="2"
-										style="font-size: 1.7em;">☆</span>
-									<span th:id="${movie.tmdbMovie.id}" class="markWatched" data-rating="1"
-										style="font-size: 1.7em;">☆</span>
+									<span th:id="${movie.tmdbMovie.id}" class="markWatched"
+										data-rating="5" style="font-size: 1.7em;">☆</span>
+									<span th:id="${movie.tmdbMovie.id}" class="markWatched"
+										data-rating="4" style="font-size: 1.7em;">☆</span>
+									<span th:id="${movie.tmdbMovie.id}" class="markWatched"
+										data-rating="3" style="font-size: 1.7em;">☆</span>
+									<span th:id="${movie.tmdbMovie.id}" class="markWatched"
+										data-rating="2" style="font-size: 1.7em;">☆</span>
+									<span th:id="${movie.tmdbMovie.id}" class="markWatched"
+										data-rating="1" style="font-size: 1.7em;">☆</span>
 								</div>
 							</div>
 						</div>
 					</div>
 				</div>
 			</div>
-			
+
 		</div>
-		<br/>
+		<br />
 		<div class="row">
 			<div class="col-12 col-md-4" style="margin-top: -50px;">
 				<br />
@@ -287,8 +290,12 @@
 						aria-labelledby="profile-tab">
 						<br />
 						<div class="row justify-content-center">
-							<iframe class="col-md-8" style="height: 20em"
-								th:src="${movie.youtubeTrailer.url}"> </iframe>
+							<div th:if="${movie.youtubeTrailer != null}">
+								<iframe class="col-md-6" style="height: 20em;" th:src="${movie.youtubeTrailer.url}"></iframe>
+							</div>
+							<div th:unless="${movie.youtubeTrailer != null}">
+								<p>Trailer not available.</p>
+							</div>
 						</div>
 					</div>
 					<div th:if="${movie.nyTimesReview} != null" class="tab-pane fade"
@@ -324,7 +331,8 @@
 									<tr th:if="${movie.soundtracks.empty}">
 										<td colspan="4">No Soundtracks Available</td>
 									</tr>
-									<tr class="col-12" th:each="track, iterStat  : ${movie.soundtracks}">
+									<tr class="col-12"
+										th:each="track, iterStat  : ${movie.soundtracks}">
 										<td>
 											<span th:text="${track.trackName}"> Title </span>
 										</td>

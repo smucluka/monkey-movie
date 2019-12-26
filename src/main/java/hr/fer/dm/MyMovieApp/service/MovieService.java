@@ -256,6 +256,8 @@ public class MovieService {
 
 	private void saveDetailedMovie(MovieDetailed movie) {
 		try {
+			//TODO ovo je potrebno kako bi provjerio u bazi da li postoji objekt prije poziva apija
+			//movie.setId(movie.getTmdbMovie().getId());
 			movieDetailedRepository.save(movie);
 		} catch (Exception e) {
 			System.err.println(e);
