@@ -66,7 +66,7 @@ $(document).ready(function() {
 			success : function(result) {
 				$("#" + id + ".addWatchlist").css("display", "block");
 				$("#" + id + ".removeWatchlist").css("display", "none");
-				$(".watchedBtn").css("display", "block");
+				$("#" + id + ".watchedBtn").css("display", "block");
 				$("#" + id + ".unmarkWatched").css("display", "none");
 				$.toast({
 					title : 'Unmarked as watched',

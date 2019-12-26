@@ -27,5 +27,12 @@ public class HomeController {
 		return "index";
 	}
 	
+	
+	@GetMapping("/privacy_policy")
+	public String getPP(Principal principal, Model model) {
+		
+		return "privacy_policy";
+	}
+	
 
 }
