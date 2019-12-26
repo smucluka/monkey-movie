@@ -31,7 +31,7 @@
 			</a>
 			<div class="watchedBtn" th:id="${movie.tmdbMovie.id}"
 				th:style="${watched ? 'display:none' : 'display:block'}">
-				<a type="button" data-toggle="modal"
+				<a data-toggle="modal"
 					th:attr="data-target='#modal'+${movie.tmdbMovie.id}"
 					title="Mark as watched">
 					<i class="fa fa-star" aria-hidden="true"

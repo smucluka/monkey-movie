@@ -37,11 +37,7 @@
 		</div>
 
 		<div class="row justify-content-center"
-			th:if="${#lists.isEmpty(movies)} and ${firsttime} == 'y'"
-			style="width: 100%; margin: auto;">
-			<img
-				src="https://cdn0.iconfinder.com/data/icons/video-movies-tv/24/search-television-movies-find-file-tv-query-video-512.png"
-				style="width: 50px; margin-top: 50px;" />
+			th:if="${#lists.isEmpty(movies)} and ${firsttime} == 'y'">
 		</div>
 
 		<div class="row justify-content-center">
@@ -78,7 +74,7 @@
 									</a>
 									<div class="watchedBtn" th:id="${movie.id}"
 										th:style="${#lists.contains(watchedMovies, movie.id) ? 'display:none' : 'display:block'}">
-										<a type="button" data-toggle="modal"
+										<a data-toggle="modal"
 											th:attr="data-target='#modal'+${movie.id}"
 											title="Mark as watched">
 											<i class="fa fa-star" aria-hidden="true"

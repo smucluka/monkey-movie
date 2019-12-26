@@ -10,15 +10,15 @@
 
 	<div th:replace="layout :: nav"></div>
 
-	<header class="text-center" name="home">
+	<header class="text-center" >
 		<div class="intro-text">
 			<h1>Monkey Movie</h1>
+			<!-- <a href="#contact" class="btn btn-default btn-lg page-scroll">Kontaktirajte
+				nas</a>-->
 			<p sec:authorize="!isAuthenticated()">Welcome to Monkey Movie. Login
 				with Facebook to search movies!</p>
 			<p sec:authorize="isAuthenticated()">Welcome to Monkey Movie. Enjoy
 				searching movies!</p>
-			<!-- <a href="#contact" class="btn btn-default btn-lg page-scroll">Kontaktirajte
-				nas</a>-->
 		</div>
 	</header>
 

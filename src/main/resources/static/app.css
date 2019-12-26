@@ -9,13 +9,11 @@ header {
 	background-position: center center;
 	color: #cfcfcf;
 	position: relative;
-	height: 1000px;
+	height: 99vh;
 }
 header p {
 	color: rgba(255,255,255,0.8);
 	font-size: 20px;
-	margin-bottom: 80px;
-	margin-top: 550px;
 	width: 50%;
     margin-right: auto;
     margin-left: auto;
