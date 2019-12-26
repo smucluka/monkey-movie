@@ -72,11 +72,9 @@
 			</div>
 			
 		</div>
-	</div>
-	<div class="container"
-		style="margin-right: auto; margin-left: auto; margin-bottom: 50px; margin-top: 50px; width: 80%;">
+		<br/>
 		<div class="row">
-			<div class="col-12 col-md-4" style="margin: auto; margin-top: 0;">
+			<div class="col-12 col-md-4">
 				<br />
 				<br />
 				<img alt="User Pic" style="width: 100%; border-radius: 60px;"
@@ -326,7 +324,7 @@
 									<tr th:if="${movie.soundtracks.empty}">
 										<td colspan="4">No Soundtracks Available</td>
 									</tr>
-									<tr th:each="track, iterStat  : ${movie.soundtracks}">
+									<tr class="col-12" th:each="track, iterStat  : ${movie.soundtracks}">
 										<td>
 											<span th:text="${track.trackName}"> Title </span>
 										</td>
