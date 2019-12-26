@@ -36,7 +36,7 @@
 			<span class="navbar-toggler-icon"></span>
 		</button>
 		<div
-			class="navbar-collapse collapse w-100 order-1 order-md-0 dual-collapse2"
+			class="navbar-collapse collapse w-100 order-1 order-md-0 dual-collapse2 text-center"
 			id="navbarNav">
 			<ul class="navbar-nav  mr-auto">
 				<li class="nav-item"
@@ -68,10 +68,10 @@
 				</li>-->
 			</ul>
 		</div>
-		<div class="navbar-collapse collapse w-100 order-3 dual-collapse2"
-			id="navbarNav2" style="margin-right: 4%;">
+		<div class="navbar-collapse collapse w-100 order-3 dual-collapse2  text-center"
+			id="navbarNav2" >
 			<ul class="navbar-nav ml-auto">
-				<li class="nav-item" style="margin-right: 20px;"
+				<li class="nav-item"
 					sec:authorize="isAuthenticated()"
 					th:classappend="${#httpServletRequest.getRequestURI() == '/userinfo' ? 'active':''}">
 					<a class="nav-link" href="/userinfo">User info</a>
