@@ -46,8 +46,8 @@
 						<span class="sr-only">(current)</span>
 					</a>
 				</li>
-				<li class="nav-item" sec:authorize="isAuthenticated()"
-					th:classappend="${#httpServletRequest.getRequestURI() == '/movies/search' ? 'active':''}">
+				<li class="nav-item" sec:authorize="isAuthenticated()" 
+					th:classappend="${#httpServletRequest.getRequestURI() == '/movies/search' or #httpServletRequest.getRequestURI() == '/movies/searched' ? 'active':''}">
 					<a class="nav-link" href="/movies/search">Search</a>
 				</li>
 				<li class="nav-item" sec:authorize="isAuthenticated()"

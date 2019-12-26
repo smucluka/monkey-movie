@@ -20,18 +20,18 @@
 					th:src="${user.profilePicture}" />
 
 			</div>
-			<div class="col-sm-6">
+			<div class="col-sm-6 justify-content-center text-center">
 				<div class="container">
 					<h2 th:text="${user.name}" style="margin-top: 20px;"></h2>
 					<p style="margin-top: 40px;">
 						<i class="fa fa-envelope" aria-hidden="true"
 							style="margin-right: 5px;"></i>
-						<a th:text="${user.email}"></a>
+						<a class="row justify-content-center" th:text="${user.email}"></a>
 					</p>
 					<p>
 						<i class="fa fa-birthday-cake" aria-hidden="true"
 							style="margin-right: 5px;"></i>
-						<a th:text="${user.birthday}"></a>
+						<a class="row justify-content-center" th:text="${user.birthday}"></a>
 					</p>
 				</div>
 			</div>
