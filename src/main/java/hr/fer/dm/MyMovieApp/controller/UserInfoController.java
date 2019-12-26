@@ -32,7 +32,7 @@ public class UserInfoController {
 			User user = userService.getUserFromDB(userId);
 			model.addAttribute("user", user);
 			
-			return "userinfo";
+			return "user_info";
 		}
 
 		return "redirect:/";

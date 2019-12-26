@@ -15,7 +15,7 @@ public class User {
 	private String profilePicture;
 	private FBMovies movies;
 	private FBFriends friends;
-	private List<String> watched_movie_ids; 
+	private List<WatchedMovie> watched_movie_ids; 
 	private List<String> watch_list_movie_ids; 
 
 	public String getName() {
@@ -74,11 +74,11 @@ public class User {
 		this.friends = friends;
 	}
 
-	public List<String> getWatched_movie_ids() {
+	public List<WatchedMovie> getWatched_movie_ids() {
 		return watched_movie_ids;
 	}
 
-	public void setWatched_movie_ids(List<String> watched_movie_ids) {
+	public void setWatched_movie_ids(List<WatchedMovie> watched_movie_ids) {
 		this.watched_movie_ids = watched_movie_ids;
 	}
 

@@ -1,5 +1,8 @@
 @charset "ISO-8859-1";
-
+html, body {
+  max-width: 100%;
+  overflow-x: hidden;
+}
 header {
 	background: url(https://thewallpaper.co//wp-content/uploads/2017/10/fun-monkey-dark-hd-artworks-samsung-amazing-funny-arts-humor-cartoon-wallpapers.jpg) no-repeat center bottom;
 	background-size: cover;
@@ -17,6 +20,8 @@ header p {
     margin-right: auto;
     margin-left: auto;
 }
+
+
 .intro-text {
 	position: relative;
 	padding-top: 135px;
@@ -40,4 +45,19 @@ header p {
   position: absolute;
   bottom: 0;
   left: 0;
+}
+
+.rating {
+  unicode-bidi: bidi-override;
+  direction: rtl;
+}
+.rating > span {
+  display: inline-block;
+  position: relative;
+  width: 1.1em;
+}
+.rating > span:hover:before,
+.rating > span:hover ~ span:before {
+   content: "\2605";
+   position: absolute;
 }

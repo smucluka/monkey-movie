@@ -8,43 +8,81 @@
 <body style="background-color: #000000c9; color: white;">
 
 	<div th:replace="layout :: nav"></div>
-	
+
 	<div class="container"
 		style="margin: auto; width: 40%; margin-top: 100px; margin-bottom: 5%; text-align: center;">
 
-		<h1 class="text-center">Watch list</h1>
-		<br/>
-		<br/>
-		<table id="myMoviesTable" class="table" style="background: transparent; color: white;">
-			<thead>
-				<tr>
-					<th>Title</th>
-					<th class="text-center">Info</th>
-					<th class="text-center">Mark as watched</th>
-					<th class="text-center">Remove</th>
-				</tr>
-			</thead>
-			<tbody>
-				<tr th:each="mov : ${movieWatchList}">
-					<td th:text="${mov.title}"></td>
-					<td class="text-center">
-						<a th:href="@{/movies/details?id=} + ${mov.id}">
-							<i class="fa fa-info-circle" style="color: #ffc107; font-size: 1.3em;"></i>
-						</a>
-					</td>
-					<td class="text-center">
-						<a th:href="@{/movies/watched/put?id=} + ${mov.id}">
-							<i class="fa fa-star" style=" font-size: 1.3em;"></i>
-						</a>
-					</td>
-					<td class="text-center">
-						<a th:href="@{/movies/watchlist/remove?id=} + ${mov.id}">
-							<i class="fa fa-trash" style="color: red; font-size: 1.3em;"></i>
-						</a>
-					</td>
-				</tr>
-			</tbody>
-		</table>
+		<div class="row justify-content-center">
+			<h1>Watch list</h1>
+		</div>
+		<br />
+		<br />
+		<div class="row justify-content-center">
+			<table id="myMoviesTable" class="table"
+				style="background: transparent; color: white;">
+				<thead>
+					<tr>
+						<th>Title</th>
+						<th class="text-center">Info</th>
+						<th class="text-center">Mark as watched</th>
+						<th class="text-center">Remove</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr th:each="mov : ${movieWatchList}">
+						<td th:text="${mov.title}"></td>
+						<td class="text-center">
+							<a th:href="@{/movies/details?id=} + ${mov.id}">
+								<i class="fa fa-info-circle"
+									style="color: #ffc107; font-size: 1.3em;"></i>
+							</a>
+						</td>
+						<td class="text-center">
+							<div>
+								<a type="button" data-toggle="modal"
+									th:attr="data-target='#modal'+${mov.id}"
+									title="Mark as watched">
+									<i class="fa fa-star" aria-hidden="true"
+										style="margin-right: 5px; font-size: 1.7em; cursor: pointer"></i>
+								</a>
+							</div>
+
+							<div th:id="${'modal' + mov.id}" class="modal fade"
+								id="exampleModalCenter" tabindex="-1" role="dialog"
+								aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+								<div class="modal-dialog modal-dialog-centered" role="document">
+									<div class="modal-content">
+										<div class="modal-body">
+											<div class="row justify-content-center">
+												<div class="rating" style="color: black">
+													<span th:id="${mov.id}" class="markWatchedRedirect" data-rating="5"
+														style="font-size: 1.7em;">☆</span>
+													<span th:id="${mov.id}" class="markWatchedRedirect" data-rating="4"
+														style="font-size: 1.7em;">☆</span>
+													<span th:id="${mov.id}" class="markWatchedRedirect" data-rating="3"
+														style="font-size: 1.7em;">☆</span>
+													<span th:id="${mov.id}" class="markWatchedRedirect" data-rating="2"
+														style="font-size: 1.7em;">☆</span>
+													<span th:id="${mov.id}" class="markWatchedRedirect" data-rating="1"
+														style="font-size: 1.7em;">☆</span>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+
+
+						</td>
+						<td class="text-center">
+							<a th:href="@{/movies/watchlist/remove?id=} + ${mov.id}">
+								<i class="fa fa-trash" style="color: red; font-size: 1.3em;"></i>
+							</a>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
 	</div>
 
 	<th:block th:replace="layout :: script"></th:block>

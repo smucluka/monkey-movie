@@ -20,6 +20,7 @@ import hr.fer.dm.MyMovieApp.model.FBFriends;
 import hr.fer.dm.MyMovieApp.model.FBMovie;
 import hr.fer.dm.MyMovieApp.model.FBMovies;
 import hr.fer.dm.MyMovieApp.model.User;
+import hr.fer.dm.MyMovieApp.model.WatchedMovie;
 import hr.fer.dm.MyMovieApp.repository.UserRepository;
 
 @Service
@@ -54,7 +55,7 @@ public class UserService {
 				user.setWatch_list_movie_ids(userTemp.getWatch_list_movie_ids());
 			}else {
 				user.setWatch_list_movie_ids(new ArrayList<String>());
-				user.setWatched_movie_ids(new ArrayList<String>());
+				user.setWatched_movie_ids(new ArrayList<WatchedMovie>());
 			}
 			
 			user.setMovies(fetchLikedMovies(details.getTokenValue(), user.getId()));

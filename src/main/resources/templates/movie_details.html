@@ -18,33 +18,65 @@
 		<div class="row justify-content-center">
 			<a
 				th:style="${watchlisted or watched ? 'display:none' : 'display:block'}"
-				th:id="${movie.tmdbMovie.id}" class="addWatchlist" title="Add to watchlist">
+				th:id="${movie.tmdbMovie.id}" class="addWatchlist"
+				title="Add to watchlist">
 				<i class="fa fa-plus" aria-hidden="true"
-					style="margin-right: 20px; font-size: 1.7em;"></i>
+					style="margin-right: 20px; font-size: 1.7em; cursor: pointer"></i>
 			</a>
 			<a th:style="${watchlisted  ? 'display:block' : 'display:none'}"
 				th:id="${movie.tmdbMovie.id}" class="removeWatchlist"
 				title="Remove from watchlist">
 				<i class="fa fa-check" aria-hidden="true"
-					style="margin-right: 20px; font-size: 1.7em; color: green"></i>
+					style="margin-right: 20px; font-size: 1.7em; color: green; cursor: pointer"></i>
 			</a>
-			<a th:style="${watched ? 'display:none' : 'display:block'}"
-				th:id="${movie.tmdbMovie.id}" class="markWatched" title="Mark as watched">
-				<i class="fa fa-star" aria-hidden="true"
-					style="margin-right: 5px; font-size: 1.7em;"></i>
-			</a>
+			<div class="watchedBtn" th:id="${movie.tmdbMovie.id}"
+				th:style="${watched ? 'display:none' : 'display:block'}">
+				<a type="button" data-toggle="modal"
+					th:attr="data-target='#modal'+${movie.tmdbMovie.id}"
+					title="Mark as watched">
+					<i class="fa fa-star" aria-hidden="true"
+						style="margin-right: 5px; font-size: 1.7em; cursor: pointer"></i>
+				</a>
+
+			</div>
 			<a th:style="${watched ? 'display:block' : 'display:none'}"
-				th:id="${movie.tmdbMovie.id}" class="unmarkWatched" title="Unmark as watched">
+				th:id="${movie.tmdbMovie.id}" class="unmarkWatched"
+				title="Unmark as watched">
 				<i class="fa fa-star" aria-hidden="true"
-					style="margin-right: 5px; font-size: 1.7em; color: yellow"></i>
+					style="margin-right: 5px; font-size: 1.7em; color: yellow; cursor: pointer"></i>
 			</a>
+
+			<div th:id="${'modal' + movie.tmdbMovie.id}" class="modal fade"
+				id="exampleModalCenter" tabindex="-1" role="dialog"
+				aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+				<div class="modal-dialog modal-dialog-centered" role="document">
+					<div class="modal-content">
+						<div class="modal-body">
+							<div class="row justify-content-center">
+								<div class="rating" style="color: black">
+									<span th:id="${movie.tmdbMovie.id}" class="markWatched" data-rating="5"
+										style="font-size: 1.7em;">☆</span>
+									<span th:id="${movie.tmdbMovie.id}" class="markWatched" data-rating="4"
+										style="font-size: 1.7em;">☆</span>
+									<span th:id="${movie.tmdbMovie.id}" class="markWatched" data-rating="3"
+										style="font-size: 1.7em;">☆</span>
+									<span th:id="${movie.tmdbMovie.id}" class="markWatched" data-rating="2"
+										style="font-size: 1.7em;">☆</span>
+									<span th:id="${movie.tmdbMovie.id}" class="markWatched" data-rating="1"
+										style="font-size: 1.7em;">☆</span>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			
 		</div>
 	</div>
 	<div class="container"
 		style="margin-right: auto; margin-left: auto; margin-bottom: 50px; margin-top: 50px; width: 80%;">
 		<div class="row">
-			<div class="col-12 col-lg-4"
-				style="margin: auto; margin-top: 0; border-right: solid;">
+			<div class="col-12 col-md-4" style="margin: auto; margin-top: 0;">
 				<br />
 				<br />
 				<img alt="User Pic" style="width: 100%; border-radius: 60px;"
@@ -111,7 +143,7 @@
 						</tbody>
 					</table>
 				</div>-->
-			<div class="col-12 col-lg-8 text-center">
+			<div class="col-12 col-md-8 text-center">
 				<div>
 					<h6 th:text="${movie.omdbMovie.year}"></h6>
 					<p th:each="rating : ${movie.omdbMovie.ratings}">
@@ -256,8 +288,8 @@
 					<div class="tab-pane fade" id="trailer" role="tabpanel"
 						aria-labelledby="profile-tab">
 						<br />
-						<div>
-							<iframe width="420" height="315"
+						<div class="row justify-content-center">
+							<iframe class="col-md-8" style="height: 20em"
 								th:src="${movie.youtubeTrailer.url}"> </iframe>
 						</div>
 					</div>
@@ -278,28 +310,37 @@
 					<div class="tab-pane fade" id="soundtracks" role="tabpanel"
 						aria-labelledby="profile-tab">
 						<br />
-						<div>
-							<table class="table table-dark table-striped" ><!--  class="table table-striped"-->
-							    <thead>
-							        <tr>
-							            <th> Track name </th>
-							            <th> Author </th>
-							            <th> Collection </th>
-							            <!-- <th> Genre </th> -->
-							            <th> Link </th>
-							        </tr>
-							    </thead>
-							    <tbody>
-							    <tr th:if="${movie.soundtracks.empty}">
-							            <td colspan="4"> No Soundtracks Available </td>
-							        </tr>
-							        <tr th:each="track, iterStat  : ${movie.soundtracks}">
-							            <td><span th:text="${track.trackName}"> Title </span></td>
-							            <td><span th:text="${track.artistName}"> Author </span></td>
-							            <td><span th:text="${track.collectionName}"> Collection </span></td>
-							            <!--<td><span th:text="${track.genreName}"> Genre </span></td>-->
-							            <td><a style="display: block;" th:href="${track.trackViewUrl}" target="_blank" rel="noopener noreferrer"> Link </a>
-							            	<a style="display: block;"
+						<div class="row justify-content-center">
+							<table class="table table-dark table-striped">
+								<!--  class="table table-striped"-->
+								<thead>
+									<tr>
+										<th>Track name</th>
+										<th>Author</th>
+										<th>Collection</th>
+										<!-- <th> Genre </th> -->
+										<th>Link</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr th:if="${movie.soundtracks.empty}">
+										<td colspan="4">No Soundtracks Available</td>
+									</tr>
+									<tr th:each="track, iterStat  : ${movie.soundtracks}">
+										<td>
+											<span th:text="${track.trackName}"> Title </span>
+										</td>
+										<td>
+											<span th:text="${track.artistName}"> Author </span>
+										</td>
+										<td>
+											<span th:text="${track.collectionName}"> Collection </span>
+										</td>
+										<!--<td><span th:text="${track.genreName}"> Genre </span></td>-->
+										<td>
+											<a style="display: block;" th:href="${track.trackViewUrl}"
+												target="_blank" rel="noopener noreferrer"> Link </a>
+											<a style="display: block;"
 												th:id="'audioTrack' + ${iterStat.count}" class="playAudio"
 												title="Play 30 seconds sound sample">
 												<i class="fa fa-play" aria-hidden="true"
@@ -311,12 +352,13 @@
 												<i class="fa fa-pause" aria-hidden="true"
 													style="font-size: 1.7em; color: yellow"></i>
 											</a>
-							            	<audio class="my_audio" th:id="'audioTrack' + ${iterStat.count}">
-											    <source th:src="${track.previewUrl}" type="audio/mpeg"></source>
+											<audio class="my_audio"
+												th:id="'audioTrack' + ${iterStat.count}">
+												<source th:src="${track.previewUrl}" type="audio/mpeg"></source>
 											</audio>
-							            </td>
-							        </tr>
-							    </tbody>
+										</td>
+									</tr>
+								</tbody>
 							</table>
 						</div>
 					</div>

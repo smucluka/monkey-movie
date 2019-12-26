@@ -8,12 +8,14 @@ import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.stereotype.Service;
 
 import hr.fer.dm.MyMovieApp.model.FBMovie;
+import hr.fer.dm.MyMovieApp.model.FBMovies;
 import hr.fer.dm.MyMovieApp.model.Movie;
 import hr.fer.dm.MyMovieApp.model.MovieDetailed;
 import hr.fer.dm.MyMovieApp.model.NyTimesReview;
 import hr.fer.dm.MyMovieApp.model.OmdbMovie;
 import hr.fer.dm.MyMovieApp.model.TmdbMovie;
 import hr.fer.dm.MyMovieApp.model.User;
+import hr.fer.dm.MyMovieApp.model.WatchedMovie;
 import hr.fer.dm.MyMovieApp.model.YouTubeVideo;
 import hr.fer.dm.MyMovieApp.model.Soundtrack;
 import hr.fer.dm.MyMovieApp.repository.MovieDetailedRepository;
@@ -57,7 +59,6 @@ public class MovieService {
 
 	}
 
-	// TODO implementirati ostale API-je
 	public MovieDetailed getMovieDetails(String id) {
 		MovieDetailed movie = getDetailedMovie(id);
 
@@ -84,135 +85,153 @@ public class MovieService {
 		return movie;
 	}
 
-	public List<Movie> getLikedMovies(OAuth2Authentication authUser) {
-		User user = userService.getUserFromDB(authUser.getName());
+	public List<Movie> getFacebookMovies(FBMovies fbMovies) {
 
 		List<Movie> likedMovies = new ArrayList<Movie>();
-		for (FBMovie fbMovie : user.getMovies().getData()) {
+		for (FBMovie fbMovie : fbMovies.getData()) {
 
 			List<Movie> movieList = movieRepository.findByTitleIgnoreCase(fbMovie.getName().trim());
 
 			if (movieList.isEmpty()) {
 				List<Movie> movies = tmdbService.getMoviesByTitle(fbMovie.getName(), true);
-				if (!movies.isEmpty() 
-						&& movies.get(0).getTitle().toLowerCase().trim().equals(fbMovie.getName().toLowerCase().trim())) {
+				if (!movies.isEmpty() && movies.get(0).getTitle().toLowerCase().trim()
+						.equals(fbMovie.getName().toLowerCase().trim())) {
 					saveMovies(movies);
 					likedMovies.add(movies.get(0));
 				}
-			}else {
+			} else {
 				likedMovies.addAll(movieList);
 			}
 
 		}
 		return likedMovies;
 	}
-	
-	/*
-	 * Watched
-	 */
-	
-	public List<Movie> getWatchedMovies(String userId) {
+
+	public List<WatchedMovie> getWatchedMovies(String userId) {
 		User user = userService.getUserFromDB(userId);
 
-		List<String> movieWatchListids = user.getWatched_movie_ids();
-		
-		List<Movie> movieWatchList = getMoviesByIds(movieWatchListids);
-		
-		return movieWatchList;
+		List<WatchedMovie> movieWatchListids = user.getWatched_movie_ids();
+
+		for (WatchedMovie watchedMov : movieWatchListids) {
+			watchedMov.setMovie(getMovieFromDB(watchedMov.getId()));
+		}
+
+		return movieWatchListids;
 	}
-	
+
 	public List<String> getWatchedMoviesIds(String userId) {
 		User user = userService.getUserFromDB(userId);
 
-		List<String> movieWatchListids = user.getWatched_movie_ids();
-		
-		return movieWatchListids;
+		List<WatchedMovie> movieWatchListids = user.getWatched_movie_ids();
+
+		List<String> ids = new ArrayList<String>();
+		for (WatchedMovie watchedMov : movieWatchListids) {
+			ids.add(watchedMov.getId());
+		}
+
+		return ids;
 	}
-	
-	public void addMovieToWatched(String user_id, String id) {
+
+	public void addMovieToWatched(String user_id, String id, Integer rating) {
 		User user = null;
 		try {
 			user = userRepository.findOne(user_id);
-			List<String> ids = user.getWatched_movie_ids();
-			if(ids == null)
-				ids = new ArrayList<>();
-			if(!ids.contains(id))
-				ids.add(id);
-			user.setWatched_movie_ids(ids);
-			
+			List<WatchedMovie> watchedMovies = user.getWatched_movie_ids();
+
+			if (watchedMovies == null)
+				watchedMovies = new ArrayList<>();
+
+			List<String> watchedMovieIds = new ArrayList<String>();
+			for (WatchedMovie watchedMov : watchedMovies) {
+				watchedMovieIds.add(watchedMov.getId());
+			}
+
+			if (!watchedMovieIds.contains(id)) {
+				WatchedMovie watchedMovie = new WatchedMovie();
+				watchedMovie.setId(id);
+				watchedMovie.setRating(rating);
+				watchedMovies.add(watchedMovie);
+			}
+
+			user.setWatched_movie_ids(watchedMovies);
+
 			userRepository.save(user);
 		} catch (Exception e) {
 			System.err.println(e);
 		}
 	}
-	
+
 	public void removeMovieFromWatched(String user_id, String id) {
 		User user = null;
 		try {
 			user = userRepository.findOne(user_id);
-			List<String> ids = user.getWatched_movie_ids();
-			if(ids == null)
-				return;
-			if(ids.contains(id))
-				ids.remove(id);
-			user.setWatched_movie_ids(ids);
+
+			List<WatchedMovie> watchedMovies = user.getWatched_movie_ids();
+
+			if(watchedMovies == null) return;
+
+			List<WatchedMovie> found = new ArrayList<WatchedMovie>();
 			
+			for (WatchedMovie watchedMov : watchedMovies) {
+				if(watchedMov.getId().equals(id)) {
+			        found.add(watchedMov);
+				}			
+			}
+			watchedMovies.removeAll(found);
+			
+			user.setWatched_movie_ids(watchedMovies);
 			userRepository.save(user);
 		} catch (Exception e) {
 			System.err.println(e);
 		}
 	}
-	
-	/*
-	 * Watch list
-	 */
-	
+
 	public List<Movie> getMovieWatchList(String userId) {
 		User user = userService.getUserFromDB(userId);
 
 		List<String> movieWatchListids = user.getWatch_list_movie_ids();
-		
+
 		List<Movie> movieWatchList = getMoviesByIds(movieWatchListids);
-		
+
 		return movieWatchList;
 	}
-	
+
 	public List<String> getMovieWatchListIds(String userId) {
 		User user = userService.getUserFromDB(userId);
 
 		List<String> movieWatchListids = user.getWatch_list_movie_ids();
-		
+
 		return movieWatchListids;
 	}
-	
+
 	public void addMovieToWatchList(String user_id, String id) {
 		User user = null;
 		try {
 			user = userRepository.findOne(user_id);
 			List<String> ids = user.getWatch_list_movie_ids();
-			if(ids == null)
+			if (ids == null)
 				ids = new ArrayList<>();
-			if(!ids.contains(id))
+			if (!ids.contains(id))
 				ids.add(id);
 			user.setWatch_list_movie_ids(ids);
-			
+
 			userRepository.save(user);
 		} catch (Exception e) {
 			System.err.println(e);
 		}
 	}
-	
+
 	public void removeMovieFromWatchList(String user_id, String id) {
 		User user = null;
 		try {
 			user = userRepository.findOne(user_id);
 			List<String> ids = user.getWatch_list_movie_ids();
-			if(ids == null)
+			if (ids == null)
 				return;
-			if(ids.contains(id))
+			if (ids.contains(id))
 				ids.remove(id);
 			user.setWatch_list_movie_ids(ids);
-			
+
 			userRepository.save(user);
 		} catch (Exception e) {
 			System.err.println(e);
@@ -264,8 +283,8 @@ public class MovieService {
 
 		return movie;
 	}
-	
-	private List<Movie> getMoviesByIds(List<String> ids){
+
+	private List<Movie> getMoviesByIds(List<String> ids) {
 		List<Movie> movies = null;
 		try {
 			movies = movieRepository.findByIdIn(ids);

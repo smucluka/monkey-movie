@@ -8,37 +8,45 @@
 <body style="background-color: #000000c9; color: white;">
 
 	<div th:replace="layout :: nav"></div>
-	
+
 	<div class="container"
 		style="margin: auto; width: 40%; margin-top: 100px; margin-bottom: 5%; text-align: center;">
 
-		<h1 class="text-center">Watched Movies</h1>
-		<br/>
-		<br/>
-		<table id="myMoviesTable" class="table" style="background: transparent; color: white;">
-			<thead>
-				<tr>
-					<th>Title</th>
-					<th class="text-center">Info</th>
-					<th class="text-center">Remove</th>
-				</tr>
-			</thead>
-			<tbody>
-				<tr th:each="mov : ${watchedMovies}">
-					<td th:text="${mov.title}"></td>
-					<td class="text-center">
-						<a th:href="@{/movies/details?id=} + ${mov.id}">
-							<i class="fa fa-info-circle" style="color: #ffc107; font-size: 1.3em;"></i>
-						</a>
-					</td>
-					<td class="text-center">
-						<a th:href="@{/movies/watched/remove?id=} + ${mov.id}">
-							<i class="fa fa-trash" style="color: red; font-size: 1.3em;"></i>
-						</a>
-					</td>
-				</tr>
-			</tbody>
-		</table>
+		<div class="row justify-content-center">
+			<h1>Watched Movies</h1>
+		</div>
+		<br />
+		<br />
+		<div class="justify-content-center row">
+			<table id="myMoviesTable" class="table"
+				style="background: transparent; color: white;">
+				<thead>
+					<tr>
+						<th>Title</th>
+						<th>Rating</th>
+						<th class="text-center">Info</th>
+						<th class="text-center">Remove</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr th:each="mov : ${watchedMovies}">
+						<td th:text="${mov.movie.title}"></td>
+						<td th:text="${mov.rating}"></td>
+						<td class="text-center">
+							<a th:href="@{/movies/details?id=} + ${mov.movie.id}">
+								<i class="fa fa-info-circle"
+									style="color: #ffc107; font-size: 1.3em;"></i>
+							</a>
+						</td>
+						<td class="text-center">
+							<a th:href="@{/movies/watched/remove?id=} + ${mov.movie.id}">
+								<i class="fa fa-trash" style="color: red; font-size: 1.3em;"></i>
+							</a>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
 	</div>
 
 	<th:block th:replace="layout :: script"></th:block>

@@ -6,15 +6,15 @@
 .toast-container {
     position: sticky;
     z-index: 1055;
-    top: 0
+    top: 70px;
 }
 
 .toast-wrapper {
-    position: absolute;
+    position: fixed;
     z-index: 1055;
-    top: 0;
     right: 0;
-    margin: 5px
+    top: 60px;
+    margin: 5px;
 }
 
 .toast-container>.toast-wrapper>.toast {

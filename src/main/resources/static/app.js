@@ -1,4 +1,5 @@
 $(document).ready(function() {
+	
 	$(".addWatchlist").click(function() {
 		var id = this.id;
 		$.ajax({
@@ -9,7 +10,7 @@ $(document).ready(function() {
 				$.toast({
 					title : 'Added to watchlist',
 					type : 'success',
-					delay : 10000
+					delay : 3000
 				});
 			}
 		});
@@ -31,18 +32,30 @@ $(document).ready(function() {
 	});
 	$(".markWatched").click(function() {
 		var id = this.id;
+		var rating = $(this).data("rating");
 		$.ajax({
-			url : "/movies/watched/put?id=" + id,
+			url : "/movies/watched/put?id=" + id + "&rating=" + rating,
 			success : function(result) {
 				$("#" + id + ".addWatchlist").css("display", "none");
 				$("#" + id + ".removeWatchlist").css("display", "none");
-				$("#" + id + ".markWatched").css("display", "none");
+				$("#" + id + ".watchedBtn").css("display", "none");
 				$("#" + id + ".unmarkWatched").css("display", "block");
 				$.toast({
 					title : 'Marked as watched',
 					type : 'success',
 					delay : 3000
 				});
+				$(".modal").modal('hide');
+			}
+		});
+	});
+	$(".markWatchedRedirect").click(function() {
+		var id = this.id;
+		var rating = $(this).data("rating");
+		$.ajax({
+			url : "/movies/watched/put?id=" + id + "&rating=" + rating,
+			success : function(result) {
+				location.reload();
 			}
 		});
 	});
@@ -53,7 +66,7 @@ $(document).ready(function() {
 			success : function(result) {
 				$("#" + id + ".addWatchlist").css("display", "block");
 				$("#" + id + ".removeWatchlist").css("display", "none");
-				$("#" + id + ".markWatched").css("display", "block");
+				$(".watchedBtn").css("display", "block");
 				$("#" + id + ".unmarkWatched").css("display", "none");
 				$.toast({
 					title : 'Unmarked as watched',
@@ -63,25 +76,25 @@ $(document).ready(function() {
 			}
 		});
 	});
-    $('.playAudio').click(function() {
-    	var id = this.id;
+	$('.playAudio').click(function() {
+		var id = this.id;
 
-    	$("#" + id + ".my_audio")[0].play();
-    	$("#" + id + ".playAudio").css("display", "none");
-    	$("#" + id + ".pauseAudio").css("display", "block");
-        
-    	$("#" + id + ".my_audio").on('ended', function() {
+		$("#" + id + ".my_audio")[0].play();
+		$("#" + id + ".playAudio").css("display", "none");
+		$("#" + id + ".pauseAudio").css("display", "block");
 
-        	   $("#" + id + ".pauseAudio").css("display", "none");
-           		$("#" + id + ".playAudio").css("display", "block");
-        });
-    });
-    $('.pauseAudio').click(function() {
-    	var id = this.id;
+		$("#" + id + ".my_audio").on('ended', function() {
 
-    	$("#" + id + ".my_audio")[0].pause();
-    	$("#" + id + ".pauseAudio").css("display", "none");
-    	$("#" + id + ".playAudio").css("display", "block");
+			$("#" + id + ".pauseAudio").css("display", "none");
+			$("#" + id + ".playAudio").css("display", "block");
+		});
+	});
+	$('.pauseAudio').click(function() {
+		var id = this.id;
 
-    });
+		$("#" + id + ".my_audio")[0].pause();
+		$("#" + id + ".pauseAudio").css("display", "none");
+		$("#" + id + ".playAudio").css("display", "block");
+
+	});
 });
