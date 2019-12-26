@@ -134,16 +134,18 @@ public class UserService {
 				friend.setMovies(fetchLikedMovies(accessToken, friend.getId()));
 				friendList.add(friend);
 			}
-
-			while (user.getFriends().getPaging().getNext() != null) {
-				FBFriends pagedFriends = restTemplate.getForObject(user.getFriends().getPaging().getNext(), FBFriends.class);
-				user.setFriends(pagedFriends);
-				for (FBFriend friend : user.getFriends().getData()) {
-					if(maxFriends <= 0)
-						break;
-					friend.setMovies(fetchLikedMovies(accessToken, friend.getId()));
-					friendList.add(friend);
-				}
+			
+			if(user.getFriends().getPaging() != null && user.getFriends().getPaging().getNext() != null) {
+				while (user.getFriends().getPaging().getNext() != null) {
+					FBFriends pagedFriends = restTemplate.getForObject(user.getFriends().getPaging().getNext(), FBFriends.class);
+					user.setFriends(pagedFriends);
+					for (FBFriend friend : user.getFriends().getData()) {
+						if(maxFriends <= 0)
+							break;
+						friend.setMovies(fetchLikedMovies(accessToken, friend.getId()));
+						friendList.add(friend);
+					}
+				}	
 			}
 		}
 		
