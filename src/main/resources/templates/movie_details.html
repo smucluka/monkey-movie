@@ -151,7 +151,7 @@
 					<div class="row justify-content-center"
 						th:if="${rating.source == 'Internet Movie Database'}">
 						<img src="/imdb.png"
-							style="float: left; max-width: 30px; margin-left: -15px"
+							style="float: left; max-width: 2em; margin-left: -15px"
 							alt="Internet Movie Database"></img>
 						<span class="align-self-center col-1" th:text="${rating.value}">
 						</span>
@@ -159,7 +159,7 @@
 					<div class="row justify-content-center"
 						th:if="${rating.source == 'Rotten Tomatoes'}">
 						<img src="/rotten.png"
-							style="float: left; max-width: 30px; margin-left: -15px"
+							style="float: left; max-width: 2em; margin-left: -15px"
 							alt="Rotten Tomatoes"></img>
 						<span class="align-self-center col-1" th:text=" ${rating.value}">
 						</span>
@@ -167,7 +167,7 @@
 					<div class="row justify-content-center"
 						th:if="${rating.source == 'Metacritic'}">
 						<img src="/metacritic.png"
-							style="float: left; max-width: 30px; margin-left: -15px"
+							style="float: left; max-width: 2em; margin-left: -15px"
 							alt="Metacritic"></img>
 						<span class="align-self-center col-1" th:text="${rating.value}"></span>
 					</div>
