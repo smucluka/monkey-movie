@@ -96,7 +96,7 @@ public class MovieService {
 				List<Movie> movies = tmdbService.getMoviesByTitle(fbMovie.getName(), true);
 				if (!movies.isEmpty() && movies.get(0).getTitle().toLowerCase().trim()
 						.equals(fbMovie.getName().toLowerCase().trim())) {
-					saveMovies(movies);
+					saveMovie(movies.get(0));
 					likedMovies.add(movies.get(0));
 				}
 			} else {

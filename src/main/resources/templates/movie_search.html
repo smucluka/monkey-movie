@@ -13,18 +13,18 @@
 
 		<br />
 		<br />
-		<br/>
+		<br />
 		<br />
 		<div class="row justify-content-center">
 			<h1 class="text-center">Search for movies</h1>
 		</div>
 		<br />
-		<div class="row justify-content-center">
-			<form th:action="@{/movies/searched}" method="GET">
-				<input id="movieTitle" name="movieTitle" type="text"
-					style="border-radius: 10px;" placeholder="  Enter movie title" />
-				<button class="btn" type="submit"
-					style="width: 50px; background-color: #ffffff; color: black; border-radius: 40px;">
+		<div>
+			<form class="row justify-content-center" th:action="@{/movies/searched}" method="GET">
+				<input class="col-4" id="movieTitle" name="movieTitle" type="text"
+					style="border-radius: 10px; width: 150%" placeholder="Enter movie title" />
+				<button class="btn col-1" type="submit"
+					style="margin-left: 15px; background-color: #ffffff; color: black; border-radius: 40px;">
 					<i class="fa fa-search" aria-hidden="true"></i>
 				</button>
 			</form>
@@ -37,24 +37,26 @@
 		</div>
 
 		<div class="row justify-content-center"
-			th:if="${#lists.isEmpty(movies)} and ${firsttime} == 'y'">
-		</div>
+			th:if="${#lists.isEmpty(movies)} and ${firsttime} == 'y'"></div>
 
 		<div class="row justify-content-center">
 
-			<table id="movieTable" class="table" style="color: white;"
+			<table id="movieTable" class="table movTable" style="color: white;"
 				th:if="${not #lists.isEmpty(movies)}">
 
 				<tbody>
 
-					<tr class="row" th:each="movie: ${movies}">
+					<tr class="row" th:each="movie, iter: ${movies}"
+						th:style="${iter.even} ? 'background-color: rgba(0,0,0,0.2)' : 'background-color: none;'">
 						<td class="text-center col-12 col-lg-4">
-							<img style="border-radius: 10px" th:src="${movie.poster_path}"
-								alt="No image" />
+							<img style="border-radius: 10px; max-width: 80%" th:src="${movie.poster_path}" onerror="this.src='/no-cover.png'"/>
 						</td>
 						<td class="text-center col-12 col-lg-8">
 							<div style="position: relative;">
-								<h2 th:text="${movie.title}"></h2>
+								<div class="row justify-content-center">
+									<h2 class="col-10" th:text="${movie.title}"></h2>
+								</div>
+
 								<div class="row justify-content-center">
 									<br />
 									<br />

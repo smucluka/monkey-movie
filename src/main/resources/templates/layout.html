@@ -73,8 +73,8 @@
 			<ul class="navbar-nav ml-auto">
 				<li class="nav-item"
 					sec:authorize="isAuthenticated()"
-					th:classappend="${#httpServletRequest.getRequestURI() == '/userinfo' ? 'active':''}">
-					<a class="nav-link" href="/userinfo">User info</a>
+					th:classappend="${#httpServletRequest.getRequestURI() == '/profile' ? 'active':''}">
+					<a class="nav-link" href="/profile">Profile</a>
 				</li>
 				<li sec:authorize="!isAuthenticated()" class="nav-item">
 					<form th:action="@{/login}" method="post"

@@ -26,20 +26,20 @@
 		<div class="row justify-content-center">
 			<div th:each="mov : ${movies}"
 				class="card col-10 col-md-3 text-center"
-				style="color: black; padding: 20px; margin: 3px">
+				style="color: white; padding: 20px; margin: 3px; background-color: gray">
 				<img th:src="${mov.poster_path}" class="text-center card-img-top"
-					style="border-radius: 10px" />
+					style="border-radius: 10px" onerror="this.src='/no-cover.png'"/>
 				<div class="card-body justify-content-center">
 					<h5 class="card-title text-center" th:text="${mov.title}"></h5>
 					<p class="card-text text-center" th:text="${mov.overview}"
-						style="overflow: hidden; max-height: 200px; text-overflow: ellipsis;"></p>
+						style="display: block; max-width: 100%; white-space: nowrap; overflow: hidden !important; text-overflow: ellipsis;"></p>
 					<a th:href="@{/movies/details(id=${mov.id})}"
 						class="btn btn-primary">Details</a>
 				</div>
 			</div>
 		</div>
 	</div>
-
+	<br/><br/>
 	<th:block th:replace="layout :: script"></th:block>
 </body>
 </html>

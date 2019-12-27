@@ -23,7 +23,7 @@ public class UserInfoController {
 	@Autowired
 	UserService userService;
 	
-	@GetMapping("/userinfo")
+	@GetMapping("/profile")
 	public String getUserInfo(Principal principal, Model model) {
 		boolean isAuthenticatedUser = securityHelper.isAuthenticatedUser(principal);
 		
@@ -32,7 +32,7 @@ public class UserInfoController {
 			User user = userService.getUserFromDB(userId);
 			model.addAttribute("user", user);
 			
-			return "user_info";
+			return "profile";
 		}
 
 		return "redirect:/";

@@ -16,6 +16,9 @@
 	<br />
 	<div class="container">
 		<div class="row justify-content-center">
+			<h6 th:text="${movie.omdbMovie.year}"></h6>
+		</div>
+		<div class="row justify-content-center">
 			<h1 th:text="${movie.omdbMovie.title}"></h1>
 		</div>
 		<div class="row justify-content-center">
@@ -76,13 +79,11 @@
 
 		</div>
 		<br />
-		<div class="row">
-			<div class="col-12 col-md-4" style="margin-top: -50px;">
-				<br />
-				<br />
-				<img alt="User Pic" style="width: 100%; border-radius: 60px;"
+		<div class="row justify-content-center">
+			<div class="col-8 col-md-4">
+				<img onerror="this.src='/no-cover.png'"
+					style="width: 100%; border-radius: 60px;"
 					th:src="${movie.tmdbMovie.poster_path}" />
-				<br />
 				<br />
 				<br />
 			</div>
@@ -146,9 +147,30 @@
 				</div>-->
 			<div class="col-12 col-md-8 text-center">
 				<div>
-					<h6 th:text="${movie.omdbMovie.year}"></h6>
 					<p th:each="rating : ${movie.omdbMovie.ratings}">
-						<span th:text="${rating.source} + ': '+ ${rating.value}"> </span>
+					<div class="row justify-content-center"
+						th:if="${rating.source == 'Internet Movie Database'}">
+						<img src="/imdb.png"
+							style="float: left; max-width: 30px; margin-left: -15px"
+							alt="Internet Movie Database"></img>
+						<span class="align-self-center col-1" th:text="${rating.value}">
+						</span>
+					</div>
+					<div class="row justify-content-center"
+						th:if="${rating.source == 'Rotten Tomatoes'}">
+						<img src="/rotten.png"
+							style="float: left; max-width: 30px; margin-left: -15px"
+							alt="Rotten Tomatoes"></img>
+						<span class="align-self-center col-1" th:text=" ${rating.value}">
+						</span>
+					</div>
+					<div class="row justify-content-center"
+						th:if="${rating.source == 'Metacritic'}">
+						<img src="/metacritic.png"
+							style="float: left; max-width: 30px; margin-left: -15px"
+							alt="Metacritic"></img>
+						<span class="align-self-center col-1" th:text="${rating.value}"></span>
+					</div>
 					</p>
 					<ul class="col-12 justify-content-center nav nav-tabs" id="myTab"
 						role="tablist">
@@ -291,7 +313,8 @@
 						<br />
 						<div class="row justify-content-center">
 							<div th:if="${movie.youtubeTrailer != null}">
-								<iframe class="col-md-6" style="height: 20em;" th:src="${movie.youtubeTrailer.url}"></iframe>
+								<iframe class="col-md-6" style="height: 20em;"
+									th:src="${movie.youtubeTrailer.url}"></iframe>
 							</div>
 							<div th:unless="${movie.youtubeTrailer != null}">
 								<p>Trailer not available.</p>
@@ -315,7 +338,7 @@
 					<div class="tab-pane fade" id="soundtracks" role="tabpanel"
 						aria-labelledby="profile-tab">
 						<br />
-						<div class="row justify-content-center">
+						<div class="row justify-content-center" style="padding: 5px;">
 							<table class="table table-dark table-striped col-12">
 								<!--  class="table table-striped"-->
 								<thead>
@@ -371,6 +394,9 @@
 				</div>
 			</div>
 		</div>
+		<br />
+		<br />
+		<br />
 	</div>
 
 	<th:block th:replace="layout :: script"></th:block>

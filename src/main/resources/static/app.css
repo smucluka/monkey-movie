@@ -1,61 +1,70 @@
 @charset "ISO-8859-1";
+
 html, body {
-  max-width: 100%;
-  overflow-x: hidden;
+	max-width: 100%;
+	overflow-x: hidden;
 }
+
 header {
-	background: url(https://thewallpaper.co//wp-content/uploads/2017/10/fun-monkey-dark-hd-artworks-samsung-amazing-funny-arts-humor-cartoon-wallpapers.jpg) no-repeat center bottom;
+	background:
+		url(https://thewallpaper.co//wp-content/uploads/2017/10/fun-monkey-dark-hd-artworks-samsung-amazing-funny-arts-humor-cartoon-wallpapers.jpg)
+		no-repeat center bottom;
 	background-size: cover;
 	background-position: center center;
 	color: #cfcfcf;
 	position: relative;
 	height: 95vh;
 }
-header p {
-	color: rgba(255,255,255,0.8);
-	font-size: 20px;
-	width: 50%;
-    margin-right: auto;
-    margin-left: auto;
-}
 
+header p {
+	position: absolute;
+	bottom: 20px;
+	color: rgba(255, 255, 255, 0.8);
+	font-size: 20px;
+	text-align: center;
+	width: 100%;
+}
 
 .intro-text {
 	position: relative;
-	padding-top: 135px;
-	padding-right: 0;
-	padding-left: 0;
-	padding-bottom: 170px;
+	padding-top: 90px;
+	text-align: center;
 }
+
 .intro-text H1 {
 	font-size: 60px;
 	text-transform: uppercase;
 	color: #fff;
-    font-style: italic;
+	font-style: italic;
 }
 
 #movie_box {
-  position: relative;
-  min-height: 150px;
+	position: relative;
+	min-height: 150px;
 }
 
 #movie_box-content {
-  position: absolute;
-  bottom: 0;
-  left: 0;
+	position: absolute;
+	bottom: 0;
+	left: 0;
 }
 
 .rating {
-  unicode-bidi: bidi-override;
-  direction: rtl;
+	unicode-bidi: bidi-override;
+	direction: rtl;
 }
-.rating > span {
-  display: inline-block;
-  position: relative;
-  width: 1.1em;
+
+.rating>span {
+	display: inline-block;
+	position: relative;
+	width: 1.1em;
 }
-.rating > span:hover:before,
-.rating > span:hover ~ span:before {
-   content: "\2605";
-   position: absolute;
+
+.rating>span:hover:before, .rating>span:hover ~ span:before {
+	content: "\2605";
+	position: absolute;
+}
+
+.table td{
+	border-top: none;
 }
