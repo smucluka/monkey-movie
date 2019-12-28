@@ -151,7 +151,7 @@
 					<div class="row justify-content-center"
 						th:if="${rating.source == 'Internet Movie Database'}">
 						<img src="/imdb.png"
-							style="float: left; max-width: 2em; max-height: 2em; margin-left: -15px"
+							style="float: left; max-width: 2em; max-height: 2em; margin-left: -20px"
 							alt="Internet Movie Database"></img>
 						<span class="align-self-center col-1" th:text="${rating.value}">
 						</span>
@@ -159,7 +159,7 @@
 					<div class="row justify-content-center"
 						th:if="${rating.source == 'Rotten Tomatoes'}">
 						<img src="/rotten.png"
-							style="float: left; max-width: 2em; max-height: 2em; margin-left: -15px"
+							style="float: left; max-width: 2em; max-height: 2em; margin-left: -20px"
 							alt="Rotten Tomatoes"></img>
 						<span class="align-self-center col-1" th:text=" ${rating.value}">
 						</span>
@@ -167,7 +167,7 @@
 					<div class="row justify-content-center"
 						th:if="${rating.source == 'Metacritic'}">
 						<img src="/metacritic.png"
-							style="float: left; max-width: 2em; max-height: 2em; margin-left: -15px"
+							style="float: left; max-width: 2em; max-height: 2em; margin-left: -20px"
 							alt="Metacritic"></img>
 						<span class="align-self-center col-1" th:text="${rating.value}"></span>
 					</div>
@@ -312,8 +312,9 @@
 						aria-labelledby="profile-tab">
 						<br />
 						<div class="row justify-content-center">
-							<div th:if="${movie.youtubeTrailer != null}">
-								<iframe class="col-md-6" style="height: 20em;"
+							<div th:if="${movie.youtubeTrailer != null}"
+								class="embed-responsive embed-responsive-16by9 col-11 col-md-9">
+								<iframe class="embed-responsive-item"
 									th:src="${movie.youtubeTrailer.url}"></iframe>
 							</div>
 							<div th:unless="${movie.youtubeTrailer != null}">
@@ -323,72 +324,81 @@
 					</div>
 					<div th:if="${movie.nyTimesReview} != null" class="tab-pane fade"
 						id="nytimes" role="tabpanel" aria-labelledby="profile-tab">
+
 						<br />
-						<div class="col-md-12"
-							th:if="${movie.nyTimesReview.summary_short} != null">
-							<p th:text="${movie.nyTimesReview.summary_short}"></p>
+						<div class="row justify-content-center">
+
+							<div class="col-10"
+								th:if="${movie.nyTimesReview.summary_short} != null">
+								<p th:text="${movie.nyTimesReview.summary_short}"></p>
+							</div>
 						</div>
-						<div class="col-md-12"
-							th:if="${movie.nyTimesReview.link.url} != null">
-							<a class="btn btn-info"
-								th:text="${movie.nyTimesReview.link.suggested_link_text}"
-								th:href="${movie.nyTimesReview.link.url}"></a>
+						<div class="row justify-content-center">
+							<div class="col-md-12"
+								th:if="${movie.nyTimesReview.link.url} != null">
+								<a class="btn btn-info" target="_blank"
+									th:text="${movie.nyTimesReview.link.suggested_link_text}"
+									th:href="${movie.nyTimesReview.link.url}"></a>
+							</div>
 						</div>
 					</div>
 					<div class="tab-pane fade" id="soundtracks" role="tabpanel"
 						aria-labelledby="profile-tab">
 						<br />
-						<div class="row justify-content-center" style="padding: 5px;">
-							<table class="table table-dark table-striped col-12">
-								<!--  class="table table-striped"-->
-								<thead>
-									<tr>
-										<th>Track name</th>
-										<th>Author</th>
-										<th>Collection</th>
-										<!-- <th> Genre </th> -->
-										<th>Link</th>
-									</tr>
-								</thead>
-								<tbody>
-									<tr th:if="${movie.soundtracks.empty}">
-										<td colspan="4">No Soundtracks Available</td>
-									</tr>
-									<tr class="col-12"
-										th:each="track, iterStat  : ${movie.soundtracks}">
-										<td>
-											<span th:text="${track.trackName}"> Title </span>
-										</td>
-										<td>
-											<span th:text="${track.artistName}"> Author </span>
-										</td>
-										<td>
-											<span th:text="${track.collectionName}"> Collection </span>
-										</td>
-										<!--<td><span th:text="${track.genreName}"> Genre </span></td>-->
-										<td>
-											<a style="display: block;" th:href="${track.trackViewUrl}"
-												target="_blank" rel="noopener noreferrer"> Link </a>
-											<a style="display: block;"
-												th:id="'audioTrack' + ${iterStat.count}" class="playAudio"
-												title="Play 30 seconds sound sample">
-												<i class="fa fa-play" aria-hidden="true"
-													style="font-size: 1.7em; color: green"></i>
-											</a>
-											<a style="display: none;"
-												th:id="'audioTrack' + ${iterStat.count}" class="pauseAudio"
-												title="Pause">
-												<i class="fa fa-pause" aria-hidden="true"
-													style="font-size: 1.7em; color: yellow"></i>
-											</a>
-											<audio class="my_audio"
-												th:id="'audioTrack' + ${iterStat.count}">
-												<source th:src="${track.previewUrl}" type="audio/mpeg"></source>
-											</audio>
-										</td>
-									</tr>
-								</tbody>
-							</table>
+						<div class="row justify-content-center">
+							<div class="col-12 col-md-10">
+								<table
+									class="table table-dark table-striped table-responsive">
+									<!--  class="table table-striped"-->
+									<thead>
+										<tr>
+											<th>Track name</th>
+											<th>Author</th>
+											<th>Collection</th>
+											<!-- <th> Genre </th> -->
+											<th>Link</th>
+										</tr>
+									</thead>
+									<tbody>
+										<tr th:if="${movie.soundtracks.empty}">
+											<td colspan="4">No Soundtracks Available</td>
+										</tr>
+										<tr class="col-12"
+											th:each="track, iterStat  : ${movie.soundtracks}">
+											<td>
+												<span th:text="${track.trackName}"> Title </span>
+											</td>
+											<td>
+												<span th:text="${track.artistName}"> Author </span>
+											</td>
+											<td>
+												<span th:text="${track.collectionName}"> Collection </span>
+											</td>
+											<!--<td><span th:text="${track.genreName}"> Genre </span></td>-->
+											<td>
+												<a style="display: block;" th:href="${track.trackViewUrl}"
+													target="_blank" rel="noopener noreferrer"> Link </a>
+												<a style="display: block;"
+													th:id="'audioTrack' + ${iterStat.count}" class="playAudio"
+													title="Play 30 seconds sound sample">
+													<i class="fa fa-play" aria-hidden="true"
+														style="font-size: 1.7em; color: green"></i>
+												</a>
+												<a style="display: none;"
+													th:id="'audioTrack' + ${iterStat.count}" class="pauseAudio"
+													title="Pause">
+													<i class="fa fa-pause" aria-hidden="true"
+														style="font-size: 1.7em; color: yellow"></i>
+												</a>
+												<audio class="my_audio"
+													th:id="'audioTrack' + ${iterStat.count}">
+													<source th:src="${track.previewUrl}" type="audio/mpeg"></source>
+												</audio>
+											</td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
 						</div>
 					</div>
 				</div>
