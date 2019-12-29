@@ -29,10 +29,13 @@ public class RecommendationService {
 
 		List<FBFriend> fbFriends = userService.getUserFromDB(id).getFriends().getData();
 
+		List<String> watchedMovies = movieService.getWatchedMoviesIds(id);
+		List<String> watchList = movieService.getMovieWatchListIds(id);
+		
 		for (FBFriend friend : fbFriends) {
 			
 			for(Movie mov : movieService.getFacebookMovies(friend.getMovies())) {
-				if(!existingImdbIds.contains(mov.getId())) {
+				if(!existingImdbIds.contains(mov.getId()) && !watchedMovies.contains(mov.getId()) && !watchList.contains(mov.getId())) {
 					allFriendsMovies.add(mov);
 					existingImdbIds.add(mov.getId());
 				}
@@ -58,4 +61,5 @@ public class RecommendationService {
 		return randomList;
 	}
 
+	
 }

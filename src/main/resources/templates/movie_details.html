@@ -19,7 +19,7 @@
 			<h6 th:text="${movie.omdbMovie.year}"></h6>
 		</div>
 		<div class="row justify-content-center">
-			<h1 th:text="${movie.omdbMovie.title}"></h1>
+			<h1 class="col-10 text-center" th:text="${movie.omdbMovie.title}"></h1>
 		</div>
 		<div class="row justify-content-center">
 			<a
@@ -27,13 +27,13 @@
 				th:id="${movie.tmdbMovie.id}" class="addWatchlist"
 				title="Add to watchlist">
 				<i class="fa fa-plus" aria-hidden="true"
-					style="margin-right: 20px; font-size: 1.7em; cursor: pointer"></i>
+					style="margin-right: 10px; margin-left: 10px; font-size: 1.7em; cursor: pointer"></i>
 			</a>
 			<a th:style="${watchlisted  ? 'display:block' : 'display:none'}"
 				th:id="${movie.tmdbMovie.id}" class="removeWatchlist"
 				title="Remove from watchlist">
 				<i class="fa fa-check" aria-hidden="true"
-					style="margin-right: 20px; font-size: 1.7em; color: green; cursor: pointer"></i>
+					style="margin-right: 10px; margin-left: 10px; font-size: 1.7em; color: green; cursor: pointer"></i>
 			</a>
 			<div class="watchedBtn" th:id="${movie.tmdbMovie.id}"
 				th:style="${watched ? 'display:none' : 'display:block'}">
@@ -41,7 +41,7 @@
 					th:attr="data-target='#modal'+${movie.tmdbMovie.id}"
 					title="Mark as watched">
 					<i class="fa fa-star" aria-hidden="true"
-						style="margin-right: 5px; font-size: 1.7em; cursor: pointer"></i>
+						style="margin-right: 10px; margin-left: 10px; font-size: 1.7em; cursor: pointer"></i>
 				</a>
 
 			</div>
@@ -49,7 +49,7 @@
 				th:id="${movie.tmdbMovie.id}" class="unmarkWatched"
 				title="Unmark as watched">
 				<i class="fa fa-star" aria-hidden="true"
-					style="margin-right: 5px; font-size: 1.7em; color: yellow; cursor: pointer"></i>
+					style="margin-right: 10px; margin-left: 10px; font-size: 1.7em; color: yellow; cursor: pointer"></i>
 			</a>
 
 			<div th:id="${'modal' + movie.tmdbMovie.id}" class="modal fade"

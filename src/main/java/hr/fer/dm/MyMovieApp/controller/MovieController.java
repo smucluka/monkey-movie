@@ -7,6 +7,7 @@ import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -119,6 +120,16 @@ public class MovieController {
 		}
 
 		return "redirect:/";
+	}
+	
+	@RequestMapping(value = "/movies/recommendation/smart", method = RequestMethod.GET)
+	public ResponseEntity<Movie> getSmartMovie(Principal principal, Model model) {
+		boolean isAuthenticatedUser = securityHelper.isAuthenticatedUser(principal);
+
+		if (isAuthenticatedUser) {
+			return new ResponseEntity<Movie>(recommendationService.getRecommendation((String) session.getAttribute("userId")).get(0), HttpStatus.OK);
+		}
+		return new ResponseEntity<Movie>(HttpStatus.FORBIDDEN);
 	}
 	
 	//
