@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import hr.fer.dm.MyMovieApp.model.FBFriend;
 import hr.fer.dm.MyMovieApp.model.Movie;
+import hr.fer.dm.MyMovieApp.model.User;
 import hr.fer.dm.MyMovieApp.model.WatchedMovie;
 
 @Service
@@ -22,13 +23,17 @@ public class RecommendationService {
 	UserService userService;
 	@Autowired
 	MovieService movieService;
+	@Autowired
+	OmdbService omdbService;
 
 	public List<Movie> getRecommendation(String id) {
 		
 		List<Movie> possibleMovies = new ArrayList<Movie>();
 		List<String> existingImdbIds = new ArrayList<String>();
 
-		List<FBFriend> fbFriends = userService.getUserFromDB(id).getFriends().getData();
+		User user = userService.getUserFromDB(id);
+		
+		List<FBFriend> fbFriends = user.getFriends().getData();
 
 		List<String> myWatchedMovies = movieService.getWatchedMoviesIds(id);
 		List<String> myWatchList = movieService.getMovieWatchListIds(id);
@@ -42,6 +47,11 @@ public class RecommendationService {
 			if(watchList == null) continue;
 			
 			for(WatchedMovie watchedMovie : watchedMovies) {
+				
+				if(!suitableMovie(watchedMovie.getMovie().getId(), user.getAge_range().getMin(), user.getAge_range().getMax())) {
+					continue;
+				}
+				
 				if(!existingImdbIds.contains(watchedMovie.getMovie().getId()) 
 						&& !myWatchedMovies.contains(watchedMovie.getMovie().getId()) && !myWatchList.contains(watchedMovie.getMovie().getId())) {
 					possibleMovies.add(watchedMovie.getMovie());
@@ -50,6 +60,11 @@ public class RecommendationService {
 			}
 			
 			for(Movie watchListMovie : watchList) {
+
+				if(!suitableMovie(watchListMovie.getId(), user.getAge_range().getMin(), user.getAge_range().getMax())) {
+					continue;
+				}
+				
 				if(!existingImdbIds.contains(watchListMovie.getId()) 
 						&& !myWatchedMovies.contains(watchListMovie.getId()) && !myWatchList.contains(watchListMovie.getId())) {
 					possibleMovies.add(watchListMovie);
@@ -77,6 +92,34 @@ public class RecommendationService {
 		
 		
 		return randomList;
+	}
+	
+	public boolean suitableMovie(String movieId, String min, String max) {
+		
+		String rated = movieService.getRating(movieId);
+		
+		if(rated == null || rated.equals("")) return true;
+		
+		if(rated.equals("G")) {
+			return true;
+		}else if(rated.equals("PG")) {
+			return true;
+		}else if(rated.equals("PG-13")) {
+			return true;
+		}else if(rated.equals("R")) {
+			if(min.equals("18") || min.equals("21")) {
+				return true;
+			}else {
+				return false;
+			}
+		}else if(rated.equals("NC-17")) {
+			if(min.equals("18") || min.equals("21")) {
+				return true;
+			}else {
+				return false;
+			}
+		}
+		return false;
 	}
 	
 	//verzija s fb filmovima

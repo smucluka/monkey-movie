@@ -84,6 +84,21 @@ public class MovieService {
 
 		return movie;
 	}
+	
+	public String getRating(String id) {
+		Movie movie = getMovieFromDB(id);
+
+		if (movie == null || movie.getRated() == null) {
+			
+			TmdbMovie tmdbMovie = tmdbService.getMovieByTmdbId(id);
+			OmdbMovie omdbMovie = omdbService.getMovieByImdbId(tmdbMovie.getImdb_id());
+			movie.setRated(omdbMovie.getRated());
+			saveMovie(movie);
+			return omdbMovie.getRated();
+		}else {
+			return movie.getRated();
+		}
+	}
 
 //	public List<Movie> getFacebookMovies(FBMovies fbMovies) {
 //

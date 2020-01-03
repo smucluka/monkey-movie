@@ -10,6 +10,7 @@ public class Movie {
 	private String title;
 	private String overview;
 	private String poster_path;
+	private String rated;
 	
 	public String getId() {
 		return id;
@@ -41,5 +42,12 @@ public class Movie {
 	public void setPoster_path(String poster_path) {
 		this.poster_path = poster_path;
 	}
+	public String getRated() {
+		return rated;
+	}
+	public void setRated(String rated) {
+		this.rated = rated;
+	}
+	
 	
 }
