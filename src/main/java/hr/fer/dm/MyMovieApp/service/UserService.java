@@ -58,7 +58,7 @@ public class UserService {
 				user.setWatched_movie_ids(new ArrayList<WatchedMovie>());
 			}
 			
-			user.setMovies(fetchLikedMovies(details.getTokenValue(), user.getId()));
+			//user.setMovies(fetchLikedMovies(details.getTokenValue(), user.getId()));
 			user.setFriends(fetchFBFriends(details.getTokenValue(), user.getId()));
 
 		}
@@ -70,7 +70,7 @@ public class UserService {
 	}
 	
 	private User apiUserInfo(String token) {
-		String fields = "id,name,email,birthday";
+		String fields = "id,name,email,age_range";
 		UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromUriString("https://graph.facebook.com/me")
 				.queryParam("access_token", token).queryParam("fields", fields);
 		User user = restTemplate.getForObject(uriBuilder.toUriString(), User.class);
@@ -84,6 +84,45 @@ public class UserService {
 		JsonNode response = restTemplate.getForObject(uriBuilder.toUriString(), JsonNode.class);
 		user.setProfilePicture(response.get("picture").get("data").get("url").textValue());
 		return user;
+	}
+
+	public FBFriends fetchFBFriends(final String accessToken, final String userId) {
+		final String fields = "friends";
+		HttpHeaders headers = new HttpHeaders();
+		headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
+		UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromUriString("https://graph.facebook.com/me")
+				.queryParam("access_token", accessToken).queryParam("user_id", userId).queryParam("fields", fields);
+		User user = restTemplate.getForObject(uriBuilder.toUriString(), User.class);
+
+		List<FBFriend> friendList = new ArrayList<>();
+		
+		if (user.getFriends() != null) {
+			int maxFriends = 10;
+			for (FBFriend friend : user.getFriends().getData()) {
+				if(maxFriends <= 0)
+					break;
+				//friend.setMovies(fetchLikedMovies(accessToken, friend.getId()));
+				friendList.add(friend);
+			}
+			
+			if(user.getFriends().getPaging() != null && user.getFriends().getPaging().getNext() != null) {
+				while (user.getFriends().getPaging().getNext() != null) {
+					FBFriends pagedFriends = restTemplate.getForObject(user.getFriends().getPaging().getNext(), FBFriends.class);
+					user.setFriends(pagedFriends);
+					for (FBFriend friend : user.getFriends().getData()) {
+						if(maxFriends <= 0)
+							break;
+						//friend.setMovies(fetchLikedMovies(accessToken, friend.getId()));
+						friendList.add(friend);
+					}
+				}	
+			}
+		}
+		
+		FBFriends friends = new FBFriends();
+		friends.setData(friendList);
+		
+		return friends;
 	}
 	
 //	public FBMovies fetchLikedMovies(final String accessToken, final String userId) {
@@ -116,74 +155,35 @@ public class UserService {
 //		return movies;
 //	}
 	
-	public FBFriends fetchFBFriends(final String accessToken, final String userId) {
-		final String fields = "friends";
-		HttpHeaders headers = new HttpHeaders();
-		headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
-		UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromUriString("https://graph.facebook.com/me")
-				.queryParam("access_token", accessToken).queryParam("user_id", userId).queryParam("fields", fields);
-		User user = restTemplate.getForObject(uriBuilder.toUriString(), User.class);
-
-		List<FBFriend> friendList = new ArrayList<>();
-		
-		if (user.getFriends() != null) {
-			int maxFriends = 10;
-			for (FBFriend friend : user.getFriends().getData()) {
-				if(maxFriends <= 0)
-					break;
-				friend.setMovies(fetchLikedMovies(accessToken, friend.getId()));
-				friendList.add(friend);
-			}
-			
-			if(user.getFriends().getPaging() != null && user.getFriends().getPaging().getNext() != null) {
-				while (user.getFriends().getPaging().getNext() != null) {
-					FBFriends pagedFriends = restTemplate.getForObject(user.getFriends().getPaging().getNext(), FBFriends.class);
-					user.setFriends(pagedFriends);
-					for (FBFriend friend : user.getFriends().getData()) {
-						if(maxFriends <= 0)
-							break;
-						friend.setMovies(fetchLikedMovies(accessToken, friend.getId()));
-						friendList.add(friend);
-					}
-				}	
-			}
-		}
-		
-		FBFriends friends = new FBFriends();
-		friends.setData(friendList);
-		
-		return friends;
-	}
-	
-	public FBMovies fetchLikedMovies(final String accessToken, final String userId) {
-		final String fields = "movies";
-		HttpHeaders headers = new HttpHeaders();
-		headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
-		UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromUriString("https://graph.facebook.com/" + userId)
-				.queryParam("access_token", accessToken).queryParam("fields", fields);
-		User user = restTemplate.getForObject(uriBuilder.toUriString(), User.class);
-
-		List<FBMovie> movieList = new ArrayList<>();
-
-		if (user.getMovies() != null) {
-
-			for (FBMovie mov : user.getMovies().getData()) {
-				movieList.add(mov);
-			}
-
-			while (user.getMovies().getPaging().getNext() != null) {
-				FBMovies pagedMovies = restTemplate.getForObject(user.getMovies().getPaging().getNext(), FBMovies.class);
-				user.setMovies(pagedMovies);
-				for (FBMovie mov : user.getMovies().getData()) {
-					movieList.add(mov);
-				}
-			}
-		}
-
-		FBMovies movies = new FBMovies();
-		movies.setData(movieList);
-		return movies;
-	}
+//	public FBMovies fetchLikedMovies(final String accessToken, final String userId) {
+//		final String fields = "movies";
+//		HttpHeaders headers = new HttpHeaders();
+//		headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
+//		UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromUriString("https://graph.facebook.com/" + userId)
+//				.queryParam("access_token", accessToken).queryParam("fields", fields);
+//		User user = restTemplate.getForObject(uriBuilder.toUriString(), User.class);
+//
+//		List<FBMovie> movieList = new ArrayList<>();
+//
+//		if (user.getMovies() != null) {
+//
+//			for (FBMovie mov : user.getMovies().getData()) {
+//				movieList.add(mov);
+//			}
+//
+//			while (user.getMovies().getPaging().getNext() != null) {
+//				FBMovies pagedMovies = restTemplate.getForObject(user.getMovies().getPaging().getNext(), FBMovies.class);
+//				user.setMovies(pagedMovies);
+//				for (FBMovie mov : user.getMovies().getData()) {
+//					movieList.add(mov);
+//				}
+//			}
+//		}
+//
+//		FBMovies movies = new FBMovies();
+//		movies.setData(movieList);
+//		return movies;
+//	}
 	
 //	public FBMovies fetchFriendsMovies(final String accessToken, final String friendId) {
 //		final String fields = "movies";

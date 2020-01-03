@@ -10,13 +10,13 @@ public class User {
 	@Id
 	private String id;
 	private String name;
-	private String birthday;
 	private String email;
 	private String profilePicture;
-	private FBMovies movies;
+	private AgeRange age_range;
+	// private FBMovies movies;
 	private FBFriends friends;
-	private List<WatchedMovie> watched_movie_ids; 
-	private List<String> watch_list_movie_ids; 
+	private List<WatchedMovie> watched_movie_ids;
+	private List<String> watch_list_movie_ids;
 
 	public String getName() {
 		return name;
@@ -34,12 +34,12 @@ public class User {
 		this.id = id;
 	}
 
-	public String getBirthday() {
-		return birthday;
+	public AgeRange getAge_range() {
+		return age_range;
 	}
 
-	public void setBirthday(String birthday) {
-		this.birthday = birthday;
+	public void setAge_range(AgeRange age_range) {
+		this.age_range = age_range;
 	}
 
 	public String getEmail() {
@@ -58,13 +58,13 @@ public class User {
 		this.profilePicture = profilePicture;
 	}
 
-	public FBMovies getMovies() {
-		return movies;
-	}
-
-	public void setMovies(FBMovies movies) {
-		this.movies = movies;
-	}
+//	public FBMovies getMovies() {
+//		return movies;
+//	}
+//
+//	public void setMovies(FBMovies movies) {
+//		this.movies = movies;
+//	}
 
 	public FBFriends getFriends() {
 		return friends;

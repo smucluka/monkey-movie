@@ -8,7 +8,7 @@
 <body style="background-color: #000000c9; color: white;">
 
 	<div th:replace="layout :: nav"></div>
-	
+
 	<div class="container"
 		style="margin: auto; width: 80%; margin-top: 100px; margin-bottom: 5%; text-align: center;">
 		<h1>Personal information</h1>
@@ -28,11 +28,25 @@
 							style="margin-right: 5px;"></i>
 						<a class="row justify-content-center" th:text="${user.email}"></a>
 					</p>
-					<p>
+					<!-- <p>
 						<i class="fa fa-birthday-cake" aria-hidden="true"
 							style="margin-right: 5px;"></i>
 						<a class="row justify-content-center" th:text="${user.birthday}"></a>
-					</p>
+					</p>-->
+					<br/>
+					<table class="table"
+						style="background: transparent; color: white;">
+						<thead>
+							<tr>
+								<th>Facebook friends</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr th:each="userTemp : ${user.friends.data}">
+								<td th:text="${userTemp.name}"></td>
+							</tr>
+						</tbody>
+					</table>
 				</div>
 			</div>
 		</div>

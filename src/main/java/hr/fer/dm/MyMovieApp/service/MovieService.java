@@ -85,36 +85,41 @@ public class MovieService {
 		return movie;
 	}
 
-	public List<Movie> getFacebookMovies(FBMovies fbMovies) {
-
-		List<Movie> likedMovies = new ArrayList<Movie>();
-		for (FBMovie fbMovie : fbMovies.getData()) {
-
-			List<Movie> movieList = movieRepository.findByTitleIgnoreCase(fbMovie.getName().trim());
-
-			if (movieList.isEmpty()) {
-				List<Movie> movies = tmdbService.getMoviesByTitle(fbMovie.getName(), true);
-				if (!movies.isEmpty() && movies.get(0).getTitle().toLowerCase().trim()
-						.equals(fbMovie.getName().toLowerCase().trim())) {
-					saveMovie(movies.get(0));
-					likedMovies.add(movies.get(0));
-				}
-			} else {
-				likedMovies.addAll(movieList);
-			}
-
-		}
-		return likedMovies;
-	}
+//	public List<Movie> getFacebookMovies(FBMovies fbMovies) {
+//
+//		List<Movie> likedMovies = new ArrayList<Movie>();
+//		for (FBMovie fbMovie : fbMovies.getData()) {
+//
+//			List<Movie> movieList = movieRepository.findByTitleIgnoreCase(fbMovie.getName().trim());
+//
+//			if (movieList.isEmpty()) {
+//				List<Movie> movies = tmdbService.getMoviesByTitle(fbMovie.getName(), true);
+//				if (!movies.isEmpty() && movies.get(0).getTitle().toLowerCase().trim()
+//						.equals(fbMovie.getName().toLowerCase().trim())) {
+//					saveMovie(movies.get(0));
+//					likedMovies.add(movies.get(0));
+//				}
+//			} else {
+//				likedMovies.addAll(movieList);
+//			}
+//
+//		}
+//		return likedMovies;
+//	}
 
 	public List<WatchedMovie> getWatchedMovies(String userId) {
 		User user = userService.getUserFromDB(userId);
+		List<WatchedMovie> movieWatchListids = null;
+		try {
+			movieWatchListids = user.getWatched_movie_ids();
 
-		List<WatchedMovie> movieWatchListids = user.getWatched_movie_ids();
-
-		for (WatchedMovie watchedMov : movieWatchListids) {
-			watchedMov.setMovie(getMovieFromDB(watchedMov.getId()));
+			for (WatchedMovie watchedMov : movieWatchListids) {
+				watchedMov.setMovie(getMovieFromDB(watchedMov.getId()));
+			}
+		}catch(Exception e) {
+			System.err.println(e);
 		}
+		
 
 		return movieWatchListids;
 	}
@@ -189,9 +194,14 @@ public class MovieService {
 	public List<Movie> getMovieWatchList(String userId) {
 		User user = userService.getUserFromDB(userId);
 
-		List<String> movieWatchListids = user.getWatch_list_movie_ids();
-
-		List<Movie> movieWatchList = getMoviesByIds(movieWatchListids);
+		List<String> movieWatchListids = null;
+		List<Movie> movieWatchList = null;
+		try {
+			movieWatchListids = user.getWatch_list_movie_ids();
+			movieWatchList = getMoviesByIds(movieWatchListids);	
+		}catch(Exception e) {
+			System.err.println(e);
+		}
 
 		return movieWatchList;
 	}
@@ -236,6 +246,15 @@ public class MovieService {
 		} catch (Exception e) {
 			System.err.println(e);
 		}
+	}
+	
+	public List<Movie> getAllMovies(){
+		try {
+			return movieRepository.findAll();	
+		}catch(Exception e) {
+			System.err.println(e);
+		}
+		return null;
 	}
 
 	private void saveMovies(List<Movie> movies) {
