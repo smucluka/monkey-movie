@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4"
+	lang="en">
+
+<th:block th:replace="layout :: head"></th:block>
+
+<body style="background-color: #000000c9; color: white;">
+
+	<div th:replace="layout :: nav"></div>
+
+	<div class="container">
+
+		<br />
+		<br />
+		<br />
+		<br />
+		<a href="/movies/recommendation">
+			<i id="arrow" class="fa fa-arrow-circle-left"
+				style="font-size: 1.5em; vertical-align: middle; display: none"></i>
+		</a>
+		<div class="row justify-content-center" style="margin: 5px;">
+			<h1 class="text-center">Popular Movies</h1>
+			<a id="refresh" style="display: none;">
+				<i class="fa fa-refresh"></i>
+			</a>
+
+		</div>
+		<br />
+		<div id="stupidMonkey" class="row justify-content-center">
+			<div th:each="mov : ${popularMovies}"
+				class="card col-10 col-md-3 text-center"
+				style="color: white; padding: 20px; margin: 3px; background-color: gray">
+				<img th:src="${mov.poster_path}" class="text-center card-img-top"
+					style="border-radius: 10px" onerror="this.src='/no-cover.png'" />
+				<div class="card-body justify-content-center">
+					<h5 class="card-title text-center" th:text="${mov.title}"></h5>
+					<p class="card-text text-center" th:text="${mov.overview}"></p>
+					<a th:href="@{/movies/details(id=${mov.id})}" class="btn btn-primary">Details</a>
+				</div>
+			</div>
+		</div>
+
+
+		<br />
+		<br />
+		<th:block th:replace="layout :: script"></th:block>
+	</div>
+</body>
+
+</html>

@@ -101,6 +101,45 @@ public class TmdbService {
 
 		return movies;
 	}
+		
+	public List<Movie> getPopularMovies() {
+		
+		List<Movie> movies = new ArrayList<>();
+
+		UriComponentsBuilder uriBuilder = UriComponentsBuilder
+				.fromUriString("https://api.themoviedb.org/3/movie/popular").queryParam("api_key", api_key_tmdb);
+		String json = restTemplate.getForObject(uriBuilder.toUriString(), String.class);
+
+		JSONObject obj1 = new JSONObject(json);
+
+		int total_pages = obj1.getInt("total_pages");
+		int cnt=0;
+		if (total_pages >= 1) {
+			JSONArray arr = obj1.getJSONArray("results");
+			for (int i = 0; i < arr.length(); i++) {
+				String id = Integer.toString(arr.getJSONObject(i).getInt("id"));
+
+				Object title = arr.getJSONObject(i).get("title");
+				Object overview = arr.getJSONObject(i).get("overview");
+				Object poster_path = arr.getJSONObject(i).get("poster_path");
+
+				
+				Movie newMovie = movieRepository.findOne(id.trim());
+				if(newMovie==null) newMovie = new Movie();
+				
+				newMovie.setId(id.trim());
+				newMovie.setTitle(title.toString());
+				newMovie.setOverview(overview.toString());
+				newMovie.setPoster_path("https://image.tmdb.org/t/p/w300_and_h450_bestv2" + poster_path.toString());
+				
+				movies.add(newMovie);
+				cnt++;
+				if(cnt>=18) break;
+			}
+		}
+
+		return movies;
+	}
 	
 	public TmdbMovie getMovieByTmdbId(String id) {
 		TmdbMovie movieDetailed = new TmdbMovie();

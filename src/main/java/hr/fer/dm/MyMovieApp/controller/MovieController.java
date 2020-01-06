@@ -20,6 +20,7 @@ import hr.fer.dm.MyMovieApp.model.MovieDetailed;
 import hr.fer.dm.MyMovieApp.model.User;
 import hr.fer.dm.MyMovieApp.service.MovieService;
 import hr.fer.dm.MyMovieApp.service.RecommendationService;
+import hr.fer.dm.MyMovieApp.service.TmdbService;
 import hr.fer.dm.MyMovieApp.service.UserService;
 
 @Controller
@@ -31,6 +32,8 @@ public class MovieController {
 	SecurityHelper securityHelper;
 	@Autowired
 	MovieService movieService;
+	@Autowired
+	TmdbService tmdbService;
 	@Autowired
 	UserService userService;
 	@Autowired
@@ -123,6 +126,21 @@ public class MovieController {
 		return "redirect:/";
 	}
 	
+	@RequestMapping(value = "/movies/popular", method = RequestMethod.GET)
+	public String getPopular(Principal principal, Model model) {
+		boolean isAuthenticatedUser = securityHelper.isAuthenticatedUser(principal);
+
+		if (isAuthenticatedUser) {
+			model.addAttribute("popularMovies", tmdbService.getPopularMovies());
+			return "popular";
+		}
+
+		return "redirect:/";
+	}
+
+	//
+	//REST
+	//
 	@RequestMapping(value = "/movies/recommendation/solo", method = RequestMethod.GET)
 	public ResponseEntity<List<Movie>> getSoloRecommendation(Principal principal, Model model) {
 		boolean isAuthenticatedUser = securityHelper.isAuthenticatedUser(principal);
@@ -142,9 +160,6 @@ public class MovieController {
 		}
 		return new ResponseEntity<List<Movie>>(HttpStatus.FORBIDDEN);
 	}
-	//
-	//REST
-	//
 	@RequestMapping(value = "/movies/watched/put", method = RequestMethod.GET)
 	public String putMovieOnWatchedList(@RequestParam("id") String id, @RequestParam("rating") Double rating, Principal principal, Model model) {
 		boolean isAuthenticatedUser = securityHelper.isAuthenticatedUser(principal);

@@ -52,13 +52,10 @@
 					th:classappend="${#httpServletRequest.getRequestURI() == '/movies/search' or #httpServletRequest.getRequestURI() == '/movies/searched' ? 'active':''}">
 					<a class="nav-link" href="/movies/search">Search</a>
 				</li>
+
 				<li class="nav-item" sec:authorize="isAuthenticated()"
-					th:classappend="${#httpServletRequest.getRequestURI() == '/movies/watched' ? 'active':''}">
-					<a class="nav-link" href="/movies/watched">Watched</a>
-				</li>
-				<li class="nav-item" sec:authorize="isAuthenticated()"
-					th:classappend="${#httpServletRequest.getRequestURI() == '/movies/watchlist' ? 'active':''}">
-					<a class="nav-link" href="/movies/watchlist">Watch list</a>
+					th:classappend="${#httpServletRequest.getRequestURI() == '/movies/popular' ? 'active':''}">
+					<a class="nav-link" href="/movies/popular">Popular</a>
 				</li>
 				<li class="nav-item" sec:authorize="isAuthenticated()"
 					th:classappend="${#httpServletRequest.getRequestURI() == '/movies/recommendation' ? 'active':''}">
@@ -74,6 +71,14 @@
 			class="navbar-collapse collapse w-100 order-3 dual-collapse2  text-center"
 			id="navbarNav2">
 			<ul class="navbar-nav ml-auto">
+				<li class="nav-item" sec:authorize="isAuthenticated()"
+					th:classappend="${#httpServletRequest.getRequestURI() == '/movies/watched' ? 'active':''}">
+					<a class="nav-link" href="/movies/watched">Watched</a>
+				</li>
+				<li class="nav-item" sec:authorize="isAuthenticated()"
+					th:classappend="${#httpServletRequest.getRequestURI() == '/movies/watchlist' ? 'active':''}">
+					<a class="nav-link" href="/movies/watchlist">Watch list</a>
+				</li>
 				<li class="nav-item" sec:authorize="isAuthenticated()"
 					th:classappend="${#httpServletRequest.getRequestURI() == '/profile' ? 'active':''}">
 					<a class="nav-link" href="/profile">Profile</a>
