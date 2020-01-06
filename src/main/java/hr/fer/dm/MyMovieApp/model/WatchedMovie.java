@@ -1,11 +1,9 @@
 package hr.fer.dm.MyMovieApp.model;
 
-import org.springframework.data.annotation.Id;
-
 public class WatchedMovie {
 
 	private String id;
-	private Integer rating;
+	private Double rating;
 	private Movie movie;
 	
 	public String getId() {
@@ -14,10 +12,10 @@ public class WatchedMovie {
 	public void setId(String id) {
 		this.id = id;
 	}
-	public Integer getRating() {
+	public Double getRating() {
 		return rating;
 	}
-	public void setRating(Integer rating) {
+	public void setRating(Double rating) {
 		this.rating = rating;
 	}
 	public Movie getMovie() {

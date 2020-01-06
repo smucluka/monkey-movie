@@ -10,5 +10,7 @@ public interface MovieRepository extends MongoRepository<Movie, String>{
 
 	List<Movie> findByTitleIgnoreCase(String title);
 	List<Movie> findByIdIn(List<String> ids);
+	List<Movie> findByMovieIdIn(List<String> movieIds);
+	List<Movie> findByMovieId(String movieId);
 	
 }

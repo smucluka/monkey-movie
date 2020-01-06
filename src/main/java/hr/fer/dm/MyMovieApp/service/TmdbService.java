@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -12,9 +13,13 @@ import org.springframework.web.util.UriComponentsBuilder;
 import hr.fer.dm.MyMovieApp.model.Genre;
 import hr.fer.dm.MyMovieApp.model.Movie;
 import hr.fer.dm.MyMovieApp.model.TmdbMovie;
+import hr.fer.dm.MyMovieApp.repository.MovieRepository;
 
 @Service
 public class TmdbService {
+	
+	@Autowired
+	MovieRepository movieRepository;
 	
 	private final String api_key_tmdb = "637554c41022b56ae69b09f7b828bfb2";
 	RestTemplate restTemplate = new RestTemplate();
@@ -47,7 +52,10 @@ public class TmdbService {
 				Object overview = arr.getJSONObject(i).get("overview");
 				Object poster_path = arr.getJSONObject(i).get("poster_path");
 
-				Movie newMovie = new Movie();
+				
+				Movie newMovie = movieRepository.findOne(id.trim());
+				if(newMovie==null) newMovie = new Movie();
+				
 				newMovie.setId(id.trim());
 				newMovie.setTitle(title.toString());
 				newMovie.setOverview(overview.toString());
@@ -77,7 +85,9 @@ public class TmdbService {
 					Object overview = arr.getJSONObject(i).get("overview");
 					Object poster_path = arr.getJSONObject(i).get("poster_path");
 
-					Movie newMovie = new Movie();
+					Movie newMovie = movieRepository.findOne(id.trim());
+					if(newMovie==null) newMovie = new Movie();
+					
 					newMovie.setId(id.trim());
 					newMovie.setTitle(title.toString());
 					newMovie.setOverview(overview.toString());

@@ -1,7 +1,6 @@
 package hr.fer.dm.MyMovieApp.model;
 
 import java.util.List;
-import java.util.Set;
 
 import org.springframework.data.annotation.Id;
 

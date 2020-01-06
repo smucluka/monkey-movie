@@ -17,8 +17,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 import hr.fer.dm.MyMovieApp.model.FBFriend;
 import hr.fer.dm.MyMovieApp.model.FBFriends;
-import hr.fer.dm.MyMovieApp.model.FBMovie;
-import hr.fer.dm.MyMovieApp.model.FBMovies;
 import hr.fer.dm.MyMovieApp.model.User;
 import hr.fer.dm.MyMovieApp.model.WatchedMovie;
 import hr.fer.dm.MyMovieApp.repository.UserRepository;

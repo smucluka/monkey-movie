@@ -4,20 +4,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.stereotype.Service;
 
-import hr.fer.dm.MyMovieApp.model.FBMovie;
-import hr.fer.dm.MyMovieApp.model.FBMovies;
 import hr.fer.dm.MyMovieApp.model.Movie;
 import hr.fer.dm.MyMovieApp.model.MovieDetailed;
 import hr.fer.dm.MyMovieApp.model.NyTimesReview;
 import hr.fer.dm.MyMovieApp.model.OmdbMovie;
+import hr.fer.dm.MyMovieApp.model.Soundtrack;
 import hr.fer.dm.MyMovieApp.model.TmdbMovie;
 import hr.fer.dm.MyMovieApp.model.User;
 import hr.fer.dm.MyMovieApp.model.WatchedMovie;
 import hr.fer.dm.MyMovieApp.model.YouTubeVideo;
-import hr.fer.dm.MyMovieApp.model.Soundtrack;
 import hr.fer.dm.MyMovieApp.repository.MovieDetailedRepository;
 import hr.fer.dm.MyMovieApp.repository.MovieRepository;
 import hr.fer.dm.MyMovieApp.repository.UserRepository;
@@ -152,7 +149,7 @@ public class MovieService {
 		return ids;
 	}
 
-	public void addMovieToWatched(String user_id, String id, Integer rating) {
+	public void addMovieToWatched(String user_id, String id, Double rating) {
 		User user = null;
 		try {
 			user = userRepository.findOne(user_id);

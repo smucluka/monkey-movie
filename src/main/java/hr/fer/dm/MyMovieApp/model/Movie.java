@@ -6,11 +6,13 @@ public class Movie {
 
 	@Id
 	private String id;
+	private String movieId;
 	private String imdb_id;
 	private String title;
 	private String overview;
 	private String poster_path;
 	private String rated;
+	private String genres;
 	
 	public String getId() {
 		return id;
@@ -48,6 +50,17 @@ public class Movie {
 	public void setRated(String rated) {
 		this.rated = rated;
 	}
-	
+	public String getMovieId() {
+		return movieId;
+	}
+	public void setMovieId(String movieId) {
+		this.movieId = movieId;
+	}
+	public String getGenres() {
+		return genres;
+	}
+	public void setGenres(String genres) {
+		this.genres = genres;
+	}
 	
 }

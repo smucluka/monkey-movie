@@ -16,6 +16,8 @@
 	crossorigin="anonymous" />
 <link rel="stylesheet" type="text/css"
 	href="https://cdn.datatables.net/1.10.20/css/jquery.dataTables.css" />
+<link rel="stylesheet"
+	href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/css/bootstrap-select.css" />
 <link rel="stylesheet" th:href="@{/app.css}" />
 <link rel="stylesheet" th:href="@{/toast.css}" />
 <title>MyMovieApp</title>
@@ -46,7 +48,7 @@
 						<span class="sr-only">(current)</span>
 					</a>
 				</li>
-				<li class="nav-item" sec:authorize="isAuthenticated()" 
+				<li class="nav-item" sec:authorize="isAuthenticated()"
 					th:classappend="${#httpServletRequest.getRequestURI() == '/movies/search' or #httpServletRequest.getRequestURI() == '/movies/searched' ? 'active':''}">
 					<a class="nav-link" href="/movies/search">Search</a>
 				</li>
@@ -68,11 +70,11 @@
 				</li>-->
 			</ul>
 		</div>
-		<div class="navbar-collapse collapse w-100 order-3 dual-collapse2  text-center"
-			id="navbarNav2" >
+		<div
+			class="navbar-collapse collapse w-100 order-3 dual-collapse2  text-center"
+			id="navbarNav2">
 			<ul class="navbar-nav ml-auto">
-				<li class="nav-item"
-					sec:authorize="isAuthenticated()"
+				<li class="nav-item" sec:authorize="isAuthenticated()"
 					th:classappend="${#httpServletRequest.getRequestURI() == '/profile' ? 'active':''}">
 					<a class="nav-link" href="/profile">Profile</a>
 				</li>
@@ -100,11 +102,11 @@
 				</li>
 			</ul>
 		</div>
-		
+
 	</nav>
 
 	<th:block th:fragment="script">
-		
+
 		<script src="https://code.jquery.com/jquery-3.4.1.js"
 			integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="
 			crossorigin="anonymous"></script>
@@ -118,23 +120,25 @@
 			crossorigin="anonymous"></script>
 		<script type="text/javascript" charset="utf8"
 			src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.js"></script>
+		<script
+			src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/js/bootstrap-select.min.js"></script>
 		<script type="text/javascript" th:src="@{/app.js}"></script>
 		<script type="text/javascript" th:src="@{/toast.js}"></script>
 		<script>
-			$(window).on(
-					'load',
-					function(e) {
-						if (window.location.hash == '#_=_') {
-							window.location.hash = ''; // for older browsers, leaves a # behind
-							history.pushState('', document.title,
-									window.location.pathname); // nice and clean
-							e.preventDefault(); // no page reload
-						}
-					})
-			$(document).ready(function() {
-				//$('#myMoviesTable').DataTable();
-			});
-		</script>
+	    $(window).on(
+		    'load',
+		    function(e) {
+			if (window.location.hash == '#_=_') {
+			    window.location.hash = ''; // for older browsers, leaves a # behind
+			    history.pushState('', document.title,
+				    window.location.pathname); // nice and clean
+			    e.preventDefault(); // no page reload
+			}
+		    })
+	    $(document).ready(function() {
+		//$('#myMoviesTable').DataTable();
+	    });
+	</script>
 	</th:block>
 </body>
 </html>

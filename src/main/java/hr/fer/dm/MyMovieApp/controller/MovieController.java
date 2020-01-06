@@ -8,32 +8,31 @@ import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.servlet.ModelAndView;
 
 import hr.fer.dm.MyMovieApp.helpers.SecurityHelper;
 import hr.fer.dm.MyMovieApp.model.Movie;
 import hr.fer.dm.MyMovieApp.model.MovieDetailed;
+import hr.fer.dm.MyMovieApp.model.User;
 import hr.fer.dm.MyMovieApp.service.MovieService;
 import hr.fer.dm.MyMovieApp.service.RecommendationService;
+import hr.fer.dm.MyMovieApp.service.UserService;
 
 @Controller
 public class MovieController {
 
 	@Autowired 
     HttpSession session;
-	
 	@Autowired
 	SecurityHelper securityHelper;
 	@Autowired
 	MovieService movieService;
+	@Autowired
+	UserService userService;
 	@Autowired
 	RecommendationService recommendationService;
 
@@ -115,28 +114,39 @@ public class MovieController {
 		boolean isAuthenticatedUser = securityHelper.isAuthenticatedUser(principal);
 
 		if (isAuthenticatedUser) {
-			model.addAttribute("movies", recommendationService.getRecommendation((String) session.getAttribute("userId")));
+			String userId = (String) session.getAttribute("userId") ;
+			User user = userService.getUserFromDB(userId);
+			model.addAttribute("user", user);
 			return "recommendation";
 		}
 
 		return "redirect:/";
 	}
 	
-	@RequestMapping(value = "/movies/recommendation/smart", method = RequestMethod.GET)
-	public ResponseEntity<Movie> getSmartMovie(Principal principal, Model model) {
+	@RequestMapping(value = "/movies/recommendation/solo", method = RequestMethod.GET)
+	public ResponseEntity<List<Movie>> getSoloRecommendation(Principal principal, Model model) {
 		boolean isAuthenticatedUser = securityHelper.isAuthenticatedUser(principal);
 
 		if (isAuthenticatedUser) {
-			return new ResponseEntity<Movie>(recommendationService.getRecommendation((String) session.getAttribute("userId")).get(0), HttpStatus.OK);
+			return new ResponseEntity<List<Movie>>(recommendationService.getRecommendation((String) session.getAttribute("userId"), null), HttpStatus.OK);
 		}
-		return new ResponseEntity<Movie>(HttpStatus.FORBIDDEN);
+		return new ResponseEntity<List<Movie>>(HttpStatus.FORBIDDEN);
 	}
-	
+
+	@RequestMapping(value = "/movies/recommendation/party", method = RequestMethod.GET)
+	public ResponseEntity<List<Movie>> getPartyRecommendation(@RequestParam(value="userIds[]") List<String> userIds, Principal principal, Model model) {
+		boolean isAuthenticatedUser = securityHelper.isAuthenticatedUser(principal);
+
+		if (isAuthenticatedUser) {
+			return new ResponseEntity<List<Movie>>(recommendationService.getRecommendation((String) session.getAttribute("userId"), userIds), HttpStatus.OK);
+		}
+		return new ResponseEntity<List<Movie>>(HttpStatus.FORBIDDEN);
+	}
 	//
 	//REST
 	//
 	@RequestMapping(value = "/movies/watched/put", method = RequestMethod.GET)
-	public String putMovieOnWatchedList(@RequestParam("id") String id, @RequestParam("rating") Integer rating, Principal principal, Model model) {
+	public String putMovieOnWatchedList(@RequestParam("id") String id, @RequestParam("rating") Double rating, Principal principal, Model model) {
 		boolean isAuthenticatedUser = securityHelper.isAuthenticatedUser(principal);
 		if (isAuthenticatedUser) {
 			if (!id.isEmpty()) {
