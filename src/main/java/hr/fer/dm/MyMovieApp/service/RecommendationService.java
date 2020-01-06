@@ -48,7 +48,8 @@ public class RecommendationService {
 		
 		if(friends==null) {
 			myWatchedMovies = new ArrayList<WatchedMovie>();
-			for (WatchedMovie entry : movieService.getWatchedMovies(id)) { 
+			for (WatchedMovie entry : movieService.getWatchedMovies(id)) {
+				if(entry.getMovie().getMovieId() == null) continue;
 	            WatchedMovie wm = new WatchedMovie();
 	            wm.setId(entry.getMovie().getMovieId());
 	            wm.setRating(entry.getRating());
@@ -117,7 +118,7 @@ public class RecommendationService {
 				continue;
 			}
 			
-			int stop = random.nextInt(7 - 3 + 1) + 3;
+			int stop = random.nextInt(15 - 3 + 1) + 3;
 			int j=0;
 			while(j < stop) {
 				if(rat.isEmpty()) break;

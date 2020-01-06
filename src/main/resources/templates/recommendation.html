@@ -16,15 +16,11 @@
 		<br />
 		<br />
 		<div class="row justify-content-center" style="margin: 5px;">
-			<a href="/movies/recommendation">
-				<i id="arrow" class="fa fa-arrow-circle-left"
-					style="font-size: 1.5em; vertical-align: middle; display: none; padding-right: 10px; margin-top: 15px;"></i>
-			</a>
 			<h1 class="text-center">Recommendation</h1>
-			<a id="refresh" style="display: none;">
+			<a href="" id="refresh" style="display: none;">
 				<i class="fa fa-refresh"></i>
 			</a>
-			<a id="refresh2" style="display: none;">
+			<a id="refresh2" href="" style="display: none;">
 				<i class="fa fa-refresh"></i>
 			</a>
 
@@ -184,7 +180,8 @@
 
 				$("#nextBtn, #refresh")
 					.click(
-						function() {
+						function(e) {
+						    e.preventDefault();
 						    var id = this.id;
 						    $("#soloCard").css(
 							    "display", "none");
@@ -254,15 +251,13 @@
 				    $("#partyCard").css("display", "none");
 				    $("#soloCard").css("display", "none");
 				    $("#friends").css("display", "");
-				    $("#arrow").css("display", "");
 				});
 
 				$("#soloMonkeyBtn, #refresh2")
 					.click(
-						function() {
+						function(e) {
+						    e.preventDefault();
 						    var id = this.id;
-						    $("#arrow").css("display",
-							    "");
 						    $("#soloCard").css(
 							    "display", "none");
 						    $("#partyCard").css(
@@ -300,7 +295,7 @@
 															<h5 class="card-title text-center">'
 													+ value.title
 													+ '</h5> \
-															<p class="card-text text-center" style="display: block; max-width: 100%; white-space: nowrap; overflow: hidden !important; text-overflow: ellipsis;">'
+															<p class="card-text text-center giveMeEllipsis">'
 													+ value.overview
 													+ '</p> \
 															<a href="/movies/details?id='

@@ -20,9 +20,11 @@
 		</div>
 		<br />
 		<div>
-			<form class="row justify-content-center" th:action="@{/movies/searched}" method="GET">
+			<form class="row justify-content-center"
+				th:action="@{/movies/searched}" method="GET">
 				<input class="col-4" id="movieTitle" name="movieTitle" type="text"
-					style="border-radius: 10px; width: 150%" placeholder="Enter movie title" />
+					style="border-radius: 10px; width: 150%"
+					placeholder="Enter movie title" />
 				<button class="btn" type="submit"
 					style="margin-left: 10px; background-color: #ffffff; color: black; border-radius: 40px;">
 					<i class="fa fa-search" aria-hidden="true"></i>
@@ -49,12 +51,16 @@
 					<tr class="row" th:each="movie, iter: ${movies}"
 						th:style="${iter.even} ? 'background-color: rgba(0,0,0,0.2)' : 'background-color: none;'">
 						<td class="text-center col-12 col-lg-4">
-							<img style="border-radius: 10px; max-width: 80%" th:src="${movie.poster_path}" onerror="this.src='/no-cover.png'"/>
+							<a th:href="@{/movies/details(id=${movie.id})}">
+								<img style="border-radius: 10px; max-width: 60%"
+									th:src="${movie.poster_path}"
+									onerror="this.src='/no-cover.png'" />
+							</a>
 						</td>
 						<td class="text-center col-12 col-lg-8">
 							<div style="position: relative;">
 								<div class="row justify-content-center">
-									<h2 class="col-10" th:text="${movie.title}"></h2>
+									<a th:href="@{/movies/details(id=${movie.id})}" class="col-10" th:text="${movie.title}" style="font-size: 35px; color: white"></a>
 								</div>
 
 								<div class="row justify-content-center">
