@@ -6,9 +6,9 @@ public class Ratings {
 
 	@Id	
 	private String id;
-	private String userId;
-	private String movieId;
-	private String rating;
+	private Integer userId;
+	private Integer movieId;
+	private Double rating;
 	private String timestamp;
 	
 	public String getId() {
@@ -17,22 +17,22 @@ public class Ratings {
 	public void setId(String id) {
 		this.id = id;
 	}
-	public String getUserId() {
+	public Integer getUserId() {
 		return userId;
 	}
-	public void setUserId(String userId) {
+	public void setUserId(Integer userId) {
 		this.userId = userId;
 	}
-	public String getMovieId() {
+	public Integer getMovieId() {
 		return movieId;
 	}
-	public void setMovieId(String movieId) {
+	public void setMovieId(Integer movieId) {
 		this.movieId = movieId;
 	}
-	public String getRating() {
+	public Double getRating() {
 		return rating;
 	}
-	public void setRating(String rating) {
+	public void setRating(Double rating) {
 		this.rating = rating;
 	}
 	public String getTimestamp() {
