@@ -10,5 +10,6 @@ public interface RatingsRepository extends MongoRepository<Ratings, String>{
 
 	List<Ratings> findByUserId(Integer userId);
 	List<Ratings> findByMovieIdAndRating(Integer movieId, Double rating);
+	List<Ratings> findByUserIdAndMovieId(Integer userId, Integer movieId);
 }
 

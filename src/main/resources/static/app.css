@@ -14,12 +14,12 @@ header {
 	background-position: center center;
 	color: #cfcfcf;
 	position: relative;
-	height: 95vh;
+	height: 70vh;
 }
 
 header p {
 	position: absolute;
-	bottom: 20px;
+	bottom: 50px;
 	color: rgba(255, 255, 255, 0.8);
 	font-size: 20px;
 	text-align: center;
@@ -75,5 +75,5 @@ header p {
    text-overflow: ellipsis;
    display: -webkit-box;
    -webkit-box-orient: vertical;
-   -webkit-line-clamp: 3; /* number of lines to show */
+   -webkit-line-clamp: 4; /* number of lines to show */
 }

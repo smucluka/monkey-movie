@@ -120,6 +120,7 @@ public class MovieController {
 			String userId = (String) session.getAttribute("userId") ;
 			User user = userService.getUserFromDB(userId);
 			model.addAttribute("user", user);
+			model.addAttribute("friends", userService.getFBFriends(userId));
 			return "recommendation";
 		}
 
@@ -131,7 +132,9 @@ public class MovieController {
 		boolean isAuthenticatedUser = securityHelper.isAuthenticatedUser(principal);
 
 		if (isAuthenticatedUser) {
-			model.addAttribute("popularMovies", tmdbService.getPopularMovies());
+			model.addAttribute("popularMovies", movieService.getPopularMovies());
+			model.addAttribute("watchedMovies", movieService.getWatchedMoviesIds((String) session.getAttribute("userId")));
+			model.addAttribute("watchList", movieService.getMovieWatchListIds((String) session.getAttribute("userId")));
 			return "popular";
 		}
 
@@ -168,6 +171,7 @@ public class MovieController {
 				movieService.removeMovieFromWatchList((String) session.getAttribute("userId"), id);
 				movieService.addMovieToWatched((String) session.getAttribute("userId"), id, rating);
 			}
+			model.addAttribute("watchedMovies", movieService.getWatchedMovies((String) session.getAttribute("userId")));
 			return "redirect:/movies/watched";
 		}
 		
@@ -180,6 +184,7 @@ public class MovieController {
 
 		if (isAuthenticatedUser) {
 			movieService.removeMovieFromWatched((String) session.getAttribute("userId"), id);
+			model.addAttribute("watchedMovies", movieService.getWatchedMovies((String) session.getAttribute("userId")));
 			return "redirect:/movies/watched";
 		}
 

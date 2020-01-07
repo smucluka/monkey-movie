@@ -27,17 +27,87 @@
 
 		</div>
 		<br />
-		
-		<div id="stupidMonkey" class="row justify-content-center">
-			<div th:each="mov : ${popularMovies}"
-				class="card col-10 col-md-3 text-center"
-				style="color: white; padding: 10px; margin: 2px; background-color: gray">
-				<img th:src="${mov.poster_path}" class="text-center card-img-top"
-					style="border-radius: 10px;" onerror="this.src='/no-cover.png'" />
-				<div class="card-body justify-content-center">
-					<h5 class="card-title text-center" th:text="${mov.title}"></h5>
-					<p class="card-text text-center giveMeEllipsis" th:text="${mov.overview}"></p>
-					<a th:href="@{/movies/details(id=${mov.id})}" class="btn btn-primary">Details</a>
+
+		<div class="row justify-content-center">
+			<div th:each="movie : ${popularMovies}" class="card col-md-3 col-11"
+				style="color: white; padding: 10px; margin: 2px; background-color: rgba(128, 128, 128, 0.3)">
+				<div class="row justify-content-center">
+					<div class="card-body col-6 col-md-12 text-center">
+						<a th:href="@{/movies/details(id=${movie.id})}">
+							<img th:src="${movie.poster_path}" class="text-center card-img-top"
+								style="border-radius: 10px; max-width: 70%; position: relative; top: 50%; transform: translateY(-50%);"
+								onerror="this.src='/no-cover.png'" />
+						</a>
+					</div>
+					<div class="row justify-content-center">
+						<br />
+						<br />
+						<a
+							th:style="${#lists.contains(watchList, movie.id) or #lists.contains(watchedMovies, movie.id) ? 'display:none' : 'display:block'}"
+							th:id="${movie.id}" class="addWatchlist" title="Add to watchlist">
+							<i class="fa fa-plus" aria-hidden="true"
+								style="margin-right: 20px; font-size: 1.7em; cursor: pointer"></i>
+						</a>
+						<a
+							th:style="${#lists.contains(watchList, movie.id)  ? 'display:block' : 'display:none'}"
+							th:id="${movie.id}" class="removeWatchlist"
+							title="Remove from watchlist">
+							<i class="fa fa-check" aria-hidden="true"
+								style="margin-right: 20px; font-size: 1.7em; color: green; cursor: pointer"></i>
+						</a>
+						<div class="watchedBtn" th:id="${movie.id}"
+							th:style="${#lists.contains(watchedMovies, movie.id) ? 'display:none' : 'display:block'}">
+							<a data-toggle="modal" th:attr="data-target='#modal'+${movie.id}"
+								title="Mark as watched">
+								<i class="fa fa-star" aria-hidden="true"
+									style="margin-right: 5px; font-size: 1.7em; cursor: pointer"></i>
+							</a>
+
+						</div>
+
+						<a
+							th:style="${#lists.contains(watchedMovies, movie.id) ? 'display:block' : 'display:none'}"
+							th:id="${movie.id}" class="unmarkWatched"
+							title="Unmark as watched">
+							<i class="fa fa-star" aria-hidden="true"
+								style="margin-right: 5px; font-size: 1.7em; color: yellow; cursor: pointer"></i>
+						</a>
+
+						<div th:id="${'modal' + movie.id}" class="modal fade"
+							id="exampleModalCenter" tabindex="-1" role="dialog"
+							aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+							<div class="modal-dialog modal-dialog-centered" role="document">
+								<div class="modal-content">
+									<div class="modal-body">
+										<div class="row justify-content-center">
+											<div class="rating" style="color: black">
+												<span th:id="${movie.id}" class="markWatched"
+													data-rating="5" style="font-size: 1.7em;">☆</span>
+												<span th:id="${movie.id}" class="markWatched"
+													data-rating="4" style="font-size: 1.7em;">☆</span>
+												<span th:id="${movie.id}" class="markWatched"
+													data-rating="3" style="font-size: 1.7em;">☆</span>
+												<span th:id="${movie.id}" class="markWatched"
+													data-rating="2" style="font-size: 1.7em;">☆</span>
+												<span th:id="${movie.id}" class="markWatched"
+													data-rating="1" style="font-size: 1.7em;">☆</span>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="col-6 col-md-12 card-body">
+						<div class="row justify-content-center">
+							<a th:href="@{/movies/details(id=${movie.id})}" class="text-center"
+								th:text="${movie.title}"
+								style="font-size: 22px; color: white; cursor: pointer"></a>
+						</div>
+						<br />
+						<p class="card-text text-center giveMeEllipsis"
+							th:text="${movie.overview}"></p>
+					</div>
 				</div>
 			</div>
 		</div>

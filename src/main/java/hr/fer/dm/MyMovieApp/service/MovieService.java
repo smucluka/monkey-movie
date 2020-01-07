@@ -10,6 +10,7 @@ import hr.fer.dm.MyMovieApp.model.Movie;
 import hr.fer.dm.MyMovieApp.model.MovieDetailed;
 import hr.fer.dm.MyMovieApp.model.NyTimesReview;
 import hr.fer.dm.MyMovieApp.model.OmdbMovie;
+import hr.fer.dm.MyMovieApp.model.Ratings;
 import hr.fer.dm.MyMovieApp.model.Soundtrack;
 import hr.fer.dm.MyMovieApp.model.TmdbMovie;
 import hr.fer.dm.MyMovieApp.model.User;
@@ -17,6 +18,7 @@ import hr.fer.dm.MyMovieApp.model.WatchedMovie;
 import hr.fer.dm.MyMovieApp.model.YouTubeVideo;
 import hr.fer.dm.MyMovieApp.repository.MovieDetailedRepository;
 import hr.fer.dm.MyMovieApp.repository.MovieRepository;
+import hr.fer.dm.MyMovieApp.repository.RatingsRepository;
 import hr.fer.dm.MyMovieApp.repository.UserRepository;
 
 //Glavni servis
@@ -56,6 +58,17 @@ public class MovieService {
 
 	}
 
+	public List<Movie> getPopularMovies() {
+
+		List<Movie> movies = tmdbService.getPopularMovies();
+
+		if (movies.size() > 0)
+			saveMovies(movies);
+		return movies;
+
+	}
+
+	// TODO implementirati prvo provjeru iz baze podataka
 	public MovieDetailed getMovieDetails(String id) {
 		MovieDetailed movie = getDetailedMovie(id);
 
@@ -173,6 +186,7 @@ public class MovieService {
 			user.setWatched_movie_ids(watchedMovies);
 
 			userRepository.save(user);
+			
 		} catch (Exception e) {
 			System.err.println(e);
 		}

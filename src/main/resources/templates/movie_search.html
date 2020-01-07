@@ -50,17 +50,17 @@
 
 					<tr class="row" th:each="movie, iter: ${movies}"
 						th:style="${iter.even} ? 'background-color: rgba(0,0,0,0.2)' : 'background-color: none;'">
-						<td class="text-center col-12 col-lg-4">
+						<td class="text-center col-6 col-lg-4">
 							<a th:href="@{/movies/details(id=${movie.id})}">
-								<img style="border-radius: 10px; max-width: 60%"
+								<img style="border-radius: 10px; max-width: 70%; position: relative; top: 50%; transform: translateY(-50%);"
 									th:src="${movie.poster_path}"
 									onerror="this.src='/no-cover.png'" />
 							</a>
 						</td>
-						<td class="text-center col-12 col-lg-8">
+						<td class="text-center col-6 col-lg-8">
 							<div style="position: relative;">
 								<div class="row justify-content-center">
-									<a th:href="@{/movies/details(id=${movie.id})}" class="col-10" th:text="${movie.title}" style="font-size: 35px; color: white"></a>
+									<a th:href="@{/movies/details(id=${movie.id})}" class="col-10" th:text="${movie.title}" style="font-size: 27px; color: white"></a>
 								</div>
 
 								<div class="row justify-content-center">
@@ -125,7 +125,7 @@
 										</div>
 									</div>
 								</div>
-								<p class="card-text" style="padding: 10px; min-height: 100px"
+								<p class="card-text giveMeEllipsis" style="min-height: 100px"
 									th:text="${movie.overview}"></p>
 
 								<div class="row justify-content-center">

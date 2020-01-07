@@ -8,6 +8,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 import hr.fer.dm.MyMovieApp.helpers.SecurityHelper;
+import hr.fer.dm.MyMovieApp.repository.MovieRepository;
 import hr.fer.dm.MyMovieApp.repository.UserRepository;
 import hr.fer.dm.MyMovieApp.service.UserService;
 
@@ -15,6 +16,8 @@ import hr.fer.dm.MyMovieApp.service.UserService;
 public class HomeController {
 	@Autowired
     UserRepository userRepository;
+	@Autowired
+    MovieRepository movieRepository;
 	@Autowired
 	SecurityHelper securityHelper;
 	@Autowired
@@ -24,6 +27,9 @@ public class HomeController {
 	@GetMapping("/")
 	public String getHome(Principal principal, Model model) {
 		
+		model.addAttribute("userCount", userRepository.count());
+		model.addAttribute("moviesCount", movieRepository.count());
+		model.addAttribute("ratingsCount", userService.getNumOfRatings());
 		return "index";
 	}
 	

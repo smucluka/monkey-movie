@@ -12,6 +12,7 @@ import java.util.TreeMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import hr.fer.dm.MyMovieApp.model.FBFriend;
 import hr.fer.dm.MyMovieApp.model.Movie;
 import hr.fer.dm.MyMovieApp.model.Ratings;
 import hr.fer.dm.MyMovieApp.model.WatchedMovie;
@@ -33,7 +34,6 @@ public class RecommendationService {
 	@Autowired
 	MovieRepository movieRepository;
 
-
 	final int NUM_RATINGS = 20;
 	final int NUM_NEIGHBOURHOODS = 10;
 	final int NUM_RECOMMENDATIONS = 6;
@@ -46,12 +46,14 @@ public class RecommendationService {
 		
 		List<WatchedMovie> myWatchedMovies = null;
 		
+		
 		if(friends==null) {
 			myWatchedMovies = new ArrayList<WatchedMovie>();
 			for (WatchedMovie entry : movieService.getWatchedMovies(id)) {
 				if(entry.getMovie().getMovieId() == null) continue;
 	            WatchedMovie wm = new WatchedMovie();
 	            wm.setId(entry.getMovie().getMovieId());
+	            wm.setMovie(entry.getMovie());
 	            wm.setRating(entry.getRating());
 	            myWatchedMovies.add(wm);
 			} 	
@@ -189,17 +191,6 @@ public class RecommendationService {
 		return returnList;
 	}
 
-	/**
-	 * Get predictions of each movie by a user giving some ratings and its
-	 * neighbourhood: r(u,i) = r(u) + sum(sim(u,v) * (r(v,i) - r(v))) /
-	 * sum(abs(sim(u,v))) sim(u,v): similarity between u and v users r(u,i): rating
-	 * of the movie i by the user u r(u): average rating of the user u
-	 * 
-	 * @param userRatings    ratings of the user
-	 * @param neighbourhoods nearest neighbourhoods
-	 * @param movies         movies in the database
-	 * @return predictions for each movie
-	 */
 	public Map<Integer, Double> getRecommendations(Map<Integer, Double> userRatings,
 			Map<Integer, Double> neighbourhoods, List<Movie> movies) {
 		Map<Integer, Double> predictedRatings = new HashMap<>();
@@ -232,17 +223,7 @@ public class RecommendationService {
 		return predictedRatings;
 	}
 
-	/**
-	 * Get the k-nearest neighbourhoods using Pearson: sim(i,j) = numerator /
-	 * (sqrt(userDenominator^2) * sqrt(otherUserDenominator^2)) numerator =
-	 * sum((r(u,i) - r(u)) * (r(v,i) - r(v))) userDenominator = sum(r(u,i) - r(i))
-	 * otherUserDenominator = sum(r(v,i) - r(v)) r(u,i): rating of the movie i by
-	 * the user u r(u): average rating of the user u
-	 * 
-	 * @param userRatings ratings of the user
-	 * @param k           number of output neighbourhoods
-	 * @return nearest neighbourhoods
-	 */
+	
 	public Map<Integer, Double> getNeighbourhoods(Map<Integer, Double> userRatings, int k) {
 		Map<Integer, Double> neighbourhoods = new HashMap<>();
 		ValueComparator valueComparator = new ValueComparator(neighbourhoods);
@@ -296,12 +277,6 @@ public class RecommendationService {
 		return output;
 	}
 
-	/**
-	 * Get average of the ratings of a user
-	 * 
-	 * @param userRatings ratings of a user
-	 * @return average or the ratings of a user
-	 */
 	private double getAverage(Map<Integer, Double> userRatings) {
 		Double userAverage = 0.0;
 		Iterator userEntries = userRatings.entrySet().iterator();
@@ -340,111 +315,7 @@ public class RecommendationService {
 		}
 		return false;
 	}
-
-	// Plain friends
-	/*
-	 * public List<Movie> getRecommendation(String id) {
-	 * 
-	 * List<Movie> possibleMovies = new ArrayList<Movie>(); List<String>
-	 * existingImdbIds = new ArrayList<String>();
-	 * 
-	 * User user = userService.getUserFromDB(id);
-	 * 
-	 * List<FBFriend> fbFriends = user.getFriends().getData();
-	 * 
-	 * List<String> myWatchedMovies = movieService.getWatchedMoviesIds(id);
-	 * List<String> myWatchList = movieService.getMovieWatchListIds(id);
-	 * 
-	 * for (FBFriend friend : fbFriends) {
-	 * 
-	 * List<WatchedMovie> watchedMovies =
-	 * movieService.getWatchedMovies(friend.getId()); List<Movie> watchList =
-	 * movieService.getMovieWatchList(friend.getId());
-	 * 
-	 * if(watchedMovies == null) continue; if(watchList == null) continue;
-	 * 
-	 * for(WatchedMovie watchedMovie : watchedMovies) {
-	 * 
-	 * if(!suitableMovie(watchedMovie.getMovie().getId(),
-	 * user.getAge_range().getMin(), user.getAge_range().getMax())) { continue; }
-	 * 
-	 * if(!existingImdbIds.contains(watchedMovie.getMovie().getId()) &&
-	 * !myWatchedMovies.contains(watchedMovie.getMovie().getId()) &&
-	 * !myWatchList.contains(watchedMovie.getMovie().getId())) {
-	 * possibleMovies.add(watchedMovie.getMovie());
-	 * existingImdbIds.add(watchedMovie.getMovie().getId()); } }
-	 * 
-	 * for(Movie watchListMovie : watchList) {
-	 * 
-	 * if(!suitableMovie(watchListMovie.getId(), user.getAge_range().getMin(),
-	 * user.getAge_range().getMax())) { continue; }
-	 * 
-	 * if(!existingImdbIds.contains(watchListMovie.getId()) &&
-	 * !myWatchedMovies.contains(watchListMovie.getId()) &&
-	 * !myWatchList.contains(watchListMovie.getId())) {
-	 * possibleMovies.add(watchListMovie);
-	 * existingImdbIds.add(watchListMovie.getId()); } }
-	 * 
-	 * }
-	 * 
-	 * 
-	 * List<Movie> randomList = new ArrayList<Movie>(); Random rand = new Random();
-	 * int numberOfElements = 6; for (int i = 0; i < numberOfElements; i++) { if
-	 * (possibleMovies.size() == 0) break;
-	 * 
-	 * int randomIndex = rand.nextInt(possibleMovies.size()); Movie randomElement =
-	 * possibleMovies.get(randomIndex);
-	 * 
-	 * randomList.add(randomElement); possibleMovies.remove(randomIndex);
-	 * 
-	 * }
-	 * 
-	 * 
-	 * return randomList; }
-	 */
-
-	// verzija s fb filmovima
-	/*
-	 * public List<Movie> getRecommendation(String id) {
-	 * 
-	 * List<Movie> allFriendsMovies = new ArrayList<Movie>(); List<String>
-	 * existingImdbIds = new ArrayList<String>();
-	 * 
-	 * List<FBFriend> fbFriends =
-	 * userService.getUserFromDB(id).getFriends().getData();
-	 * 
-	 * List<String> watchedMovies = movieService.getWatchedMoviesIds(id);
-	 * List<String> watchList = movieService.getMovieWatchListIds(id);
-	 * 
-	 * for (FBFriend friend : fbFriends) {
-	 * 
-	 * for(Movie mov : movieService.getFacebookMovies(friend.getMovies())) {
-	 * if(!existingImdbIds.contains(mov.getId()) &&
-	 * !watchedMovies.contains(mov.getId()) && !watchList.contains(mov.getId())) {
-	 * allFriendsMovies.add(mov); existingImdbIds.add(mov.getId()); } }
-	 * 
-	 * }
-	 * 
-	 * 
-	 * //ako frendovi nemaju lajkane filmove if(allFriendsMovies.isEmpty()) {
-	 * allFriendsMovies = movieService.getAllMovies(); }
-	 * 
-	 * List<Movie> randomList = new ArrayList<Movie>(); Random rand = new Random();
-	 * int numberOfElements = 6; for (int i = 0; i < numberOfElements; i++) { if
-	 * (allFriendsMovies.size() == 0) break;
-	 * 
-	 * int randomIndex = rand.nextInt(allFriendsMovies.size()); Movie randomElement
-	 * = allFriendsMovies.get(randomIndex);
-	 * 
-	 * randomList.add(randomElement); allFriendsMovies.remove(randomIndex);
-	 * 
-	 * }
-	 * 
-	 * 
-	 * 
-	 * return randomList; }
-	 */
-
+	
 }
 
 class ValueComparator implements Comparator<Integer> {

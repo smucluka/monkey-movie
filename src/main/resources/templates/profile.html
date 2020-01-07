@@ -42,8 +42,11 @@
 							</tr>
 						</thead>
 						<tbody>
-							<tr th:each="userTemp : ${user.friends.data}">
+							<tr th:each="userTemp : ${friends}">
 								<td th:text="${userTemp.name}"></td>
+							</tr>
+							<tr th:if="${#lists.isEmpty(friends)}">
+								<td>Your Facebook friends are not using Monkey Movie!</td>
 							</tr>
 						</tbody>
 					</table>

@@ -31,6 +31,7 @@ public class UserInfoController {
 			String userId = (String) session.getAttribute("userId") ;
 			User user = userService.getUserFromDB(userId);
 			model.addAttribute("user", user);
+			model.addAttribute("friends", userService.getFBFriends(userId));
 			
 			return "profile";
 		}
