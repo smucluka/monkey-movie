@@ -5,6 +5,14 @@
 
 <th:block th:replace="layout :: head"></th:block>
 
+<style>
+@media only screen and (min-width: 600px) {
+  img {
+    max-width: 70%;
+  }
+}
+</style>
+
 <body style="background-color: #000000c9; color: white;">
 
 	<div th:replace="layout :: nav"></div>
@@ -29,19 +37,24 @@
 		<br />
 
 		<div class="row justify-content-center">
-			<div th:each="movie : ${popularMovies}" class="card col-md-3 col-11"
-				style="color: white; padding: 10px; margin: 2px; background-color: rgba(128, 128, 128, 0.3)">
+			<div th:each="movie : ${popularMovies}" class="card col-md-3 col-12"
+				style="color: white; padding: 10px; margin: 2px; background-color: rgba(0,0,0,0.2); border-radius: 10px">
 				<div class="row justify-content-center">
-					<div class="card-body col-6 col-md-12 text-center">
+					<div class="col-5 col-md-12 text-center">
 						<a th:href="@{/movies/details(id=${movie.id})}">
 							<img th:src="${movie.poster_path}" class="text-center card-img-top"
-								style="border-radius: 10px; max-width: 70%; position: relative; top: 50%; transform: translateY(-50%);"
+								style="border-radius: 10px; position: relative; top: 50%; transform: translateY(-50%);"
 								onerror="this.src='/no-cover.png'" />
 						</a>
 					</div>
-					<div class="row justify-content-center">
-						<br />
-						<br />
+					
+					<div class="col-7 col-md-12 card-body">
+						<div class="row justify-content-center">
+							<a th:href="@{/movies/details(id=${movie.id})}" class="col-11 text-center"
+								th:text="${movie.title}"
+								style="font-size: 22px; color: white; cursor: pointer"></a>
+						</div>
+						<div class="row justify-content-center">
 						<a
 							th:style="${#lists.contains(watchList, movie.id) or #lists.contains(watchedMovies, movie.id) ? 'display:none' : 'display:block'}"
 							th:id="${movie.id}" class="addWatchlist" title="Add to watchlist">
@@ -98,12 +111,6 @@
 							</div>
 						</div>
 					</div>
-					<div class="col-6 col-md-12 card-body">
-						<div class="row justify-content-center">
-							<a th:href="@{/movies/details(id=${movie.id})}" class="text-center"
-								th:text="${movie.title}"
-								style="font-size: 22px; color: white; cursor: pointer"></a>
-						</div>
 						<br />
 						<p class="card-text text-center giveMeEllipsis"
 							th:text="${movie.overview}"></p>

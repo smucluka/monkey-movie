@@ -92,7 +92,7 @@ public class RecommendationService {
 			} 
 		}
 		
-		List<Integer> added = new ArrayList<Integer>();
+		List<String> added = new ArrayList<String>();
 		List<Ratings> users = new ArrayList<Ratings>();
 
 		Random random = new Random();
@@ -113,7 +113,7 @@ public class RecommendationService {
 			String ratingg = String.valueOf(myWatchedMovies.get(index).getRating());
 			ratingg = ratingg.replace(".0", "");
 			//USERS
-			List<Ratings> rat = ratingsRepository.findByMovieIdAndRating(Integer.valueOf(myWatchedMovies.get(index).getId()), Double.valueOf(ratingg));
+			List<Ratings> rat = ratingsRepository.findByMovieIdAndRating(myWatchedMovies.get(index).getId(), Double.valueOf(ratingg));
 			
 			if(rat.isEmpty()) {
 				myWatchedMovies.remove(index);

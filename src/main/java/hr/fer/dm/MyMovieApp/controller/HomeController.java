@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 import hr.fer.dm.MyMovieApp.helpers.SecurityHelper;
 import hr.fer.dm.MyMovieApp.repository.MovieRepository;
+import hr.fer.dm.MyMovieApp.repository.RatingsRepository;
 import hr.fer.dm.MyMovieApp.repository.UserRepository;
 import hr.fer.dm.MyMovieApp.service.UserService;
 
@@ -18,6 +19,8 @@ public class HomeController {
     UserRepository userRepository;
 	@Autowired
     MovieRepository movieRepository;
+	@Autowired
+    RatingsRepository ratingsRepository;
 	@Autowired
 	SecurityHelper securityHelper;
 	@Autowired
@@ -29,7 +32,7 @@ public class HomeController {
 		
 		model.addAttribute("userCount", userRepository.count());
 		model.addAttribute("moviesCount", movieRepository.count());
-		model.addAttribute("ratingsCount", userService.getNumOfRatings());
+		model.addAttribute("ratingsCount", ratingsRepository.count());
 		return "index";
 	}
 	

@@ -123,18 +123,6 @@ public class UserService {
 
 		return friends;
 	}
-
-	public long getNumOfRatings() {
-		long ratings = ratingsRepository.count();
-		List<User> users = userRepository.findAll();
-		long count = 0;
-		for (User user : users) {
-			count += user.getWatched_movie_ids().size();
-		}
-		
-		return ratings + count;
-
-	}
 	
 	public List<FBFriend> getFBFriends(String userId){
 		List<FBFriend> fbFriends = new ArrayList<FBFriend>();

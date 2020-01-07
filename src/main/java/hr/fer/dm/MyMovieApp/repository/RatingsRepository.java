@@ -8,8 +8,8 @@ import hr.fer.dm.MyMovieApp.model.Ratings;
 
 public interface RatingsRepository extends MongoRepository<Ratings, String>{
 
-	List<Ratings> findByUserId(Integer userId);
-	List<Ratings> findByMovieIdAndRating(Integer movieId, Double rating);
-	List<Ratings> findByUserIdAndMovieId(Integer userId, Integer movieId);
+	List<Ratings> findByUserId(String userId);
+	List<Ratings> findByMovieIdAndRating(String movieId, Double rating);
+	List<Ratings> findByUserIdAndMovieId(String userId, String movieId);
 }
 

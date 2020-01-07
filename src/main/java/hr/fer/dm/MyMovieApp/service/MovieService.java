@@ -1,5 +1,6 @@
 package hr.fer.dm.MyMovieApp.service;
 
+import java.sql.Time;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -46,6 +47,8 @@ public class MovieService {
 	MovieDetailedRepository movieDetailedRepository;
 	@Autowired
 	UserRepository userRepository;
+	@Autowired
+	RatingsRepository ratingsRepository;
 
 	// TODO implementirati prvo provjeru iz baze podataka
 	public List<Movie> getMovies(String movieTitle) {
@@ -187,6 +190,18 @@ public class MovieService {
 
 			userRepository.save(user);
 			
+			Movie movie = getMovieFromDB(id);
+			if(movie.getMovieId() == null) {
+				movie.setMovieId("mm" + movie.getId());
+				saveMovie(movie);
+			}
+			
+			Ratings ratings = new Ratings();
+			ratings.setUserId(user_id);
+			ratings.setMovieId(movie.getMovieId());
+			ratings.setRating(rating);
+			ratings.setTimestamp(String.valueOf(System.currentTimeMillis()));
+			ratingsRepository.save(ratings);
 		} catch (Exception e) {
 			System.err.println(e);
 		}
@@ -212,6 +227,13 @@ public class MovieService {
 			
 			user.setWatched_movie_ids(watchedMovies);
 			userRepository.save(user);
+			
+			Movie mov = getMovieFromDB(id);
+			if(mov.getMovieId() != null) {
+				List<Ratings> rating = ratingsRepository.findByUserIdAndMovieId(user_id, mov.getMovieId());
+				ratingsRepository.delete(rating);
+			}
+			
 		} catch (Exception e) {
 			System.err.println(e);
 		}
