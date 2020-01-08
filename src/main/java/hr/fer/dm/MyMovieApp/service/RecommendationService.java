@@ -38,8 +38,8 @@ public class RecommendationService {
 	final int NUM_NEIGHBOURHOODS = 10;
 	final int NUM_RECOMMENDATIONS = 6;
 	final int MIN_VALUE_RECOMMENDATION = 3;
-	private Map<Integer, Map<Integer, Double>> ratings;
-	private Map<Integer, Double> averageRating;
+	private Map<String, Map<String, Double>> ratings;
+	private Map<String, Double> averageRating;
 	Map<String, List<Double>> friendsMap;
 
 	public List<Movie> getRecommendation(String id, List<String> friends) {
@@ -98,16 +98,16 @@ public class RecommendationService {
 		Random random = new Random();
 
 		ratings = new HashMap<>();
-		averageRating = new HashMap<Integer, Double>();
+		averageRating = new HashMap<String, Double>();
 
-		HashMap<Integer, Double> myRatings = new HashMap<>();
+		HashMap<String, Double> myRatings = new HashMap<>();
 
 		for (int i = 0; i < NUM_RATINGS; i++) {
 			if (myWatchedMovies.size() == 0)
 				break;
 			//RATINGS
 			int index = random.nextInt(myWatchedMovies.size());
-			int idMovie = Integer.valueOf(myWatchedMovies.get(index).getId());
+			String idMovie = myWatchedMovies.get(index).getId();
 			myRatings.put(idMovie, myWatchedMovies.get(index).getRating());
 			
 			String ratingg = String.valueOf(myWatchedMovies.get(index).getRating());
@@ -120,7 +120,7 @@ public class RecommendationService {
 				continue;
 			}
 			
-			int stop = random.nextInt(15 - 3 + 1) + 3;
+			int stop = random.nextInt(6 - 3 + 1) + 3;
 			int j=0;
 			while(j < stop) {
 				if(rat.isEmpty()) break;
@@ -137,8 +137,8 @@ public class RecommendationService {
 		List<String> allMovieIds = new ArrayList<String>();
 
 		for (Ratings user : users) {
-			int idUser = Integer.valueOf(user.getUserId());
-			int idMovie = Integer.valueOf(user.getMovieId());
+			String idUser = user.getUserId();
+			String idMovie = user.getMovieId();
 			allMovieIds.add(""+user.getMovieId());
 			Double rating = Double.valueOf(user.getRating());
 
@@ -146,7 +146,7 @@ public class RecommendationService {
 				ratings.get(idUser).put(idMovie, rating);
 				averageRating.put(idUser, averageRating.get(idUser) + rating);
 			} else {
-				Map<Integer, Double> movieRating = new HashMap<>();
+				Map<String, Double> movieRating = new HashMap<>();
 				movieRating.put(idMovie, rating);
 				ratings.put(idUser, movieRating);
 				averageRating.put(idUser, (double) rating);
@@ -158,12 +158,12 @@ public class RecommendationService {
 			entry.setValue((double) entry.getValue() / (double) ratings.get(entry.getKey()).size());
 		}
 
-		Map<Integer, Double> neighbourhoods = getNeighbourhoods(myRatings, NUM_NEIGHBOURHOODS);
-		Map<Integer, Double> recommendations = getRecommendations(myRatings, neighbourhoods,
+		Map<String, Double> neighbourhoods = getNeighbourhoods(myRatings, NUM_NEIGHBOURHOODS);
+		Map<String, Double> recommendations = getRecommendations(myRatings, neighbourhoods,
 				movieRepository.findByMovieIdIn(allMovieIds));
 
 		ValueComparator valueComparator = new ValueComparator(recommendations);
-		Map<Integer, Double> sortedRecommendations = new TreeMap<>(valueComparator);
+		Map<String, Double> sortedRecommendations = new TreeMap<>(valueComparator);
 		sortedRecommendations.putAll(recommendations);
 
 		entries = sortedRecommendations.entrySet().iterator();
@@ -182,6 +182,7 @@ public class RecommendationService {
 			if(mov.getOverview() == null || mov.getPoster_path() == null) {
 				String title = mov.getTitle().replaceAll("\\([^\\(]*\\)", "");
 				title = title.replace(", The", "");
+				title = title.replace(", A", "");
 				movieService.getMovies(title);
 				returnList.add(movieRepository.findOne(mov.getId()));
 			}else {
@@ -191,17 +192,17 @@ public class RecommendationService {
 		return returnList;
 	}
 
-	public Map<Integer, Double> getRecommendations(Map<Integer, Double> userRatings,
-			Map<Integer, Double> neighbourhoods, List<Movie> movies) {
-		Map<Integer, Double> predictedRatings = new HashMap<>();
+	public Map<String, Double> getRecommendations(Map<String, Double> userRatings,
+			Map<String, Double> neighbourhoods, List<Movie> movies) {
+		Map<String, Double> predictedRatings = new HashMap<>();
 
 		double userAverage = getAverage(userRatings);
 
 		for (Movie mov : movies) {
-			int movie = Integer.valueOf(mov.getMovieId());
+			String movie = mov.getMovieId();
 			if (!userRatings.containsKey(movie)) {
 				double numerator = 0, denominator = 0;
-				for (int neighbourhood : neighbourhoods.keySet()) {
+				for (String neighbourhood : neighbourhoods.keySet()) {
 					if (ratings.get(neighbourhood).containsKey(movie)) {
 						double matchRate = neighbourhoods.get(neighbourhood);
 						numerator += matchRate
@@ -224,16 +225,16 @@ public class RecommendationService {
 	}
 
 	
-	public Map<Integer, Double> getNeighbourhoods(Map<Integer, Double> userRatings, int k) {
-		Map<Integer, Double> neighbourhoods = new HashMap<>();
+	public Map<String, Double> getNeighbourhoods(Map<String, Double> userRatings, int k) {
+		Map<String, Double> neighbourhoods = new HashMap<>();
 		ValueComparator valueComparator = new ValueComparator(neighbourhoods);
-		Map<Integer, Double> sortedNeighbourhoods = new TreeMap<>(valueComparator);
+		Map<String, Double> sortedNeighbourhoods = new TreeMap<>(valueComparator);
 
 		double userAverage = getAverage(userRatings);
 
-		for (int user : ratings.keySet()) {
-			ArrayList<Integer> matches = new ArrayList<>();
-			for (int movie : userRatings.keySet()) {
+		for (String user : ratings.keySet()) {
+			ArrayList<String> matches = new ArrayList<>();
+			for (String movie : userRatings.keySet()) {
 				if (ratings.get(user).containsKey(movie)) {
 					matches.add(movie);
 				}
@@ -241,7 +242,7 @@ public class RecommendationService {
 			double matchRate;
 			if (matches.size() > 0) {
 				double numerator = 0, userDenominator = 0, otherUserDenominator = 0;
-				for (int movie : matches) {
+				for (String movie : matches) {
 					double u = userRatings.get(movie) - userAverage;
 					double v = ratings.get(user).get(movie) - averageRating.get(user);
 
@@ -262,14 +263,14 @@ public class RecommendationService {
 		}
 		sortedNeighbourhoods.putAll(neighbourhoods);
 
-		Map<Integer, Double> output = new TreeMap<>();
+		Map<String, Double> output = new TreeMap<>();
 
 		Iterator entries = sortedNeighbourhoods.entrySet().iterator();
 		int i = 0;
 		while (entries.hasNext() && i < k) {
 			Map.Entry entry = (Map.Entry) entries.next();
 			if ((double) entry.getValue() > 0) {
-				output.put((int) entry.getKey(), (double) entry.getValue());
+				output.put(String.valueOf(entry.getKey()), (double) entry.getValue());
 				i++;
 			}
 		}
@@ -277,11 +278,11 @@ public class RecommendationService {
 		return output;
 	}
 
-	private double getAverage(Map<Integer, Double> userRatings) {
+	private double getAverage(Map<String, Double> userRatings) {
 		Double userAverage = 0.0;
 		Iterator userEntries = userRatings.entrySet().iterator();
 		while (userEntries.hasNext()) {
-			Map.Entry<Integer, Double> entry = (Map.Entry<Integer, Double>) userEntries.next();
+			Map.Entry<String, Double> entry = (Map.Entry<String, Double>) userEntries.next();
 			userAverage = userAverage + Double.valueOf(entry.getValue());
 		}
 		return userAverage / userRatings.size();
@@ -318,15 +319,15 @@ public class RecommendationService {
 	
 }
 
-class ValueComparator implements Comparator<Integer> {
-	private Map<Integer, Double> base;
+class ValueComparator implements Comparator<String> {
+	private Map<String, Double> base;
 
-	public ValueComparator(Map<Integer, Double> base) {
+	public ValueComparator(Map<String, Double> base) {
 		this.base = base;
 	}
 
-	public int compare(Integer a, Integer b) {
-		if (base.get(a) >= base.get(b)) {
+	public int compare(String a, String b) {
+		if (base.get(a) < base.get(b)) {
 			return -1;
 		} else {
 			return 1;

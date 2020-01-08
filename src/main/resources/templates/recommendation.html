@@ -5,6 +5,13 @@
 
 <th:block th:replace="layout :: head"></th:block>
 
+<style>
+@media only screen and (min-width: 600px) {
+  img {
+    max-width: 70%;
+  }
+}
+</style>
 <body style="background-color: #000000c9; color: white;">
 
 	<div th:replace="layout :: nav"></div>
@@ -228,33 +235,32 @@
 										    i) {
 										$(
 											"#soloMonkey")
-											.append(
-												'<div class="card col-md-3 col-11" style="color: white; padding: 10px; margin: 2px; background-color: background-color: rgba(0,0,0,0.2); border-radius: 10px"> \
+											.append('<div class="card col-md-3 col-12" style="color: white; padding: 10px; margin: 2px; background-color: rgba(0,0,0,0.2); border-radius: 10px"> \
 												<div class="row justify-content-center"> \
-													<div class="card-body col-6 col-md-12 text-center"> \
-														<a href="/movies/details?id='
-													+ value.id
-													+ '"> \
-															<img src="'
-													+ value.poster_path
-													+ '" class="text-center card-img-top" style="border-radius: 10px; max-width: 70%; position: relative; top: 50%; transform: translateY(-50%);" onerror="this.src=\'/no-cover.png\'" /> \
-														</a> \
-													</div> \
-													<div class="col-6 col-md-12 card-body"> \
-														<div class="row justify-content-center"> \
-															<a href="/movies/details?id='
-													+ value.id
-													+ '" class="text-center" style="font-size: 22px; color: white; cursor: pointer">'
-													+ value.title
-													+ '</a> \
-														</div> \
-														<br/> \
-														<p class="card-text text-center giveMeEllipsis">'
-													+ value.overview
-													+ '</p> \
-													</div> \
+												<div class="card-body col-5 col-md-12 text-center"> \
+													<a href="/movies/details?id='
+												+ value.id
+												+ '"> \
+														<img src="'
+												+ value.poster_path
+												+ '" class="text-center card-img-top" style="border-radius: 10px; position: relative; top: 50%; transform: translateY(-50%);" onerror="this.src=\'/no-cover.png\'" /> \
+													</a> \
 												</div> \
-											</div>');
+												<div class="col-7 col-md-12 card-body"> \
+													<div class="row justify-content-center"> \
+														<a href="/movies/details?id='
+												+ value.id
+												+ '" class="text-center col-11" style="font-size: 22px; color: white; cursor: pointer">'
+												+ value.title
+												+ '</a> \
+													</div> \
+													<br/> \
+													<p class="card-text text-center giveMeEllipsis">'
+												+ value.overview
+												+ '</p> \
+												</div> \
+											</div> \
+										</div>');
 									    });
 								    $(
 									    "#soloMonkey")
@@ -315,22 +321,22 @@
 										$(
 											"#soloMonkey")
 											.append(
-												'<div class="card col-md-3 col-11" style="color: white; padding: 10px; margin: 2px; background-color: rgba(0,0,0,0.2); border-radius: 10px"> \
+												'<div class="card col-md-3 col-12" style="color: white; padding: 10px; margin: 2px; background-color: rgba(0,0,0,0.2); border-radius: 10px"> \
 												<div class="row justify-content-center"> \
-													<div class="card-body col-6 col-md-12 text-center"> \
+													<div class="card-body col-5 col-md-12 text-center"> \
 														<a href="/movies/details?id='
 													+ value.id
 													+ '"> \
 															<img src="'
 													+ value.poster_path
-													+ '" class="text-center card-img-top" style="border-radius: 10px; max-width: 70%; position: relative; top: 50%; transform: translateY(-50%);" onerror="this.src=\'/no-cover.png\'" /> \
+													+ '" class="text-center card-img-top" style="border-radius: 10px; position: relative; top: 50%; transform: translateY(-50%);" onerror="this.src=\'/no-cover.png\'" /> \
 														</a> \
 													</div> \
-													<div class="col-6 col-md-12 card-body"> \
+													<div class="col-7 col-md-12 card-body"> \
 														<div class="row justify-content-center"> \
 															<a href="/movies/details?id='
 													+ value.id
-													+ '" class="text-center" style="font-size: 22px; color: white; cursor: pointer">'
+													+ '" class="text-center col-11" style="font-size: 22px; color: white; cursor: pointer">'
 													+ value.title
 													+ '</a> \
 														</div> \
