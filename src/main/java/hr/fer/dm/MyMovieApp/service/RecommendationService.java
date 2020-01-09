@@ -134,7 +134,7 @@ public class RecommendationService {
 
 		Map<Long, List<Ratings>> usersMap = new HashMap<Long, List<Ratings>>();
 		
-		for (int i=0; i<ThreadLocalRandom.current().nextInt(75, 125 + 1); i++) {
+		for (int i=0; i<ThreadLocalRandom.current().nextInt(added.size()/4, added.size()/3 + 1); i++) {
 			if(added.size() == 0) break;
 			int index = random.nextInt(added.size());
 			usersMap.put(added.get(index), ratingsRepository.findByUserId(added.get(index)));
