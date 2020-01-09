@@ -313,7 +313,7 @@ public class RecommendationService {
 		for(String gen : genres.split("\\|")) {
 			if(bonusMap.containsKey(gen)) {
 				Double percentage = bonusMap.get(gen);
-				bonusSum += (percentage * valuePerGenre * 1.3);
+				bonusSum += (percentage * valuePerGenre * 1.5);
 			}
 		}
 		return bonusSum;
