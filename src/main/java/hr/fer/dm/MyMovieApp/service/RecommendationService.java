@@ -43,7 +43,7 @@ public class RecommendationService {
 	@Autowired
 	MovieRepository movieRepository;
 
-	private final int NUM_RATINGS = 20;
+	private final int NUM_RATINGS = 30;
 	private final int NUM_NEIGHBOURHOODS = 10;
 	private final int NUM_RECOMMENDATIONS = 9;
 	private final int MIN_VALUE_RECOMMENDATION = 4;
@@ -212,7 +212,8 @@ public class RecommendationService {
 				}
 				
 				double value = ((double) entry.getValue()) + (double) calculateBonus(genreBonusMap, mov.getGenres());
-
+                value *= 10;
+        
 				//OUTLIER GENERS!!!
 				if(mov.getGenres().contains("Animation")) {
 					if(genreBonusMap.containsKey("Animation")) {
