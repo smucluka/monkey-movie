@@ -185,7 +185,7 @@ public class RecommendationService {
 		List<Movie> finalRecommendations = new ArrayList<Movie>();
 		int i = 0;
 		DecimalFormat df = new DecimalFormat("#.##");
-		while (entries.hasNext() && i < NUM_RECOMMENDATIONS + 20) {
+		while (entries.hasNext() && i < NUM_RECOMMENDATIONS + 25) {
 			Map.Entry entry = (Map.Entry) entries.next();
 			if ((double) entry.getValue() >= MIN_VALUE_RECOMMENDATION) {
 				List<Movie> moviesList = movieRepository.findByMovieId(Long.valueOf("" + entry.getKey()));
@@ -211,7 +211,7 @@ public class RecommendationService {
 					if(mov.getTitle() == null || mov.getTitle() == "") continue;
 				}
 				
-				double value = ((double) entry.getValue()*15) + (double) calculateBonus(genreBonusMap, mov.getGenres());
+				double value = ((double) entry.getValue()*4) + (double) calculateBonus(genreBonusMap, mov.getGenres());
 
 				//OUTLIER GENERS!!!
 				if(mov.getGenres().contains("Animation")) {
