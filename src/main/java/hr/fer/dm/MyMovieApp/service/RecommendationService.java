@@ -185,7 +185,7 @@ public class RecommendationService {
 		List<Movie> finalRecommendations = new ArrayList<Movie>();
 		int i = 0;
 		DecimalFormat df = new DecimalFormat("#.##");
-		while (entries.hasNext() && i < NUM_RECOMMENDATIONS + 6) {
+		while (entries.hasNext() && i < NUM_RECOMMENDATIONS + 10) {
 			Map.Entry entry = (Map.Entry) entries.next();
 			if ((double) entry.getValue() >= MIN_VALUE_RECOMMENDATION) {
 				List<Movie> moviesList = movieRepository.findByMovieId(Long.valueOf("" + entry.getKey()));
