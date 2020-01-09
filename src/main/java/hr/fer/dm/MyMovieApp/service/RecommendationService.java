@@ -2,6 +2,7 @@ package hr.fer.dm.MyMovieApp.service;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -16,6 +17,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import hr.fer.dm.MyMovieApp.model.FBFriend;
+import hr.fer.dm.MyMovieApp.model.Genre;
 import hr.fer.dm.MyMovieApp.model.Movie;
 import hr.fer.dm.MyMovieApp.model.Ratings;
 import hr.fer.dm.MyMovieApp.model.TmdbMovie;
@@ -47,11 +49,10 @@ public class RecommendationService {
 	private Map<Long, Map<Long, Double>> ratings;
 	private Map<Long, Double> averageRating;
 	private Map<Long, List<Double>> friendsMap;
-	public List<String> values;
 
 	public List<Movie> getRecommendation(Long id, List<Long> friends) {
-
-		values = new ArrayList<String>();
+		
+	
 		List<WatchedMovie> myWatchedMovies = null;
 
 		if (friends == null) {
@@ -68,6 +69,7 @@ public class RecommendationService {
 		} else {
 			friends.add(id);
 			friendsMap = new HashMap<Long, List<Double>>();
+			List<WatchedMovie> allFriendsMovies = new ArrayList<WatchedMovie>();
 			for (Long userId : friends) {
 				List<WatchedMovie> friendMovies = movieService.getWatchedMovies(userId);
 				if (friendMovies == null)
@@ -83,21 +85,23 @@ public class RecommendationService {
 						List<Double> rat = new ArrayList<Double>();
 						rat.add(friendMov.getRating());
 						friendsMap.put(friendMov.getMovie().getMovieId(), rat);
+						allFriendsMovies.add(friendMov);
 					}
 				}
 			}
 
 			myWatchedMovies = new ArrayList<WatchedMovie>();
-			for (Map.Entry<Long, List<Double>> entry : friendsMap.entrySet()) {
+			for (WatchedMovie friendMov : allFriendsMovies) {
 				WatchedMovie wm = new WatchedMovie();
-				wm.setId(entry.getKey());
+				wm.setId(friendMov.getMovie().getMovieId());
 				int i = 0;
 				Double sum = 0.0;
-				for (Double rating : entry.getValue()) {
+				for (Double rating : friendsMap.get(friendMov.getMovie().getMovieId())) {
 					sum += rating;
 					i++;
 				}
 				wm.setRating(sum / i);
+				wm.setMovie(friendMov.getMovie());
 				myWatchedMovies.add(wm);
 			}
 		}
@@ -129,12 +133,11 @@ public class RecommendationService {
 					added.add(ratt.getUserId());
 				}
 			}
-			myWatchedMovies.remove(index);
 		}
 
 		Map<Long, List<Ratings>> usersMap = new HashMap<Long, List<Ratings>>();
 		
-		for (int i=0; i<400; i++) {
+		for (int i=0; i<10; i++) {
 			if(added.size() == 0) break;
 			int index = random.nextInt(added.size());
 			usersMap.put(added.get(index), ratingsRepository.findByUserId(added.get(index)));
@@ -175,43 +178,87 @@ public class RecommendationService {
 		sortedRecommendations.putAll(recommendations);
 
 		entries = sortedRecommendations.entrySet().iterator();
+		
+		HashMap<String, Integer> genreBonusMap = getGenreBonusMap(myWatchedMovies);
+		List<Movie> finalRecommendations = new ArrayList<Movie>();
 		int i = 0;
-		List<Movie> recommended = new ArrayList<Movie>();
 		DecimalFormat df = new DecimalFormat("#.##");
-		while (entries.hasNext() && i < NUM_RECOMMENDATIONS) {
+		while (entries.hasNext() && i < NUM_RECOMMENDATIONS + 6) {
 			Map.Entry entry = (Map.Entry) entries.next();
 			if ((double) entry.getValue() >= MIN_VALUE_RECOMMENDATION) {
-				recommended.addAll(movieRepository.findByMovieId(Long.valueOf("" + entry.getKey())));
-				String str = df.format(entry.getValue());
+				List<Movie> moviesList = movieRepository.findByMovieId(Long.valueOf("" + entry.getKey()));
+
+				i++;
+				
+				Movie mov = moviesList.get(0);
+				if (mov.getOverview() == null || mov.getPoster_path() == null || mov.getGenres() == null) {
+					TmdbMovie movie = tmdbService.getMovieByTmdbId(mov.getId());
+					mov.setTitle(movie.getTitle());
+					mov.setPoster_path(movie.getPoster_path());
+					mov.setOverview(movie.getOverview());
+					if(movie.getGenres() != null) {
+						String genre = "";
+						for(Genre gen : movie.getGenres()) {
+							genre += gen.getName() + "|";
+						}
+						if (genre != null && genre.length() > 0 && genre.charAt(genre.length() - 1) == '|') {
+							genre = genre.substring(0, genre.length() - 1);
+					    }
+						mov.setGenres(genre);	
+					}
+					movieService.saveMovie(mov);
+				}
+				
+				
+				String str = df.format((double) entry.getValue() + (double) calculateBonus(genreBonusMap, mov.getGenres()));
 				if (!str.contains(".")) {
 					str += ".0";
 				}
-				values.add(str);
-				i++;
+				mov.setRecommendationValue(str);
+				
+				finalRecommendations.add(mov);
 			}
 		}
-
-		int j = 0;
-		List<Movie> returnList = new ArrayList<Movie>();
-		for (Movie mov : recommended) {
-			if (mov.getOverview() == null || mov.getPoster_path() == null) {
-				TmdbMovie movie = tmdbService.getMovieByTmdbId(mov.getId());
-				mov.setTitle(movie.getTitle());
-				mov.setPoster_path(movie.getPoster_path());
-				mov.setOverview(movie.getOverview());
-				movieService.saveMovie(mov);
-				// Must be below this
-				mov.setRecommendationValue(values.get(j));
-				returnList.add(mov);
-			} else {
-				mov.setRecommendationValue(values.get(j));
-				returnList.add(mov);
-			}
-			j++;
-		}
-		return recommended;
+		
+		Collections.sort(finalRecommendations, new Comparator<Movie>(){
+		     public int compare(Movie o1, Movie o2){
+		         if(Double.valueOf(o1.getRecommendationValue()) == Double.valueOf(o2.getRecommendationValue()))
+		             return 0;
+		         return Double.valueOf(o1.getRecommendationValue()) > Double.valueOf(o2.getRecommendationValue()) ? -1 : 1;
+		     }
+		});
+		
+		return finalRecommendations.subList(0, NUM_RECOMMENDATIONS);
 	}
-
+	
+	public HashMap<String, Integer> getGenreBonusMap(List<WatchedMovie> watchedMovies){
+		
+		HashMap<String, Integer> bonusMap = new HashMap<>();
+		for(WatchedMovie wm : watchedMovies) {
+			if(wm.getMovie().getGenres() == null) continue;
+			for(String genre : wm.getMovie().getGenres().split("\\|")) {
+				if(!bonusMap.containsKey(genre)) {
+					bonusMap.put(genre, 1);
+				}else {
+					bonusMap.put(genre, bonusMap.get(genre) + 1);
+				}
+			}
+		}
+		return bonusMap;
+	}
+	
+	public Double calculateBonus(HashMap<String, Integer> bonusMap, String genres){
+		double valuePerGenre = 1.0/genres.split("\\|").length;
+		double bonusSum = 0;
+		for(String gen : genres.split("\\|")) {
+			if(bonusMap.containsKey(gen)) {
+				Integer num = bonusMap.get(gen);
+				bonusSum += num / valuePerGenre;
+			}
+		}
+		return bonusSum/10;
+	}
+	
 	public Map<Long, Double> getRecommendations(Map<Long, Double> userRatings, Map<Long, Double> neighbourhoods,
 			List<Movie> movies) {
 		Map<Long, Double> predictedRatings = new HashMap<>();
