@@ -138,7 +138,7 @@ public class RecommendationService {
 
 		Map<Long, List<Ratings>> usersMap = new HashMap<Long, List<Ratings>>();
 		
-		for (int i=0; i<200; i++) {
+		for (int i=0; i<NUM_NEIGHBOURHOODS*10; i++) {
 			if(added.size() == 0) break;
 			int index = random.nextInt(added.size());
 			usersMap.put(added.get(index), ratingsRepository.findByUserId(added.get(index)));
@@ -185,7 +185,7 @@ public class RecommendationService {
 		List<Movie> finalRecommendations = new ArrayList<Movie>();
 		int i = 0;
 		DecimalFormat df = new DecimalFormat("#.##");
-		while (entries.hasNext() && i < NUM_RECOMMENDATIONS + 3) {
+		while (entries.hasNext() && i < NUM_RECOMMENDATIONS + 6) {
 			Map.Entry entry = (Map.Entry) entries.next();
 			if ((double) entry.getValue() >= MIN_VALUE_RECOMMENDATION) {
 				List<Movie> moviesList = movieRepository.findByMovieId(Long.valueOf("" + entry.getKey()));
@@ -213,22 +213,48 @@ public class RecommendationService {
 				
 				double value = (double) entry.getValue() + (double) calculateBonus(genreBonusMap, mov.getGenres());
 				
+				//OUTLIER GENERS!!!
 				if(mov.getGenres().contains("Animation")) {
 					if(genreBonusMap.containsKey("Animation")) {
 						Integer total = genreBonusMap.get("Animation");
-						if(user.getAge_range().getMax() == null && total < 4) {
-							value /= 1.5;
-						}else if(user.getAge_range().getMax() == "21" && total < 4) {
+						if(total == null) total = 0;
+						if(user.getAge_range().getMax() == null && total < 3) {
+							value /= 1.7;
+						}else if(user.getAge_range().getMax() != null && user.getAge_range().getMax() == "21" && total < 3) {
 							value /= 1.4;
-						}else if(total < 4){
+						}else if(total < 3){
 							value /= 1.2;
 						}
 					}
-				}
-				if(mov.getGenres().contains("Horror")) {
+				}else if(mov.getGenres().contains("Musical")) {
+					if(genreBonusMap.containsKey("Musical")) {
+						Integer total = genreBonusMap.get("Musical");
+						if(total == null) total = 0;
+						if(user.getAge_range().getMax() == null && total < 3) {
+							value /= 1.5;
+						}else if(user.getAge_range().getMax() != null && user.getAge_range().getMax() == "21" && total < 3) {
+							value /= 1.4;
+						}else if(total < 3){
+							value /= 1.2;
+						}
+					}
+				}else if(mov.getGenres().contains("Romance")) {
+					if(genreBonusMap.containsKey("Romance")) {
+						Integer total = genreBonusMap.get("Romance");
+						if(total == null) total = 0;
+						if(user.getAge_range().getMax() == null && total < 3) {
+							value /= 1.5;
+						}else if(user.getAge_range().getMax() != null && user.getAge_range().getMax() == "21" && total < 3) {
+							value /= 1.4;
+						}else if(total < 3){
+							value /= 1.3;
+						}
+					}
+				}else if(mov.getGenres().contains("Horror")) {
 					if(genreBonusMap.containsKey("Horror")) {
 						Integer total = genreBonusMap.get("Horror");
-						if(user.getAge_range().getMax() == "18" && total < 4) {
+						if(total == null) total = 0;
+						if(user.getAge_range().getMax() != null && user.getAge_range().getMax() == "18" && total < 5) {
 							value /= 1.5;
 						}
 					}
