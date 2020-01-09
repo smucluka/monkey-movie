@@ -138,7 +138,7 @@ public class RecommendationService {
 
 		Map<Long, List<Ratings>> usersMap = new HashMap<Long, List<Ratings>>();
 		
-		for (int i=0; i<NUM_NEIGHBOURHOODS*12; i++) {
+		for (int i=0; i<NUM_NEIGHBOURHOODS*15; i++) {
 			if(added.size() == 0) break;
 			int index = random.nextInt(added.size());
 			usersMap.put(added.get(index), ratingsRepository.findByUserId(added.get(index)));
@@ -181,7 +181,7 @@ public class RecommendationService {
 		entries = sortedRecommendations.entrySet().iterator();
 		
 		User user = userService.getUserFromDB(id);
-		HashMap<String, Integer> genreBonusMap = getGenreBonusMap(myWatchedMovies);
+		HashMap<String, Double> genreBonusMap = getGenreBonusMap(myWatchedMovies);
 		List<Movie> finalRecommendations = new ArrayList<Movie>();
 		int i = 0;
 		DecimalFormat df = new DecimalFormat("#.##");
@@ -211,13 +211,13 @@ public class RecommendationService {
 					if(mov.getTitle() == null || mov.getTitle() == "") continue;
 				}
 				
-				double value = (double) entry.getValue() * (double) calculateBonus(genreBonusMap, mov.getGenres());
+				double value = ((double) entry.getValue()*10) + (double) calculateBonus(genreBonusMap, mov.getGenres());
 
 				//OUTLIER GENERS!!!
 				if(mov.getGenres().contains("Animation")) {
 					if(genreBonusMap.containsKey("Animation")) {
-						Integer total = genreBonusMap.get("Animation");
-						if(total == null) total = 0;
+						Double total = genreBonusMap.get("Animation");
+						if(total == null) total = 0.0;
 						if(user.getAge_range().getMax() == null && total < 3) {
 							value /= 1.7;
 						}else if(user.getAge_range().getMax() != null && user.getAge_range().getMax() == "21" && total < 3) {
@@ -228,8 +228,8 @@ public class RecommendationService {
 					}
 				}else if(mov.getGenres().contains("Musical")) {
 					if(genreBonusMap.containsKey("Musical")) {
-						Integer total = genreBonusMap.get("Musical");
-						if(total == null) total = 0;
+						Double total = genreBonusMap.get("Musical");
+						if(total == null) total = 0.0;
 						if(user.getAge_range().getMax() == null && total < 3) {
 							value /= 1.5;
 						}else if(user.getAge_range().getMax() != null && user.getAge_range().getMax() == "21" && total < 3) {
@@ -240,8 +240,8 @@ public class RecommendationService {
 					}
 				}else if(mov.getGenres().contains("Romance")) {
 					if(genreBonusMap.containsKey("Romance")) {
-						Integer total = genreBonusMap.get("Romance");
-						if(total == null) total = 0;
+						Double total = genreBonusMap.get("Romance");
+						if(total == null) total = 0.0;
 						if(user.getAge_range().getMax() == null && total < 3) {
 							value /= 1.5;
 						}else if(user.getAge_range().getMax() != null && user.getAge_range().getMax() == "21" && total < 3) {
@@ -252,8 +252,8 @@ public class RecommendationService {
 					}
 				}else if(mov.getGenres().contains("Horror")) {
 					if(genreBonusMap.containsKey("Horror")) {
-						Integer total = genreBonusMap.get("Horror");
-						if(total == null) total = 0;
+						Double total = genreBonusMap.get("Horror");
+						if(total == null) total = 0.0;
 						if(user.getAge_range().getMax() != null && user.getAge_range().getMax() == "18" && total < 5) {
 							value /= 1.5;
 						}
@@ -285,33 +285,38 @@ public class RecommendationService {
 		return finalRecommendations.subList(0, NUM_RECOMMENDATIONS);
 	}
 	
-	public HashMap<String, Integer> getGenreBonusMap(List<WatchedMovie> watchedMovies){
+	public HashMap<String, Double> getGenreBonusMap(List<WatchedMovie> watchedMovies){
 		
-		HashMap<String, Integer> bonusMap = new HashMap<>();
+		int cnt = 0;
+		HashMap<String, Double> bonusMap = new HashMap<>();
 		for(WatchedMovie wm : watchedMovies) {
 			if(wm.getMovie().getGenres() == null) continue;
 			for(String genre : wm.getMovie().getGenres().split("\\|")) {
 				if(!bonusMap.containsKey(genre)) {
-					bonusMap.put(genre, 1);
+					bonusMap.put(genre, 1.0);
 				}else {
 					bonusMap.put(genre, bonusMap.get(genre) + 1);
 				}
+				cnt++;
 			}
+		}
+		
+		for(Map.Entry<String, Double> entry : bonusMap.entrySet()) {
+			entry.setValue(entry.getValue()/cnt);
 		}
 		return bonusMap;
 	}
 	
-	public Double calculateBonus(HashMap<String, Integer> bonusMap, String genres){
-		double valuePerGenre = 1.0/genres.split("\\|").length;
-		double bonusSum = 1;
+	public Double calculateBonus(HashMap<String, Double> bonusMap, String genres){
+		double valuePerGenre = 50.0/genres.split("\\|").length;
+		double bonusSum = 0;
 		for(String gen : genres.split("\\|")) {
 			if(bonusMap.containsKey(gen)) {
-				Integer num = bonusMap.get(gen);
-				bonusSum += num * valuePerGenre;
+				Double percentage = bonusMap.get(gen);
+				bonusSum += percentage * valuePerGenre;
 			}
 		}
-        
-		return bonusSum/8;
+		return bonusSum;
 	}
 	
 	public Map<Long, Double> getRecommendations(Map<Long, Double> userRatings, Map<Long, Double> neighbourhoods,
@@ -334,7 +339,7 @@ public class RecommendationService {
 				}
 				double predictedRating = 0;
 				if (denominator > 0) {
-					predictedRating = userAverage + numerator / denominator;					
+					predictedRating = userAverage + numerator / denominator;
 				}
 				predictedRatings.put(movie, predictedRating);
 			}
