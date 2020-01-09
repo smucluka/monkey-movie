@@ -211,8 +211,7 @@ public class RecommendationService {
 					if(mov.getTitle() == null || mov.getTitle() == "") continue;
 				}
 				
-				double value = ((double) entry.getValue()) + (double) calculateBonus(genreBonusMap, mov.getGenres());
-                value *= 10;
+				double value = ((double) entry.getValue()) * (double) calculateBonus(genreBonusMap, mov.getGenres()) * 20;
         
 				//OUTLIER GENERS!!!
 				if(mov.getGenres().contains("Animation")) {
@@ -309,8 +308,8 @@ public class RecommendationService {
 	}
 	
 	public Double calculateBonus(HashMap<String, Double> bonusMap, String genres){
-		double valuePerGenre = 10.0/genres.split("\\|").length;
-		double bonusSum = 0;
+		double valuePerGenre = 1.0/genres.split("\\|").length;
+		double bonusSum = 1;
 		for(String gen : genres.split("\\|")) {
 			if(bonusMap.containsKey(gen)) {
 				Double percentage = bonusMap.get(gen);
