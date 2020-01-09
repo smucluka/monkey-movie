@@ -21,6 +21,7 @@ import hr.fer.dm.MyMovieApp.model.Genre;
 import hr.fer.dm.MyMovieApp.model.Movie;
 import hr.fer.dm.MyMovieApp.model.Ratings;
 import hr.fer.dm.MyMovieApp.model.TmdbMovie;
+import hr.fer.dm.MyMovieApp.model.User;
 import hr.fer.dm.MyMovieApp.model.WatchedMovie;
 import hr.fer.dm.MyMovieApp.repository.MovieRepository;
 import hr.fer.dm.MyMovieApp.repository.RatingsRepository;
@@ -179,6 +180,7 @@ public class RecommendationService {
 
 		entries = sortedRecommendations.entrySet().iterator();
 		
+		User user = userService.getUserFromDB(id);
 		HashMap<String, Integer> genreBonusMap = getGenreBonusMap(myWatchedMovies);
 		List<Movie> finalRecommendations = new ArrayList<Movie>();
 		int i = 0;
@@ -209,8 +211,31 @@ public class RecommendationService {
 					movieService.saveMovie(mov);
 				}
 				
+				double value = (double) entry.getValue() + (double) calculateBonus(genreBonusMap, mov.getGenres());
 				
-				String str = df.format((double) entry.getValue() + (double) calculateBonus(genreBonusMap, mov.getGenres()));
+				if(mov.getGenres().contains("Animation")) {
+					if(genreBonusMap.containsKey("Animation")) {
+						Integer total = genreBonusMap.get("Animation");
+						if(user.getAge_range().getMax() == null && total < 4) {
+							value /= 1.7;
+						}else if(user.getAge_range().getMax() == "21" && total < 4) {
+							value /= 1.5;
+						}else if(total < 4){
+							value /= 1.2;
+						}
+					}
+				}
+				if(mov.getGenres().contains("Horror")) {
+					if(genreBonusMap.containsKey("Horror")) {
+						Integer total = genreBonusMap.get("Horror");
+						if(user.getAge_range().getMax() == "18" && total < 4) {
+							value /= 1.5;
+						}
+					}
+				}
+				
+				
+				String str = df.format(value);
 				if (!str.contains(".")) {
 					str += ".0";
 				}
