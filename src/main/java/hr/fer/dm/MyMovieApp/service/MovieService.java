@@ -51,9 +51,9 @@ public class MovieService {
 	RatingsRepository ratingsRepository;
 
 	// TODO implementirati prvo provjeru iz baze podataka
-	public List<Movie> getMovies(String movieTitle) {
+	public List<Movie> getMovies(String movieTitle, boolean returnOne, boolean returnOnePage) {
 
-		List<Movie> movies = tmdbService.getMoviesByTitle(movieTitle, false);
+		List<Movie> movies = tmdbService.getMoviesByTitle(movieTitle, returnOne, returnOnePage);
 
 		if (movies.size() > 0)
 			saveMovies(movies);
@@ -72,7 +72,7 @@ public class MovieService {
 	}
 
 	// TODO implementirati prvo provjeru iz baze podataka
-	public MovieDetailed getMovieDetails(String id) {
+	public MovieDetailed getMovieDetails(Long id) {
 		MovieDetailed movie = getDetailedMovie(id);
 
 		if (movie == null) {
@@ -98,7 +98,7 @@ public class MovieService {
 		return movie;
 	}
 	
-	public String getRating(String id) {
+	public String getRating(Long id) {
 		Movie movie = getMovieFromDB(id);
 
 		if (movie == null || movie.getRated() == null) {
@@ -135,7 +135,7 @@ public class MovieService {
 //		return likedMovies;
 //	}
 
-	public List<WatchedMovie> getWatchedMovies(String userId) {
+	public List<WatchedMovie> getWatchedMovies(Long userId) {
 		User user = userService.getUserFromDB(userId);
 		List<WatchedMovie> movieWatchListids = null;
 		try {
@@ -152,12 +152,12 @@ public class MovieService {
 		return movieWatchListids;
 	}
 
-	public List<String> getWatchedMoviesIds(String userId) {
+	public List<Long> getWatchedMoviesIds(Long userId) {
 		User user = userService.getUserFromDB(userId);
 
 		List<WatchedMovie> movieWatchListids = user.getWatched_movie_ids();
 
-		List<String> ids = new ArrayList<String>();
+		List<Long> ids = new ArrayList<Long>();
 		for (WatchedMovie watchedMov : movieWatchListids) {
 			ids.add(watchedMov.getId());
 		}
@@ -165,16 +165,16 @@ public class MovieService {
 		return ids;
 	}
 
-	public void addMovieToWatched(String user_id, String id, Double rating) {
+	public void addMovieToWatched(Long user_id, Long id, Double rating) {
 		User user = null;
 		try {
-			user = userRepository.findOne(user_id);
+			user = userRepository.findById(user_id).get();
 			List<WatchedMovie> watchedMovies = user.getWatched_movie_ids();
 
 			if (watchedMovies == null)
 				watchedMovies = new ArrayList<>();
 
-			List<String> watchedMovieIds = new ArrayList<String>();
+			List<Long> watchedMovieIds = new ArrayList<Long>();
 			for (WatchedMovie watchedMov : watchedMovies) {
 				watchedMovieIds.add(watchedMov.getId());
 			}
@@ -192,7 +192,7 @@ public class MovieService {
 			
 			Movie movie = getMovieFromDB(id);
 			if(movie.getMovieId() == null) {
-				movie.setMovieId("mm" + movie.getId());
+				movie.setMovieId(Long.valueOf(1000000 + movie.getId()));
 				saveMovie(movie);
 			}
 			
@@ -207,10 +207,10 @@ public class MovieService {
 		}
 	}
 
-	public void removeMovieFromWatched(String user_id, String id) {
+	public void removeMovieFromWatched(Long user_id, Long id) {
 		User user = null;
 		try {
-			user = userRepository.findOne(user_id);
+			user = userRepository.findById(user_id).get();
 
 			List<WatchedMovie> watchedMovies = user.getWatched_movie_ids();
 
@@ -231,7 +231,7 @@ public class MovieService {
 			Movie mov = getMovieFromDB(id);
 			if(mov.getMovieId() != null) {
 				List<Ratings> rating = ratingsRepository.findByUserIdAndMovieId(user_id, mov.getMovieId());
-				ratingsRepository.delete(rating);
+				ratingsRepository.deleteAll(rating);
 			}
 			
 		} catch (Exception e) {
@@ -239,10 +239,10 @@ public class MovieService {
 		}
 	}
 
-	public List<Movie> getMovieWatchList(String userId) {
+	public List<Movie> getMovieWatchList(Long userId) {
 		User user = userService.getUserFromDB(userId);
 
-		List<String> movieWatchListids = null;
+		List<Long> movieWatchListids = null;
 		List<Movie> movieWatchList = null;
 		try {
 			movieWatchListids = user.getWatch_list_movie_ids();
@@ -254,19 +254,19 @@ public class MovieService {
 		return movieWatchList;
 	}
 
-	public List<String> getMovieWatchListIds(String userId) {
+	public List<Long> getMovieWatchListIds(Long userId) {
 		User user = userService.getUserFromDB(userId);
 
-		List<String> movieWatchListids = user.getWatch_list_movie_ids();
+		List<Long> movieWatchListids = user.getWatch_list_movie_ids();
 
 		return movieWatchListids;
 	}
 
-	public void addMovieToWatchList(String user_id, String id) {
+	public void addMovieToWatchList(Long user_id, Long id) {
 		User user = null;
 		try {
-			user = userRepository.findOne(user_id);
-			List<String> ids = user.getWatch_list_movie_ids();
+			user = userRepository.findById(user_id).get();
+			List<Long> ids = user.getWatch_list_movie_ids();
 			if (ids == null)
 				ids = new ArrayList<>();
 			if (!ids.contains(id))
@@ -279,11 +279,11 @@ public class MovieService {
 		}
 	}
 
-	public void removeMovieFromWatchList(String user_id, String id) {
+	public void removeMovieFromWatchList(Long user_id, Long id) {
 		User user = null;
 		try {
-			user = userRepository.findOne(user_id);
-			List<String> ids = user.getWatch_list_movie_ids();
+			user = userRepository.findById(user_id).get();
+			List<Long> ids = user.getWatch_list_movie_ids();
 			if (ids == null)
 				return;
 			if (ids.contains(id))
@@ -307,13 +307,13 @@ public class MovieService {
 
 	private void saveMovies(List<Movie> movies) {
 		try {
-			movieRepository.save(movies);
+			movieRepository.saveAll(movies);
 		} catch (Exception e) {
 			System.err.println(e);
 		}
 	}
 
-	private void saveMovie(Movie movie) {
+	public void saveMovie(Movie movie) {
 		try {
 			movieRepository.save(movie);
 		} catch (Exception e) {
@@ -331,10 +331,10 @@ public class MovieService {
 		}
 	}
 
-	private MovieDetailed getDetailedMovie(String id) {
+	private MovieDetailed getDetailedMovie(Long id) {
 		MovieDetailed movie = null;
 		try {
-			movie = movieDetailedRepository.findOne(id);
+			movie = movieDetailedRepository.findById(String.valueOf(id)).get();
 			return movie;
 		} catch (Exception e) {
 			System.err.println(e);
@@ -342,10 +342,10 @@ public class MovieService {
 		}
 	}
 
-	private Movie getMovieFromDB(String movieId) {
+	private Movie getMovieFromDB(Long movieId) {
 		Movie movie = null;
 		try {
-			movie = movieRepository.findOne(movieId);
+			movie = movieRepository.findById(movieId).get();
 		} catch (Exception e) {
 			System.err.println(e);
 		}
@@ -353,7 +353,7 @@ public class MovieService {
 		return movie;
 	}
 
-	private List<Movie> getMoviesByIds(List<String> ids) {
+	private List<Movie> getMoviesByIds(List<Long> ids) {
 		List<Movie> movies = null;
 		try {
 			movies = movieRepository.findByIdIn(ids);

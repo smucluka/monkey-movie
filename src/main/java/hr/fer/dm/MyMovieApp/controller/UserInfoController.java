@@ -28,7 +28,7 @@ public class UserInfoController {
 		boolean isAuthenticatedUser = securityHelper.isAuthenticatedUser(principal);
 		
 		if(isAuthenticatedUser) {
-			String userId = (String) session.getAttribute("userId") ;
+			Long userId = (Long) session.getAttribute("userId");
 			User user = userService.getUserFromDB(userId);
 			model.addAttribute("user", user);
 			model.addAttribute("friends", userService.getFBFriends(userId));

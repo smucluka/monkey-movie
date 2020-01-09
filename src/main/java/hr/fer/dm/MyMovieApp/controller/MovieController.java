@@ -57,10 +57,10 @@ public class MovieController {
 		List<Movie> movies;
 		if (isAuthenticatedUser) {
 			if (!movieTitle.isEmpty()) {
-				movies = movieService.getMovies(movieTitle);
+				movies = movieService.getMovies(movieTitle, false, false);
 				model.addAttribute("movies", movies);
-				model.addAttribute("watchedMovies", movieService.getWatchedMoviesIds((String) session.getAttribute("userId")));
-				model.addAttribute("watchList", movieService.getMovieWatchListIds((String) session.getAttribute("userId")));
+				model.addAttribute("watchedMovies", movieService.getWatchedMoviesIds((Long) session.getAttribute("userId")));
+				model.addAttribute("watchList", movieService.getMovieWatchListIds((Long) session.getAttribute("userId")));
 				model.addAttribute("firsttime", "n");
 			}
 			return "movie_search";
@@ -71,15 +71,15 @@ public class MovieController {
 
 	
 	@RequestMapping(value = "/movies/details", method = RequestMethod.GET)
-	public String getMovieDetails(@RequestParam("id") String id, Principal principal, Model model) {
+	public String getMovieDetails(@RequestParam("id") Long id, Principal principal, Model model) {
 		boolean isAuthenticatedUser = securityHelper.isAuthenticatedUser(principal);
 		MovieDetailed movie;
 		if (isAuthenticatedUser) {
-			if (!id.isEmpty()) {
+			if (id != null) {
 				movie = movieService.getMovieDetails(id);
 				model.addAttribute("movie", movie);
-				model.addAttribute("watched", movieService.getWatchedMoviesIds((String) session.getAttribute("userId")).contains(id));
-				model.addAttribute("watchlisted", movieService.getMovieWatchListIds((String) session.getAttribute("userId")).contains(id));
+				model.addAttribute("watched", movieService.getWatchedMoviesIds(((Long) session.getAttribute("userId"))).contains(id));
+				model.addAttribute("watchlisted", movieService.getMovieWatchListIds(((Long) session.getAttribute("userId"))).contains(id));
 			}
 			return "movie_details";
 		}
@@ -92,7 +92,7 @@ public class MovieController {
 		boolean isAuthenticatedUser = securityHelper.isAuthenticatedUser(principal);
 
 		if (isAuthenticatedUser) {
-			model.addAttribute("watchedMovies", movieService.getWatchedMovies((String) session.getAttribute("userId")));
+			model.addAttribute("watchedMovies", movieService.getWatchedMovies(((Long) session.getAttribute("userId"))));
 			return "movies_watched";
 		}
 
@@ -104,7 +104,7 @@ public class MovieController {
 		boolean isAuthenticatedUser = securityHelper.isAuthenticatedUser(principal);
 
 		if (isAuthenticatedUser) {
-			List<Movie> movies = movieService.getMovieWatchList((String) session.getAttribute("userId"));
+			List<Movie> movies = movieService.getMovieWatchList(((Long) session.getAttribute("userId")));
 			model.addAttribute("movieWatchList", movies);
 			return "movie_watch_list";
 		}
@@ -117,7 +117,7 @@ public class MovieController {
 		boolean isAuthenticatedUser = securityHelper.isAuthenticatedUser(principal);
 
 		if (isAuthenticatedUser) {
-			String userId = (String) session.getAttribute("userId") ;
+			Long userId = ((Long) session.getAttribute("userId"));
 			User user = userService.getUserFromDB(userId);
 			model.addAttribute("user", user);
 			model.addAttribute("friends", userService.getFBFriends(userId));
@@ -133,8 +133,8 @@ public class MovieController {
 
 		if (isAuthenticatedUser) {
 			model.addAttribute("popularMovies", movieService.getPopularMovies());
-			model.addAttribute("watchedMovies", movieService.getWatchedMoviesIds((String) session.getAttribute("userId")));
-			model.addAttribute("watchList", movieService.getMovieWatchListIds((String) session.getAttribute("userId")));
+			model.addAttribute("watchedMovies", movieService.getWatchedMoviesIds(((Long) session.getAttribute("userId"))));
+			model.addAttribute("watchList", movieService.getMovieWatchListIds(((Long) session.getAttribute("userId"))));
 			return "popular";
 		}
 
@@ -149,29 +149,29 @@ public class MovieController {
 		boolean isAuthenticatedUser = securityHelper.isAuthenticatedUser(principal);
 
 		if (isAuthenticatedUser) {
-			return new ResponseEntity<List<Movie>>(recommendationService.getRecommendation((String) session.getAttribute("userId"), null), HttpStatus.OK);
+			return new ResponseEntity<List<Movie>>(recommendationService.getRecommendation(((Long) session.getAttribute("userId")), null), HttpStatus.OK);
 		}
 		return new ResponseEntity<List<Movie>>(HttpStatus.FORBIDDEN);
 	}
 
 	@RequestMapping(value = "/movies/recommendation/party", method = RequestMethod.GET)
-	public ResponseEntity<List<Movie>> getPartyRecommendation(@RequestParam(value="userIds[]") List<String> userIds, Principal principal, Model model) {
+	public ResponseEntity<List<Movie>> getPartyRecommendation(@RequestParam(value="userIds[]") List<Long> userIds, Principal principal, Model model) {
 		boolean isAuthenticatedUser = securityHelper.isAuthenticatedUser(principal);
 
 		if (isAuthenticatedUser) {
-			return new ResponseEntity<List<Movie>>(recommendationService.getRecommendation((String) session.getAttribute("userId"), userIds), HttpStatus.OK);
+			return new ResponseEntity<List<Movie>>(recommendationService.getRecommendation(((Long) session.getAttribute("userId")), userIds), HttpStatus.OK);
 		}
 		return new ResponseEntity<List<Movie>>(HttpStatus.FORBIDDEN);
 	}
 	@RequestMapping(value = "/movies/watched/put", method = RequestMethod.GET)
-	public String putMovieOnWatchedList(@RequestParam("id") String id, @RequestParam("rating") Double rating, Principal principal, Model model) {
+	public String putMovieOnWatchedList(@RequestParam("id") Long id, @RequestParam("rating") Double rating, Principal principal, Model model) {
 		boolean isAuthenticatedUser = securityHelper.isAuthenticatedUser(principal);
 		if (isAuthenticatedUser) {
-			if (!id.isEmpty()) {
-				movieService.removeMovieFromWatchList((String) session.getAttribute("userId"), id);
-				movieService.addMovieToWatched((String) session.getAttribute("userId"), id, rating);
+			if (id != null) {
+				movieService.removeMovieFromWatchList(((Long) session.getAttribute("userId")), id);
+				movieService.addMovieToWatched(((Long) session.getAttribute("userId")), id, rating);
 			}
-			model.addAttribute("watchedMovies", movieService.getWatchedMovies((String) session.getAttribute("userId")));
+			model.addAttribute("watchedMovies", movieService.getWatchedMovies(((Long) session.getAttribute("userId"))));
 			return "redirect:/movies/watched";
 		}
 		
@@ -179,12 +179,12 @@ public class MovieController {
 	}
 	
 	@RequestMapping(value = "/movies/watched/remove", method = RequestMethod.GET)
-	public String removeMovieFromWatched(@RequestParam("id") String id, Principal principal, Model model) {
+	public String removeMovieFromWatched(@RequestParam("id") Long id, Principal principal, Model model) {
 		boolean isAuthenticatedUser = securityHelper.isAuthenticatedUser(principal);
 
 		if (isAuthenticatedUser) {
-			movieService.removeMovieFromWatched((String) session.getAttribute("userId"), id);
-			model.addAttribute("watchedMovies", movieService.getWatchedMovies((String) session.getAttribute("userId")));
+			movieService.removeMovieFromWatched(((Long) session.getAttribute("userId")), id);
+			model.addAttribute("watchedMovies", movieService.getWatchedMovies(((Long) session.getAttribute("userId"))));
 			return "redirect:/movies/watched";
 		}
 
@@ -192,11 +192,11 @@ public class MovieController {
 	}
 	
 	@RequestMapping(value = "/movies/watchlist/put", method = RequestMethod.GET)
-	public String putMovieOnWatchList(@RequestParam("id") String id, Principal principal, Model model) {
+	public String putMovieOnWatchList(@RequestParam("id") Long id, Principal principal, Model model) {
 		boolean isAuthenticatedUser = securityHelper.isAuthenticatedUser(principal);
 		if (isAuthenticatedUser) {
-			if (!id.isEmpty()) {
-				movieService.addMovieToWatchList((String) session.getAttribute("userId"), id);
+			if (id != null) {
+				movieService.addMovieToWatchList(((Long) session.getAttribute("userId")), id);
 			}
 			return "redirect:/movies/watchlist";
 		}
@@ -207,11 +207,11 @@ public class MovieController {
 
 	
 	@RequestMapping(value = "/movies/watchlist/remove", method = RequestMethod.GET)
-	public String removeMovieFromWatchList(@RequestParam("id") String id, Principal principal, Model model) {
+	public String removeMovieFromWatchList(@RequestParam("id") Long id, Principal principal, Model model) {
 		boolean isAuthenticatedUser = securityHelper.isAuthenticatedUser(principal);
 
 		if (isAuthenticatedUser) {
-			movieService.removeMovieFromWatchList((String) session.getAttribute("userId"), id);
+			movieService.removeMovieFromWatchList(((Long) session.getAttribute("userId")), id);
 			return "redirect:/movies/watchlist";
 		}
 

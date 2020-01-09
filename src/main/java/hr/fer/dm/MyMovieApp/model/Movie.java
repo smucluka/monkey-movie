@@ -5,19 +5,20 @@ import org.springframework.data.annotation.Id;
 public class Movie {
 
 	@Id
-	private String id;
-	private String movieId;
+	private Long id;
+	private Long movieId;
 	private String imdb_id;
 	private String title;
 	private String overview;
 	private String poster_path;
 	private String rated;
 	private String genres;
+	private String recommendationValue;
 	
-	public String getId() {
+	public Long getId() {
 		return id;
 	}
-	public void setId(String id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 	public String getImdb_id() {
@@ -50,10 +51,10 @@ public class Movie {
 	public void setRated(String rated) {
 		this.rated = rated;
 	}
-	public String getMovieId() {
+	public Long getMovieId() {
 		return movieId;
 	}
-	public void setMovieId(String movieId) {
+	public void setMovieId(Long movieId) {
 		this.movieId = movieId;
 	}
 	public String getGenres() {
@@ -61,6 +62,12 @@ public class Movie {
 	}
 	public void setGenres(String genres) {
 		this.genres = genres;
+	}
+	public String getRecommendationValue() {
+		return recommendationValue;
+	}
+	public void setRecommendationValue(String recommendationValue) {
+		this.recommendationValue = recommendationValue;
 	}
 	
 }

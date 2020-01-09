@@ -3,6 +3,7 @@ package hr.fer.dm.MyMovieApp.service;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -48,13 +49,13 @@ public class UserService {
 		try {
 			user = apiUserInfo(details.getTokenValue());
 
-			User userTemp = userRepository.findOne(user.getId());
+			Optional<User> userTemp = userRepository.findById(user.getId());
 
-			if (userTemp != null) {
-				user.setWatched_movie_ids(userTemp.getWatched_movie_ids());
-				user.setWatch_list_movie_ids(userTemp.getWatch_list_movie_ids());
+			if (userTemp.isPresent()) {
+				user.setWatched_movie_ids(userTemp.get().getWatched_movie_ids());
+				user.setWatch_list_movie_ids(userTemp.get().getWatch_list_movie_ids());
 			} else {
-				user.setWatch_list_movie_ids(new ArrayList<String>());
+				user.setWatch_list_movie_ids(new ArrayList<Long>());
 				user.setWatched_movie_ids(new ArrayList<WatchedMovie>());
 			}
 
@@ -84,7 +85,7 @@ public class UserService {
 		return user;
 	}
 
-	public FBFriends fetchFBFriends(final String accessToken, final String userId) {
+	public FBFriends fetchFBFriends(final String accessToken, final Long userId) {
 		final String fields = "friends";
 		HttpHeaders headers = new HttpHeaders();
 		headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
@@ -124,7 +125,7 @@ public class UserService {
 		return friends;
 	}
 	
-	public List<FBFriend> getFBFriends(String userId){
+	public List<FBFriend> getFBFriends(Long userId){
 		List<FBFriend> fbFriends = new ArrayList<FBFriend>();
 		User user = getUserFromDB(userId);
 		for (FBFriend fbFriend : user.getFriends().getData()) {
@@ -226,10 +227,13 @@ public class UserService {
 //		return movies;
 //	}
 
-	public User getUserFromDB(String id) {
+	public User getUserFromDB(Long id) {
 		User user = null;
 		try {
-			user = userRepository.findOne(id);
+			Optional<User> userTmp = userRepository.findById(id);
+			if(userTmp.isPresent()) {
+				user = userTmp.get();
+			}
 		} catch (Error err) {
 			System.err.println(err);
 		}

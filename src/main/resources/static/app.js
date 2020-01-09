@@ -33,6 +33,7 @@ $(document).ready(function() {
 	$(".markWatched").click(function() {
 		var id = this.id;
 		var rating = $(this).data("rating");
+		$(".modal").modal('hide');
 		$.ajax({
 			url : "/movies/watched/put?id=" + id + "&rating=" + rating,
 			success : function(result) {
@@ -45,7 +46,6 @@ $(document).ready(function() {
 					type : 'success',
 					delay : 3000
 				});
-				$(".modal").modal('hide');
 			}
 		});
 	});

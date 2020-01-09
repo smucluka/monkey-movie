@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4"
+	lang="en">
+
+<th:block th:replace="layout :: head"></th:block>
+
+<style>
+@media only screen and (min-width: 600px) {
+  img {
+    max-width: 70%;
+  }
+}
+</style>
+
+<body style="background-color: #000000c9; color: white;">
+
+	<div th:replace="layout :: nav"></div>
+
+	<div class="container">
+
+		<br />
+		<br />
+		<br />
+		<br />
+		<a href="/movies/recommendation">
+			<i id="arrow" class="fa fa-arrow-circle-left"
+				style="font-size: 1.5em; vertical-align: middle; display: none"></i>
+		</a>
+		<div class="row justify-content-center" style="margin: 5px;">
+			<h1 class="text-center">Popular Movies</h1>
+			<a id="refresh" style="display: none;">
+				<i class="fa fa-refresh"></i>
+			</a>
+
+		</div>
+		<br />
+
+		<div class="row justify-content-center">
+			<div th:each="movie : ${popularMovies}" class="card col-md-3 col-12"
+				style="color: white; padding: 10px; margin: 2px; background-color: rgba(0,0,0,0.2); border-radius: 10px">
+				<div class="row justify-content-center">
+					<div class="col-5 col-md-12 text-center">
+						<a th:href="@{/movies/details(id=${movie.id})}">
+							<img th:src="${movie.poster_path}" class="text-center card-img-top"
+								style="border-radius: 10px; position: relative; top: 50%; transform: translateY(-50%);"
+								onerror="this.src='/no-cover.png'" />
+						</a>
+					</div>
+					
+					<div class="col-7 col-md-12 card-body">
+						<div class="row justify-content-center">
+							<a th:href="@{/movies/details(id=${movie.id})}" class="col-11 text-center"
+								th:text="${movie.title}"
+								style="font-size: 22px; color: white; cursor: pointer"></a>
+						</div>
+						<div class="row justify-content-center">
+						<a
+							th:style="${#lists.contains(watchList, movie.id) or #lists.contains(watchedMovies, movie.id) ? 'display:none' : 'display:block'}"
+							th:id="${movie.id}" class="addWatchlist" title="Add to watchlist">
+							<i class="fa fa-plus" aria-hidden="true"
+								style="margin-right: 20px; font-size: 1.7em; cursor: pointer"></i>
+						</a>
+						<a
+							th:style="${#lists.contains(watchList, movie.id)  ? 'display:block' : 'display:none'}"
+							th:id="${movie.id}" class="removeWatchlist"
+							title="Remove from watchlist">
+							<i class="fa fa-check" aria-hidden="true"
+								style="margin-right: 20px; font-size: 1.7em; color: green; cursor: pointer"></i>
+						</a>
+						<div class="watchedBtn" th:id="${movie.id}"
+							th:style="${#lists.contains(watchedMovies, movie.id) ? 'display:none' : 'display:block'}">
+							<a data-toggle="modal" th:attr="data-target='#modal'+${movie.id}"
+								title="Mark as watched">
+								<i class="fa fa-star" aria-hidden="true"
+									style="margin-right: 5px; font-size: 1.7em; cursor: pointer"></i>
+							</a>
+
+						</div>
+
+						<a
+							th:style="${#lists.contains(watchedMovies, movie.id) ? 'display:block' : 'display:none'}"
+							th:id="${movie.id}" class="unmarkWatched"
+							title="Unmark as watched">
+							<i class="fa fa-star" aria-hidden="true"
+								style="margin-right: 5px; font-size: 1.7em; color: yellow; cursor: pointer"></i>
+						</a>
+
+						<div th:id="${'modal' + movie.id}" class="modal fade"
+							id="exampleModalCenter" tabindex="-1" role="dialog"
+							aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+							<div class="modal-dialog modal-dialog-centered" role="document">
+								<div class="modal-content">
+									<div class="modal-body">
+										<div class="row justify-content-center">
+											<div class="rating" style="color: black">
+												<span th:id="${movie.id}" class="markWatched"
+													data-rating="5" style="font-size: 1.7em;">☆</span>
+												<span th:id="${movie.id}" class="markWatched"
+													data-rating="4" style="font-size: 1.7em;">☆</span>
+												<span th:id="${movie.id}" class="markWatched"
+													data-rating="3" style="font-size: 1.7em;">☆</span>
+												<span th:id="${movie.id}" class="markWatched"
+													data-rating="2" style="font-size: 1.7em;">☆</span>
+												<span th:id="${movie.id}" class="markWatched"
+													data-rating="1" style="font-size: 1.7em;">☆</span>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+						<br />
+						<p class="card-text text-center giveMeEllipsis"
+							th:text="${movie.overview}"></p>
+					</div>
+				</div>
+			</div>
+		</div>
+
+
+		<br />
+		<br />
+		<th:block th:replace="layout :: script"></th:block>
+	</div>
+</body>
+
+</html>

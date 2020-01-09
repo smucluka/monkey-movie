@@ -7,7 +7,7 @@ import org.springframework.data.annotation.Id;
 public class TmdbMovie {
 
 	@Id
-	private String id;
+	private Long id;
 	private String imdb_id;
 	private String title;
 	private String overview;
@@ -19,10 +19,10 @@ public class TmdbMovie {
 	private String poster_path;
 	private List<Genre> genres;
 	
-	public String getId() {
+	public Long getId() {
 		return id;
 	}
-	public void setId(String id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 	public String getImdb_id() {

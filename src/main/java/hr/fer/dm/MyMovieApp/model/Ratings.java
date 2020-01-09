@@ -1,13 +1,15 @@
 package hr.fer.dm.MyMovieApp.model;
 
+import java.io.Serializable;
+
 import org.springframework.data.annotation.Id;
 
 public class Ratings {
 
-	@Id	
-	private String id;
-	private String userId;
-	private String movieId;
+    @Id
+    private String id;
+	private Long userId;
+	private Long movieId;
 	private Double rating;
 	private String timestamp;
 	
@@ -17,16 +19,16 @@ public class Ratings {
 	public void setId(String id) {
 		this.id = id;
 	}
-	public String getUserId() {
+	public Long getUserId() {
 		return userId;
 	}
-	public void setUserId(String userId) {
+	public void setUserId(Long userId) {
 		this.userId = userId;
 	}
-	public String getMovieId() {
+	public Long getMovieId() {
 		return movieId;
 	}
-	public void setMovieId(String movieId) {
+	public void setMovieId(Long movieId) {
 		this.movieId = movieId;
 	}
 	public Double getRating() {
@@ -41,5 +43,4 @@ public class Ratings {
 	public void setTimestamp(String timestamp) {
 		this.timestamp = timestamp;
 	}
-	
 }

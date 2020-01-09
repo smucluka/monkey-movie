@@ -2,6 +2,7 @@ package hr.fer.dm.MyMovieApp.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -24,7 +25,7 @@ public class TmdbService {
 	private final String api_key_tmdb = "637554c41022b56ae69b09f7b828bfb2";
 	RestTemplate restTemplate = new RestTemplate();
 
-	public List<Movie> getMoviesByTitle(String movieTitle, boolean returnOne) {
+	public List<Movie> getMoviesByTitle(String movieTitle, boolean returnOne, boolean returnOnePage) {
 		
 		movieTitle = prepareTitle(movieTitle);
 		
@@ -46,17 +47,22 @@ public class TmdbService {
 		if (total_pages >= 1) {
 			JSONArray arr = obj1.getJSONArray("results");
 			for (int i = 0; i < arr.length(); i++) {
-				String id = Integer.toString(arr.getJSONObject(i).getInt("id"));
+				Long id = Long.valueOf(arr.getJSONObject(i).getInt("id"));
 
 				Object title = arr.getJSONObject(i).get("title");
 				Object overview = arr.getJSONObject(i).get("overview");
 				Object poster_path = arr.getJSONObject(i).get("poster_path");
 
 				
-				Movie newMovie = movieRepository.findOne(id.trim());
-				if(newMovie==null) newMovie = new Movie();
+				Optional<Movie> mov = movieRepository.findById(id);
+				Movie newMovie = null;
+				if(mov.isPresent()) {
+					newMovie = mov.get();
+				}else {
+					newMovie = new Movie();
+				}
 				
-				newMovie.setId(id.trim());
+				newMovie.setId(Long.valueOf(id));
 				newMovie.setTitle(title.toString());
 				newMovie.setOverview(overview.toString());
 				newMovie.setPoster_path("https://image.tmdb.org/t/p/w300_and_h450_bestv2" + poster_path.toString());
@@ -67,7 +73,9 @@ public class TmdbService {
 					return movies;
 				}
 			}
-
+			if(returnOnePage) {
+				return movies;
+			}
 			for (int index = 2; index <= total_pages; index++) {
 				UriComponentsBuilder uriBuilder2 = UriComponentsBuilder
 						.fromUriString("https://api.themoviedb.org/3/search/movie").queryParam("api_key", api_key_tmdb);
@@ -79,16 +87,22 @@ public class TmdbService {
 
 				arr = obj2.getJSONArray("results");
 				for (int i = 0; i < arr.length(); i++) {
-					String id = Integer.toString(arr.getJSONObject(i).getInt("id"));
+					Long id = Long.valueOf(arr.getJSONObject(i).getInt("id"));
 
 					Object title = arr.getJSONObject(i).get("title");
 					Object overview = arr.getJSONObject(i).get("overview");
 					Object poster_path = arr.getJSONObject(i).get("poster_path");
 
-					Movie newMovie = movieRepository.findOne(id.trim());
-					if(newMovie==null) newMovie = new Movie();
+
+					Optional<Movie> mov = movieRepository.findById(id);
+					Movie newMovie = null;
+					if(mov.isPresent()) {
+						newMovie = mov.get();
+					}else {
+						newMovie = new Movie();
+					}
 					
-					newMovie.setId(id.trim());
+					newMovie.setId(Long.valueOf(id));
 					newMovie.setTitle(title.toString());
 					newMovie.setOverview(overview.toString());
 					newMovie.setPoster_path("https://image.tmdb.org/t/p/w300_and_h450_bestv2" + poster_path.toString());
@@ -117,17 +131,17 @@ public class TmdbService {
 		if (total_pages >= 1) {
 			JSONArray arr = obj1.getJSONArray("results");
 			for (int i = 0; i < arr.length(); i++) {
-				String id = Integer.toString(arr.getJSONObject(i).getInt("id"));
+				Long id = Long.valueOf(arr.getJSONObject(i).getInt("id"));
 
 				Object title = arr.getJSONObject(i).get("title");
 				Object overview = arr.getJSONObject(i).get("overview");
 				Object poster_path = arr.getJSONObject(i).get("poster_path");
 
 				
-				Movie newMovie = movieRepository.findOne(id.trim());
+				Movie newMovie = movieRepository.findById(id).get();
 				if(newMovie==null) newMovie = new Movie();
 				
-				newMovie.setId(id.trim());
+				newMovie.setId(Long.valueOf(id));
 				newMovie.setTitle(title.toString());
 				newMovie.setOverview(overview.toString());
 				newMovie.setPoster_path("https://image.tmdb.org/t/p/w300_and_h450_bestv2" + poster_path.toString());
@@ -141,7 +155,7 @@ public class TmdbService {
 		return movies;
 	}
 	
-	public TmdbMovie getMovieByTmdbId(String id) {
+	public TmdbMovie getMovieByTmdbId(Long id) {
 		TmdbMovie movieDetailed = new TmdbMovie();
 
 		UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromUriString("https://api.themoviedb.org/3/movie/" + id)
@@ -169,7 +183,7 @@ public class TmdbService {
 				genresList.add(new Genre(genreId, genreName));
 			}
 
-			movieDetailed.setId(id.trim());
+			movieDetailed.setId(id);
 			movieDetailed.setImdb_id(imdb_id.toString());
 			movieDetailed.setTitle(title.toString());
 			movieDetailed.setOverview(overview.toString());

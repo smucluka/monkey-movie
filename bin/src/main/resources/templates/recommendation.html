@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4"
+	lang="en">
+
+<th:block th:replace="layout :: head"></th:block>
+
+<style>
+@media only screen and (min-width: 600px) {
+  img {
+    max-width: 70%;
+  }
+}
+</style>
+<body style="background-color: #000000c9; color: white;">
+
+	<div th:replace="layout :: nav"></div>
+
+	<div class="container">
+
+		<br />
+		<br />
+		<br />
+		<br />
+		<div class="row justify-content-center" style="margin: 5px;">
+			<h1 class="text-center">Recommendation</h1>
+			<a href="" id="refresh" style="display: none;">
+				<i class="fa fa-refresh"></i>
+			</a>
+			<a id="refresh2" href="" style="display: none;">
+				<i class="fa fa-refresh"></i>
+			</a>
+
+		</div>
+		<br />
+
+		<div id="partyCard" class="row justify-content-center">
+			<div class="card col-md-8"
+				style="border-radius: 5px; color: white; background-color: rgba(128, 128, 128, 0.8)">
+				<div class="row justify-content-center no-gutters">
+					<div class="col-auto">
+						<img src="/monkey_party.png" id="smart-poster" class="img-fluid"
+							onerror="this.src='/no-cover.png'"
+							style="border-radius: 5px; margin: -1px; height: 150px; position: relative; top: 50%; transform: translateY(-50%);" />
+					</div>
+					<div class="col">
+						<div class="card-block px-2">
+							<br />
+							<h2 class="card-title text-center">Party Monkeys</h2>
+							<br />
+							<p class="card-text text-center"
+								style="padding-left: 10px; padding-right: 10px;">Don't know
+								what to watch with your friends? No worries! Choose up to 5
+								friends and get the best recommendation for movies!</p>
+							<br />
+							<div class="row justify-content-center">
+								<a id="partyMonkeyBtn" style="cursor: pointer;"
+									class="btn btn-success text-center">GO</a>
+							</div>
+						</div>
+						<br />
+					</div>
+				</div>
+			</div>
+		</div>
+		<br />
+
+		<div id="soloCard" class="row justify-content-center">
+			<div class="card col-md-8"
+				style="border-radius: 5px; color: white; background-color: black">
+				<div class="row justify-content-center no-gutters">
+					<div class="col-auto">
+						<img src="/monkey.png" id="smart-poster" class="img-fluid"
+							onerror="this.src='/no-cover.png'"
+							style="border-radius: 5px; margin: -1px; height: 150px; position: relative; top: 50%; transform: translateY(-50%);" />
+					</div>
+					<div class="col">
+						<div class="card-block px-2">
+							<br />
+							<h2 class="card-title text-center">Solo Monkey</h2>
+							<br />
+							<p class="card-text text-center"
+								style="padding-left: 10px; padding-right: 10px;">Want to
+								watch a movie but don't know which one? Try out our
+								recommendation system. You will not be dissapointed.</p>
+							<br />
+							<div class="row justify-content-center">
+								<a id="soloMonkeyBtn" style="cursor: pointer;"
+									class="btn btn-success text-center">GO</a>
+							</div>
+						</div>
+						<br />
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div id="friends" style="display: none;">
+			<div class="row justify-content-center">
+				<h4>Add up to 5 friends to the party</h4>
+			</div>
+			<br />
+			<div class="row justify-content-center">
+				<div class="row">
+					<div class="col-8">
+
+						<select class="selectpicker" multiple="multiple"
+							data-live-search="true" data-max-options="5">
+							<option th:each="userTemp : ${friends}"
+								th:text="${userTemp.name}" th:value="${userTemp.id}"></option>
+						</select>
+
+					</div>
+					<div class="col-2">
+
+						<button id="nextBtn" disabled="disabled" class="btn btn-primary">Next</button>
+					</div>
+				</div>
+			</div>
+			<br />
+			<br />
+
+		</div>
+
+		<div id="spinner" class="row justify-content-center"
+			style="display: none;">
+			<div class="spinner-border" role="status">
+				<span class="sr-only">Loading...</span>
+			</div>
+		</div>
+
+		<br />
+		<div id="soloMonkey" class="row justify-content-center"
+			style="display: none;"></div>
+		<br />
+		<!--<div id="partyMonkey" class="card" style="display: none; color: white; background-color: gray">
+			<div class="row justify-content-center no-gutters">
+				<div class="col-auto">
+					<img id="smart-poster" class="img-fluid" onerror="this.src='/no-cover.png'" style="margin: -1px;" />
+				</div>
+				<div class="col">
+					<div class="card-block px-2">
+						<h2 id="smart-title" class="card-title text-center">Title</h2>
+						<br />
+						<p id="smart-description" class="card-text text-center"
+							style="padding-left: 10px; padding-right: 10px;">Description</p>
+						<br />
+						<div class="row justify-content-center">
+							<a id="smart-details" class="btn btn-primary text-center">Details</a>
+							<a id="smart-next" style="cursor: pointer;"
+								class="offset-1 btn btn-danger text-center">Next</a>
+						</div>
+					</div>
+					<br />
+				</div>
+			</div>
+		</div>-->
+
+		<!-- <div id="smartResult" class="row justify-content-center"
+			style="display: none;">
+			<div class="card col-10 col-md-5 text-center"
+				style="color: white; padding: 20px; margin: 3px; background-color: gray">
+				<img id="smart-poster" class="text-center card-img-top"
+					style="border-radius: 10px" onerror="this.src='/no-cover.png'" />
+				<div class="card-body justify-content-center">
+					<h5 id="smart-title" class="card-title text-center"></h5>
+					<p id="smart-description" class="card-text text-center"></p>
+					<a id="smart-details" class="btn btn-primary">Details</a>
+					<a id="smart-next" class="btn btn-primary">Next</a>
+				</div>
+			</div>
+		</div>-->
+
+		<br />
+		<br />
+		<th:block th:replace="layout :: script"></th:block>
+		<script>
+	    $(document)
+		    .ready(
+			    function() {
+				$('select').selectpicker();
+				$('select').change(function(e) {
+				    if ($(this).val().length == 0) {
+					$("#nextBtn").prop('disabled', true);
+				    } else {
+					$("#nextBtn").prop('disabled', false);
+				    }
+				});
+
+				$("#nextBtn, #refresh")
+					.click(
+						function(e) {
+						    e.preventDefault();
+						    var id = this.id;
+						    $("#soloCard").css(
+							    "display", "none");
+						    $("#partyCard").css(
+							    "display", "none");
+						    $("#friends").css(
+							    "display", "none");
+						    $("#spinner").css(
+							    "display", "");
+						    $("#soloMonkey").empty();
+						    $
+							    .ajax({
+								url : "/movies/recommendation/party",
+								data : {
+								    userIds : $(
+									    "select")
+									    .val()
+								},
+								success : function(
+									result) {
+								    $(
+									    "#spinner")
+									    .css(
+										    "display",
+										    "none");
+								    $(
+									    "#refresh")
+									    .css(
+										    "display",
+										    "");
+								    console
+									    .log(result);
+								    if(result.length == 0) {
+
+									$(
+										"#soloMonkey")
+										.append("<p>Nothing to recommend. Please rate more movies!</p>");
+								}
+								    result
+									    .forEach(function(
+										    value,
+										    i) {
+										$(
+											"#soloMonkey")
+											.append('<div class="card col-md-3 col-12" style="color: white; padding: 10px; margin: 2px; background-color: rgba(0,0,0,0.2); border-radius: 10px"> \
+												<div class="row justify-content-center"> \
+												<div class="card-body col-5 col-md-12 text-center"> \
+													<a href="/movies/details?id='
+												+ value.id
+												+ '"> \
+														<img src="'
+												+ value.poster_path
+												+ '" class="text-center card-img-top" style="border-radius: 10px; position: relative; top: 50%; transform: translateY(-50%);" onerror="this.src=\'/no-cover.png\'" /> \
+													</a> \
+												</div> \
+												<div class="col-7 col-md-12 card-body"> \
+													<div class="row justify-content-center"> \
+														<a href="/movies/details?id='
+												+ value.id
+												+ '" class="text-center col-11" style="font-size: 22px; color: white; cursor: pointer">'
+												+ value.title
+												+ '</a> \
+													</div> \
+													<br/> \
+													<p class="card-text text-center giveMeEllipsis">'
+												+ value.overview
+												+ '</p> \
+												</div> \
+											</div> \
+										</div>');
+									    });
+								    $(
+									    "#soloMonkey")
+									    .css(
+										    "display",
+										    "");
+
+								}
+							    });
+						});
+
+				$("#partyMonkeyBtn").click(function() {
+				    var id = this.id;
+				    $("#partyCard").css("display", "none");
+				    $("#soloCard").css("display", "none");
+				    $("#friends").css("display", "");
+				});
+
+				$("#soloMonkeyBtn, #refresh2")
+					.click(
+						function(e) {
+						    e.preventDefault();
+						    var id = this.id;
+						    $("#soloCard").css(
+							    "display", "none");
+						    $("#partyCard").css(
+							    "display", "none");
+						    $("#spinner").css(
+							    "display", "");
+						    $("#soloMonkey").empty();
+						    $
+							    .ajax({
+								url : "/movies/recommendation/solo",
+								success : function(
+									result) {
+								    $(
+									    "#spinner")
+									    .css(
+										    "display",
+										    "none");
+								    $(
+									    "#refresh2")
+									    .css(
+										    "display",
+										    "");
+								    console
+									    .log(result);
+									if(result.length == 0) {
+
+										$(
+											"#soloMonkey")
+											.append("<p>Nothing to recommend. Please rate more movies!</p>");
+									}
+								    result
+									    .forEach(function(
+										    value,
+										    i) {
+										$(
+											"#soloMonkey")
+											.append(
+												'<div class="card col-md-3 col-12" style="color: white; padding: 10px; margin: 2px; background-color: rgba(0,0,0,0.2); border-radius: 10px"> \
+												<div class="row justify-content-center"> \
+													<div class="card-body col-5 col-md-12 text-center"> \
+														<a href="/movies/details?id='
+													+ value.id
+													+ '"> \
+															<img src="'
+													+ value.poster_path
+													+ '" class="text-center card-img-top" style="border-radius: 10px; position: relative; top: 50%; transform: translateY(-50%);" onerror="this.src=\'/no-cover.png\'" /> \
+														</a> \
+													</div> \
+													<div class="col-7 col-md-12 card-body"> \
+														<div class="row justify-content-center"> \
+															<a href="/movies/details?id='
+													+ value.id
+													+ '" class="text-center col-11" style="font-size: 22px; color: white; cursor: pointer">'
+													+ value.title
+													+ '</a> \
+														</div> \
+														<br/> \
+														<p class="card-text text-center giveMeEllipsis">'
+													+ value.overview
+													+ '</p> \
+													</div> \
+												</div> \
+											</div>');
+									    });
+								    $(
+									    "#soloMonkey")
+									    .css(
+										    "display",
+										    "");
+
+								}
+							    });
+						});
+
+			    });
+	</script>
+	</div>
+</body>
+
+</html>

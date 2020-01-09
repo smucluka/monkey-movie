@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" lang="en">
+
+<th:block th:fragment="head">
+	<head>
+<meta charset="UTF-8" />
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+<meta name="format-detection" content="telephone=no"/>
+<link rel="stylesheet"
+	href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
+<link rel="stylesheet"
+	href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+	integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+	crossorigin="anonymous" />
+<link rel="stylesheet" type="text/css"
+	href="https://cdn.datatables.net/1.10.20/css/jquery.dataTables.css" />
+<link rel="stylesheet"
+	href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/css/bootstrap-select.css" />
+<link rel="stylesheet" th:href="@{/app.css}" />
+<link rel="stylesheet" th:href="@{/toast.css}" />
+<title>Monkey Movie</title>
+	</head>
+</th:block>
+
+<body style="background-color: black; color: white;">
+
+	<nav th:fragment="nav"
+		class="navbar navbar-expand-lg navbar-dark fixed-top"
+		style="margin: auto; width: 100%; background-color: black; border-bottom: solid; border-bottom-color: white; border-bottom-width: thin;">
+		<a class="navbar-brand" href="/" style="margin-left: 7%;">
+			<i class="fa fa-film" aria-hidden="true" style="margin-right: 5px;"></i>
+		</a>
+		<button class="navbar-toggler" type="button" data-toggle="collapse"
+			data-target="#navbarNav,#navbarNav2" aria-controls="navbarNav"
+			aria-expanded="false" aria-label="Toggle navigation">
+			<span class="navbar-toggler-icon"></span>
+		</button>
+		<div
+			class="navbar-collapse collapse w-100 order-1 order-md-0 dual-collapse2 text-center"
+			id="navbarNav">
+			<ul class="navbar-nav  mr-auto">
+				<li class="nav-item"
+					th:classappend="${#httpServletRequest.getRequestURI() == '/' ? 'active':''}">
+					<a class="nav-link" href="/">
+						Home
+						<span class="sr-only">(current)</span>
+					</a>
+				</li>
+				<li class="nav-item" sec:authorize="isAuthenticated()"
+					th:classappend="${#httpServletRequest.getRequestURI() == '/movies/search' or #httpServletRequest.getRequestURI() == '/movies/searched' ? 'active':''}">
+					<a class="nav-link" href="/movies/search">Search</a>
+				</li>
+
+				<li class="nav-item" sec:authorize="isAuthenticated()"
+					th:classappend="${#httpServletRequest.getRequestURI() == '/movies/popular' ? 'active':''}">
+					<a class="nav-link" href="/movies/popular">Popular</a>
+				</li>
+				<li class="nav-item" sec:authorize="isAuthenticated()"
+					th:classappend="${#httpServletRequest.getRequestURI() == '/movies/recommendation' ? 'active':''}">
+					<a class="nav-link" href="/movies/recommendation">Recommendation</a>
+				</li>
+				<!--<li class="nav-item" sec:authorize="isAuthenticated()"
+					th:classappend="${#httpServletRequest.getRequestURI() == '/movies/liked' ? 'active':''}">
+					<a class="nav-link" href="/movies/liked">My Movies</a>
+				</li>-->
+			</ul>
+		</div>
+		<div
+			class="navbar-collapse collapse w-100 order-3 dual-collapse2  text-center"
+			id="navbarNav2">
+			<ul class="navbar-nav ml-auto">
+				<li class="nav-item" sec:authorize="isAuthenticated()"
+					th:classappend="${#httpServletRequest.getRequestURI() == '/movies/watched' ? 'active':''}">
+					<a class="nav-link" href="/movies/watched">Watched</a>
+				</li>
+				<li class="nav-item" sec:authorize="isAuthenticated()"
+					th:classappend="${#httpServletRequest.getRequestURI() == '/movies/watchlist' ? 'active':''}">
+					<a class="nav-link" href="/movies/watchlist">Watch list</a>
+				</li>
+				<li class="nav-item" sec:authorize="isAuthenticated()"
+					th:classappend="${#httpServletRequest.getRequestURI() == '/profile' ? 'active':''}">
+					<a class="nav-link" href="/profile">Profile</a>
+				</li>
+				<li sec:authorize="!isAuthenticated()" class="nav-item">
+					<form th:action="@{/login}" method="post"
+						sec:authorize="!isAuthenticated()">
+						<button class="btn"
+							style="color: #ffffff; background-color: #007bff; border-color: #007bff; border-radius: 30px;">
+							<i class="fa fa-facebook-square" aria-hidden="true"
+								style="margin-right: 5px;"></i>
+							Sign in
+						</button>
+					</form>
+				</li>
+				<li sec:authorize="isAuthenticated()" class="nav-item">
+					<form th:action="@{/logout}" method="post"
+						sec:authorize="isAuthenticated()">
+						<button class="btn"
+							style="color: #ffffff; background-color: #007bff; border-color: #007bff; border-radius: 30px;">
+							<i class="fa fa-facebook-square" aria-hidden="true"
+								style="margin-right: 5px;"></i>
+							Sign out
+						</button>
+					</form>
+				</li>
+			</ul>
+		</div>
+
+	</nav>
+
+	<th:block th:fragment="script">
+
+		<script src="https://code.jquery.com/jquery-3.4.1.js"
+			integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="
+			crossorigin="anonymous"></script>
+		<script
+			src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+			integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+			crossorigin="anonymous"></script>
+		<script
+			src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+			integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+			crossorigin="anonymous"></script>
+		<script type="text/javascript" charset="utf8"
+			src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.js"></script>
+		<script
+			src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/js/bootstrap-select.min.js"></script>
+		<script type="text/javascript" th:src="@{/app.js}"></script>
+		<script type="text/javascript" th:src="@{/toast.js}"></script>
+		<script>
+	    $(window).on(
+		    'load',
+		    function(e) {
+			if (window.location.hash == '#_=_') {
+			    window.location.hash = ''; // for older browsers, leaves a # behind
+			    history.pushState('', document.title,
+				    window.location.pathname); // nice and clean
+			    e.preventDefault(); // no page reload
+			}
+		    })
+	    $(document).ready(function() {
+		//$('#myMoviesTable').DataTable();
+	    });
+	</script>
+	</th:block>
+</body>
+</html>

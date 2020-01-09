@@ -9,7 +9,7 @@ import org.springframework.data.annotation.Id;
 public class User {
 
 	@Id
-	private String id;
+	private Long id;
 	private String name;
 	private String email;
 	private String profilePicture;
@@ -17,7 +17,7 @@ public class User {
 	// private FBMovies movies;
 	private FBFriends friends;
 	private List<WatchedMovie> watched_movie_ids;
-	private List<String> watch_list_movie_ids;
+	private List<Long> watch_list_movie_ids;
 
 	public String getName() {
 		return name;
@@ -27,11 +27,11 @@ public class User {
 		this.name = name;
 	}
 
-	public String getId() {
+	public Long getId() {
 		return id;
 	}
 
-	public void setId(String id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 
@@ -83,11 +83,11 @@ public class User {
 		this.watched_movie_ids = watched_movie_ids;
 	}
 
-	public List<String> getWatch_list_movie_ids() {
+	public List<Long> getWatch_list_movie_ids() {
 		return watch_list_movie_ids;
 	}
 
-	public void setWatch_list_movie_ids(List<String> watch_list_movie_ids) {
+	public void setWatch_list_movie_ids(List<Long> watch_list_movie_ids) {
 		this.watch_list_movie_ids = watch_list_movie_ids;
 	}
 

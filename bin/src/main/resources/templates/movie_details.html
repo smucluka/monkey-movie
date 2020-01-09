@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4"
+	lang="en">
+
+
+<th:block th:replace="layout :: head"></th:block>
+
+<body style="background-color: #000000c9; color: white;">
+
+	<div th:replace="layout :: nav"></div>
+
+	<br />
+	<br />
+	<br />
+	<br />
+	<div class="container">
+		<div class="row justify-content-center">
+			<h6 th:text="${movie.omdbMovie.year}"></h6>
+		</div>
+		<div class="row justify-content-center">
+			<h1 class="col-10 text-center" th:text="${movie.omdbMovie.title}"></h1>
+		</div>
+		<div class="row justify-content-center">
+			<a
+				th:style="${watchlisted or watched ? 'display:none' : 'display:block'}"
+				th:id="${movie.tmdbMovie.id}" class="addWatchlist"
+				title="Add to watchlist">
+				<i class="fa fa-plus" aria-hidden="true"
+					style="margin-right: 10px; margin-left: 10px; font-size: 1.7em; cursor: pointer"></i>
+			</a>
+			<a th:style="${watchlisted  ? 'display:block' : 'display:none'}"
+				th:id="${movie.tmdbMovie.id}" class="removeWatchlist"
+				title="Remove from watchlist">
+				<i class="fa fa-check" aria-hidden="true"
+					style="margin-right: 10px; margin-left: 10px; font-size: 1.7em; color: green; cursor: pointer"></i>
+			</a>
+			<div class="watchedBtn" th:id="${movie.tmdbMovie.id}"
+				th:style="${watched ? 'display:none' : 'display:block'}">
+				<a data-toggle="modal"
+					th:attr="data-target='#modal'+${movie.tmdbMovie.id}"
+					title="Mark as watched">
+					<i class="fa fa-star" aria-hidden="true"
+						style="margin-right: 10px; margin-left: 10px; font-size: 1.7em; cursor: pointer"></i>
+				</a>
+
+			</div>
+			<a th:style="${watched ? 'display:block' : 'display:none'}"
+				th:id="${movie.tmdbMovie.id}" class="unmarkWatched"
+				title="Unmark as watched">
+				<i class="fa fa-star" aria-hidden="true"
+					style="margin-right: 10px; margin-left: 10px; font-size: 1.7em; color: yellow; cursor: pointer"></i>
+			</a>
+
+			<div th:id="${'modal' + movie.tmdbMovie.id}" class="modal fade"
+				id="exampleModalCenter" tabindex="-1" role="dialog"
+				aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+				<div class="modal-dialog modal-dialog-centered" role="document">
+					<div class="modal-content">
+						<div class="modal-body">
+							<div class="row justify-content-center">
+								<div class="rating" style="color: black">
+									<span th:id="${movie.tmdbMovie.id}" class="markWatched"
+										data-rating="5" style="font-size: 1.7em;">☆</span>
+									<span th:id="${movie.tmdbMovie.id}" class="markWatched"
+										data-rating="4" style="font-size: 1.7em;">☆</span>
+									<span th:id="${movie.tmdbMovie.id}" class="markWatched"
+										data-rating="3" style="font-size: 1.7em;">☆</span>
+									<span th:id="${movie.tmdbMovie.id}" class="markWatched"
+										data-rating="2" style="font-size: 1.7em;">☆</span>
+									<span th:id="${movie.tmdbMovie.id}" class="markWatched"
+										data-rating="1" style="font-size: 1.7em;">☆</span>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+		</div>
+		<br />
+		<div class="row justify-content-center">
+			<div class="col-8 col-md-4">
+				<img onerror="this.src='/no-cover.png'"
+					style="width: 100%; border-radius: 60px;"
+					th:src="${movie.tmdbMovie.poster_path}" />
+				<br />
+				<br />
+			</div>
+			<!-- <div class="col-sm-6">
+				<div class="container">
+					<h2 th:text="${movie.tmdbMovie.title}" style="margin-top: 20px;"></h2>
+
+					<p>
+						<a th:text="${movie.tmdbMovie.overview}"></a>
+					</p>
+					<div class="row" style="margin-left: 2px;">
+						<p th:each="genre, iterStat : ${movie.tmdbMovie.genres}">
+							<a th:text="${genre.name}"></a>
+							<a th:unless="${iterStat.index == iterStat.size - 1}">,</a>
+						</p>
+					</div>
+					<p style="margin-top: 30px;">
+						<i class="fa fa-star" aria-hidden="true"
+							style="margin-right: 5px;"></i>Vote average: <a
+							th:text="${movie.tmdbMovie.vote_average}"></a>
+					</p>
+					<p style="margin-top: 30px;">
+						<i class="fa fa-table" aria-hidden="true"
+							style="margin-right: 5px;"></i>
+						Release date:
+						<a th:text="${movie.tmdbMovie.release_date}"></a>
+					</p>
+					<p style="margin-top: 30px;">
+						<i class="fa fa-money" aria-hidden="true"
+							style="margin-right: 5px;"></i>
+						Budget:
+						<a th:text="${movie.tmdbMovie.budget}"></a>
+					</p>
+					<p style="margin-top: 30px;">
+						<i class="fa fa-language" aria-hidden="true"
+							style="margin-right: 5px;"></i>
+						Original language:
+						<a th:text="${movie.tmdbMovie.original_language}"></a>
+					</p>
+					<table class="table" style="color: white; margin-top: 3rem">
+						<thead>
+							<tr>
+								<th scope="col">Source</th>
+								<th scope="col">Rating</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr th:if="${movie.omdbMovie.ratings.empty}">
+								<td colspan="2">No ratings Available</td>
+							</tr>
+							<tr th:each="rating : ${movie.omdbMovie.ratings}">
+								<td>
+									<span th:text="${rating.source}">Source</span>
+								</td>
+								<td>
+									<span th:text="${rating.value}">Rating</span>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>-->
+			<div class="col-12 col-md-8 text-center">
+				<div>
+					<p th:each="rating : ${movie.omdbMovie.ratings}">
+					<div class="row justify-content-center"
+						th:if="${rating.source == 'Internet Movie Database'}">
+						<img src="/imdb.png"
+							style="float: left; max-width: 2em; max-height: 2em; margin-left: -20px"
+							alt="Internet Movie Database"></img>
+						<span class="align-self-center col-1" th:text="${rating.value}">
+						</span>
+					</div>
+					<div class="row justify-content-center"
+						th:if="${rating.source == 'Rotten Tomatoes'}">
+						<img src="/rotten.png"
+							style="float: left; max-width: 2em; max-height: 2em; margin-left: -20px"
+							alt="Rotten Tomatoes"></img>
+						<span class="align-self-center col-1" th:text=" ${rating.value}">
+						</span>
+					</div>
+					<div class="row justify-content-center"
+						th:if="${rating.source == 'Metacritic'}">
+						<img src="/metacritic.png"
+							style="float: left; max-width: 2em; max-height: 2em; margin-left: -20px"
+							alt="Metacritic"></img>
+						<span class="align-self-center col-1" th:text="${rating.value}"></span>
+					</div>
+					</p>
+					<ul class="col-12 justify-content-center nav nav-tabs" id="myTab"
+						role="tablist">
+						<li class="nav-item">
+							<a class="nav-link active" style="color: #dc6464;" id="home-tab"
+								data-toggle="tab" href="#about" role="tab" aria-controls="home"
+								aria-selected="true">About</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" style="color: #dc6464;" id="profile-tab"
+								data-toggle="tab" href="#crew" role="tab"
+								aria-controls="profile" aria-selected="false">Crew</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" style="color: #dc6464;" id="profile-tab"
+								data-toggle="tab" href="#awards" role="tab"
+								aria-controls="profile" aria-selected="false">Awards</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" style="color: #dc6464;" id="profile-tab"
+								data-toggle="tab" href="#trailer" role="tab"
+								aria-controls="profile" aria-selected="false">Trailer</a>
+						</li>
+						<li th:if="${movie.nyTimesReview} != null" class="nav-item">
+							<a class="nav-link" style="color: #dc6464;" id="profile-tab"
+								data-toggle="tab" href="#nytimes" role="tab"
+								aria-controls="profile" aria-selected="false">NY Times
+								review</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" style="color: #dc6464;" id="profile-tab"
+								data-toggle="tab" href="#soundtracks" role="tab"
+								aria-controls="profile" aria-selected="false">Soundtracks</a>
+						</li>
+					</ul>
+				</div>
+				<div class="tab-content profile-tab" id="myTabContent">
+					<div class="tab-pane fade show active" id="about" role="tabpanel"
+						aria-labelledby="home-tab">
+						<br />
+						<div class="row">
+							<div class="col-md-6">
+								<label class="font-weight-bold">Runtime</label>
+							</div>
+							<div class="col-md-6">
+								<p th:text="${movie.omdbMovie.runtime}"></p>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-md-6">
+								<label class="font-weight-bold">Genre</label>
+							</div>
+							<div class="col-md-6">
+								<p th:text="${movie.omdbMovie.genre}"></p>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-md-6">
+								<label class="font-weight-bold">Plot</label>
+							</div>
+							<div class="col-md-6">
+								<p th:text="${movie.omdbMovie.plot}"></p>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-md-6">
+								<label class="font-weight-bold">Production</label>
+							</div>
+							<div class="col-md-6">
+								<p th:text="${movie.omdbMovie.production}"></p>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-md-6">
+								<label class="font-weight-bold">Country</label>
+							</div>
+							<div class="col-md-6">
+								<p th:text="${movie.omdbMovie.country}"></p>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-md-6">
+								<label class="font-weight-bold">Language</label>
+							</div>
+							<div class="col-md-6">
+								<p th:text="${movie.omdbMovie.language}"></p>
+							</div>
+						</div>
+					</div>
+					<div class="tab-pane fade" id="crew" role="tabpanel"
+						aria-labelledby="profile-tab">
+						<br />
+						<div class="row">
+							<div class="col-md-6">
+								<label class="font-weight-bold">Director</label>
+							</div>
+							<div class="col-md-6">
+								<p th:text="${movie.omdbMovie.director}"></p>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-md-6">
+								<label class="font-weight-bold">Writer</label>
+							</div>
+							<div class="col-md-6">
+								<p th:text="${movie.omdbMovie.writer}"></p>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-md-6">
+								<label class="font-weight-bold">Actors</label>
+							</div>
+							<div class="col-md-6">
+								<p th:text="${movie.omdbMovie.actors}"></p>
+							</div>
+						</div>
+					</div>
+					<div class="tab-pane fade" id="awards" role="tabpanel"
+						aria-labelledby="profile-tab">
+						<br />
+						<div class="row">
+							<div class="col-md-6">
+								<label class="font-weight-bold">Awards</label>
+							</div>
+							<div class="col-md-6">
+								<p th:text="${movie.omdbMovie.awards}"></p>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-md-6">
+								<label class="font-weight-bold">Box Office</label>
+							</div>
+							<div class="col-md-6">
+								<p th:text="${movie.omdbMovie.boxOffice}"></p>
+							</div>
+						</div>
+					</div>
+					<div class="tab-pane fade" id="trailer" role="tabpanel"
+						aria-labelledby="profile-tab">
+						<br />
+						<div class="row justify-content-center">
+							<div th:if="${movie.youtubeTrailer != null}"
+								class="embed-responsive embed-responsive-16by9 col-11 col-md-9">
+								<iframe class="embed-responsive-item"
+									th:src="${movie.youtubeTrailer.url}"></iframe>
+							</div>
+							<div th:unless="${movie.youtubeTrailer != null}">
+								<p>Trailer not available.</p>
+							</div>
+						</div>
+					</div>
+					<div th:if="${movie.nyTimesReview} != null" class="tab-pane fade"
+						id="nytimes" role="tabpanel" aria-labelledby="profile-tab">
+
+						<br />
+						<div class="row justify-content-center">
+
+							<div class="col-10"
+								th:if="${movie.nyTimesReview.summary_short} != null">
+								<p th:text="${movie.nyTimesReview.summary_short}"></p>
+							</div>
+						</div>
+						<div class="row justify-content-center">
+							<div class="col-md-12"
+								th:if="${movie.nyTimesReview.link.url} != null">
+								<a class="btn btn-info" target="_blank"
+									th:text="${movie.nyTimesReview.link.suggested_link_text}"
+									th:href="${movie.nyTimesReview.link.url}"></a>
+							</div>
+						</div>
+					</div>
+					<div class="tab-pane fade" id="soundtracks" role="tabpanel"
+						aria-labelledby="profile-tab">
+						<br />
+						<div class="row justify-content-center">
+							<div class="col-12 col-md-10">
+								<table
+									class="table table-dark table-striped table-responsive">
+									<!--  class="table table-striped"-->
+									<thead>
+										<tr>
+											<th>Track name</th>
+											<th>Author</th>
+											<th>Collection</th>
+											<!-- <th> Genre </th> -->
+											<th>Link</th>
+										</tr>
+									</thead>
+									<tbody>
+										<tr th:if="${movie.soundtracks.empty}">
+											<td colspan="4">No Soundtracks Available</td>
+										</tr>
+										<tr class="col-12"
+											th:each="track, iterStat  : ${movie.soundtracks}">
+											<td>
+												<span th:text="${track.trackName}"> Title </span>
+											</td>
+											<td>
+												<span th:text="${track.artistName}"> Author </span>
+											</td>
+											<td>
+												<span th:text="${track.collectionName}"> Collection </span>
+											</td>
+											<!--<td><span th:text="${track.genreName}"> Genre </span></td>-->
+											<td>
+												<a style="display: block;" th:href="${track.trackViewUrl}"
+													target="_blank" rel="noopener noreferrer"> Link </a>
+												<a style="display: block;"
+													th:id="'audioTrack' + ${iterStat.count}" class="playAudio"
+													title="Play 30 seconds sound sample">
+													<i class="fa fa-play" aria-hidden="true"
+														style="font-size: 1.7em; color: green"></i>
+												</a>
+												<a style="display: none;"
+													th:id="'audioTrack' + ${iterStat.count}" class="pauseAudio"
+													title="Pause">
+													<i class="fa fa-pause" aria-hidden="true"
+														style="font-size: 1.7em; color: yellow"></i>
+												</a>
+												<audio class="my_audio"
+													th:id="'audioTrack' + ${iterStat.count}">
+													<source th:src="${track.previewUrl}" type="audio/mpeg"></source>
+												</audio>
+											</td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<br />
+		<br />
+		<br />
+	</div>
+
+	<th:block th:replace="layout :: script"></th:block>
+</body>
+</html>

@@ -63,7 +63,7 @@
 				<tbody>
 
 					<tr class="row" th:each="movie, iter: ${movies}"
-						th:style="${iter.even} ? 'background-color: rgba(0,0,0,0.2)' : 'background-color: none;'">
+						th:style="${iter.odd} ? 'background-color: rgba(0,0,0,0.2)' : 'background-color: none;'">
 						<td class="text-center col-5 col-lg-4">
 							<a th:href="@{/movies/details(id=${movie.id})}">
 								<img

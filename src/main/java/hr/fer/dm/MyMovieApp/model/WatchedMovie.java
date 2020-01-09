@@ -2,14 +2,14 @@ package hr.fer.dm.MyMovieApp.model;
 
 public class WatchedMovie {
 
-	private String id;
+	private Long id;
 	private Double rating;
 	private Movie movie;
 	
-	public String getId() {
+	public Long getId() {
 		return id;
 	}
-	public void setId(String id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 	public Double getRating() {
