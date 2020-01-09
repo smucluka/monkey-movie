@@ -138,7 +138,7 @@ public class RecommendationService {
 
 		Map<Long, List<Ratings>> usersMap = new HashMap<Long, List<Ratings>>();
 		
-		for (int i=0; i<NUM_NEIGHBOURHOODS*15; i++) {
+		for (int i=0; i<NUM_NEIGHBOURHOODS; i++) {
 			if(added.size() == 0) break;
 			int index = random.nextInt(added.size());
 			usersMap.put(added.get(index), ratingsRepository.findByUserId(added.get(index)));
@@ -185,7 +185,7 @@ public class RecommendationService {
 		List<Movie> finalRecommendations = new ArrayList<Movie>();
 		int i = 0;
 		DecimalFormat df = new DecimalFormat("#.##");
-		while (entries.hasNext() && i < NUM_RECOMMENDATIONS + 15) {
+		while (entries.hasNext() && i < NUM_RECOMMENDATIONS + 20) {
 			Map.Entry entry = (Map.Entry) entries.next();
 			if ((double) entry.getValue() >= MIN_VALUE_RECOMMENDATION) {
 				List<Movie> moviesList = movieRepository.findByMovieId(Long.valueOf("" + entry.getKey()));
@@ -211,7 +211,7 @@ public class RecommendationService {
 					if(mov.getTitle() == null || mov.getTitle() == "") continue;
 				}
 				
-				double value = ((double) entry.getValue()*16) + (double) calculateBonus(genreBonusMap, mov.getGenres());
+				double value = ((double) entry.getValue()*10) + (double) calculateBonus(genreBonusMap, mov.getGenres());
 
 				//OUTLIER GENERS!!!
 				if(mov.getGenres().contains("Animation")) {
@@ -308,7 +308,7 @@ public class RecommendationService {
 	}
 	
 	public Double calculateBonus(HashMap<String, Double> bonusMap, String genres){
-		double valuePerGenre = 20.0/genres.split("\\|").length;
+		double valuePerGenre = 100.0/genres.split("\\|").length;
 		double bonusSum = 0;
 		for(String gen : genres.split("\\|")) {
 			if(bonusMap.containsKey(gen)) {
