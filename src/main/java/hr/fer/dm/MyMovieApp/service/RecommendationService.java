@@ -212,7 +212,7 @@ public class RecommendationService {
 				}
 				
 				double value = (double) entry.getValue() * (double) calculateBonus(genreBonusMap, mov.getGenres());
-				
+
 				//OUTLIER GENERS!!!
 				if(mov.getGenres().contains("Animation")) {
 					if(genreBonusMap.containsKey("Animation")) {
@@ -260,7 +260,9 @@ public class RecommendationService {
 					}
 				}
 				
-				
+				if(value > 100){
+                    value = 100;
+                }
 				String str = df.format(value);
 				if (!str.contains(".")) {
 					str += ".0";
@@ -308,7 +310,7 @@ public class RecommendationService {
 				bonusSum += num / valuePerGenre;
 			}
 		}
-		return bonusSum/5;
+		return bonusSum/8;
 	}
 	
 	public Map<Long, Double> getRecommendations(Map<Long, Double> userRatings, Map<Long, Double> neighbourhoods,
