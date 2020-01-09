@@ -308,7 +308,7 @@ public class RecommendationService {
 				bonusSum += num / valuePerGenre;
 			}
 		}
-		return bonusSum/5;
+		return bonusSum/10;
 	}
 	
 	public Map<Long, Double> getRecommendations(Map<Long, Double> userRatings, Map<Long, Double> neighbourhoods,
