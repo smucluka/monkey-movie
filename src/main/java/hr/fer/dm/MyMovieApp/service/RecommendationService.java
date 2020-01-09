@@ -138,7 +138,7 @@ public class RecommendationService {
 
 		Map<Long, List<Ratings>> usersMap = new HashMap<Long, List<Ratings>>();
 		
-		for (int i=0; i<100; i++) {
+		for (int i=0; i<10; i++) {
 			if(added.size() == 0) break;
 			int index = random.nextInt(added.size());
 			usersMap.put(added.get(index), ratingsRepository.findByUserId(added.get(index)));
@@ -190,7 +190,6 @@ public class RecommendationService {
 			if ((double) entry.getValue() >= MIN_VALUE_RECOMMENDATION) {
 				List<Movie> moviesList = movieRepository.findByMovieId(Long.valueOf("" + entry.getKey()));
 
-				i++;
 				
 				Movie mov = moviesList.get(0);
 				if (mov.getOverview() == null || mov.getPoster_path() == null || mov.getGenres() == null) {
@@ -209,6 +208,7 @@ public class RecommendationService {
 						mov.setGenres(genre);	
 					}
 					movieService.saveMovie(mov);
+					if(mov.getTitle() == null || mov.getTitle() == "") continue;
 				}
 				
 				double value = (double) entry.getValue() + (double) calculateBonus(genreBonusMap, mov.getGenres());
@@ -217,9 +217,9 @@ public class RecommendationService {
 					if(genreBonusMap.containsKey("Animation")) {
 						Integer total = genreBonusMap.get("Animation");
 						if(user.getAge_range().getMax() == null && total < 4) {
-							value /= 1.7;
-						}else if(user.getAge_range().getMax() == "21" && total < 4) {
 							value /= 1.5;
+						}else if(user.getAge_range().getMax() == "21" && total < 4) {
+							value /= 1.4;
 						}else if(total < 4){
 							value /= 1.2;
 						}
@@ -240,7 +240,8 @@ public class RecommendationService {
 					str += ".0";
 				}
 				mov.setRecommendationValue(str);
-				
+
+				i++;
 				finalRecommendations.add(mov);
 			}
 		}
