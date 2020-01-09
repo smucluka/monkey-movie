@@ -308,12 +308,12 @@ public class RecommendationService {
 	}
 	
 	public Double calculateBonus(HashMap<String, Double> bonusMap, String genres){
-		double valuePerGenre = 1.0;
+		double valuePerGenre = 1.0/genres.split("|").length;
 		double bonusSum = 1;
 		for(String gen : genres.split("\\|")) {
 			if(bonusMap.containsKey(gen)) {
 				Double percentage = bonusMap.get(gen);
-				bonusSum += (percentage * valuePerGenre * 1.2);
+				bonusSum += (percentage * valuePerGenre * 1.1);
 			}
 		}
 		return bonusSum;
