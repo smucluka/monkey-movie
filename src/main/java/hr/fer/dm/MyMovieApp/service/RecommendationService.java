@@ -211,7 +211,7 @@ public class RecommendationService {
 					if(mov.getTitle() == null || mov.getTitle() == "") continue;
 				}
 				
-				double value = ((double) entry.getValue()) * (double) calculateBonus(genreBonusMap, mov.getGenres()) * 20;
+				double value = ((double) entry.getValue()) * (double) calculateBonus(genreBonusMap, mov.getGenres()) * 10;
         
 				//OUTLIER GENERS!!!
 				if(mov.getGenres().contains("Animation")) {
