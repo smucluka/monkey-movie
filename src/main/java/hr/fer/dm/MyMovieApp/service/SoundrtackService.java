@@ -86,11 +86,12 @@ public class SoundrtackService {
 			
 			while( i > 1/*soundtracksToFilter.size() >= 20 && previousI != i*/) {
 				String collectionName = soundtracksToFilter.get(i -1).getCollectionName();
-				if(!(  collectionName.contains(movieTitle + " (") || collectionName.contains(movieTitle + " [") || collectionName.contains(movieTitle + " -") ) ) {
+				if(!(  collectionName.contains(movieTitle + " (") || collectionName.contains(movieTitle + " [")
+						|| collectionName.contains(movieTitle + " -") || collectionName.contains("(From \"" + movieTitle) ) ) {
 					soundtracksToFilter.remove(i - 1);
 				}
 				else {
-					String[] strThatIsUsualInCorrectResult = new String[] {"Collectors", "Original", "Motion Picture", "Soundtrack", "- The Album"};
+					String[] strThatIsUsualInCorrectResult = new String[] {"Collectors", "Original", "Motion Picture", "Soundtrack", "- The Album", "(From \""};
 					if(Arrays.stream(strThatIsUsualInCorrectResult).anyMatch(search -> collectionName.contains(search)) ) {
 						//previousI = i - 1;
 					}

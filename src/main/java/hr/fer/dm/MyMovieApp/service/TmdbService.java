@@ -137,9 +137,13 @@ public class TmdbService {
 				Object overview = arr.getJSONObject(i).get("overview");
 				Object poster_path = arr.getJSONObject(i).get("poster_path");
 
-				
-				Movie newMovie = movieRepository.findById(id).get();
-				if(newMovie==null) newMovie = new Movie();
+				Optional<Movie> mov = movieRepository.findById(id);
+				Movie newMovie = null;
+				if(mov.isPresent()) {
+					newMovie = mov.get();
+				}else {
+					newMovie = new Movie();
+				}
 				
 				newMovie.setId(Long.valueOf(id));
 				newMovie.setTitle(title.toString());

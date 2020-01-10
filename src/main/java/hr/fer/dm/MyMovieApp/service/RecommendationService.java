@@ -184,11 +184,11 @@ public class RecommendationService {
 		List<Movie> finalRecommendations = new ArrayList<Movie>();
 		int i = 0;
 		DecimalFormat df = new DecimalFormat("#.##");
-		while (entries.hasNext() && i < NUM_NEIGHBOURHOODS + 20) {
+		while (entries.hasNext() && i < NUM_NEIGHBOURHOODS + 15) {
 			
 			Map.Entry entry = (Map.Entry) entries.next();
 			
-			if ((double) entry.getValue() >= MIN_VALUE_RECOMMENDATION) {
+			if ((double) entry.getValue() >= 0) {
 				List<Movie> moviesList = movieRepository.findByMovieId(Long.valueOf("" + entry.getKey()));
 
 				
@@ -309,7 +309,19 @@ public class RecommendationService {
 		     }
 		});
 		
-		return finalRecommendations.subList(0, NUM_RECOMMENDATIONS);
+		if(finalRecommendations.size() == 0) {
+			List<Movie> movies = tmdbService.getPopularMovies().subList(0, 6);
+			for(Movie mov : movies) {
+				mov.setRecommendationValue("0.0");
+				mov.setRecommendationExplained("Please rate more movies");
+			}
+			return movies;
+			
+		}else if(finalRecommendations.size() < NUM_RECOMMENDATIONS) {
+			return finalRecommendations;
+		}else {
+			return finalRecommendations.subList(0, NUM_RECOMMENDATIONS);
+		}
 	}
 	
 	public HashMap<String, Double> getGenreBonusMap(List<WatchedMovie> watchedMovies){

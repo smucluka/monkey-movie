@@ -130,6 +130,8 @@
 		</div>
 
 		<br />
+		<div id="soloMonkeyEmpty" class="row justify-content-center"
+			style="display: none;"></div>
 		<div id="soloMonkey" class="row justify-content-center"
 			style="display: none;"></div>
 		<br />
@@ -201,6 +203,7 @@
 						    $("#spinner").css(
 							    "display", "");
 						    $("#soloMonkey").empty();
+						    $("#soloMonkeyEmpty").empty();
 						    $
 							    .ajax({
 								url : "/movies/recommendation/party",
@@ -223,11 +226,11 @@
 										    "");
 								    console
 									    .log(result);
-								    if(result.length == 0) {
+								    if(result.length < 9) {
 
 									$(
-										"#soloMonkey")
-										.append("<p>Nothing to recommend. Please rate more movies!</p>");
+										"#soloMonkeyEmpty")
+										.append("<h2>Please rate more movies!</h2>");
 								}
 								    result
 									    .forEach(function(
@@ -262,19 +265,23 @@
 												<span>Like-O-Meter</span>\
 												</div> \
 												<div class="row justify-content-center"> \
-												<a data-toggle="tooltip" data-placement="bottom" title="'+value.recommendationExplained+'">'+value.recommendationValue+'</a>\
+												<a href="#" data-toggle="tooltip" data-placement="bottom" title="'+value.recommendationExplained+'">'+value.recommendationValue+'</a>\
 												</div> \
 												</div> \
 											</div> \
 										</div>');
 									    })
-									    	$('[data-toggle="tooltip"]').tooltip();
+								    	$('[data-toggle="tooltip"]').tooltip();
 								    $(
 									    "#soloMonkey")
 									    .css(
 										    "display",
 										    "");
-
+								    $(
+								    "#soloMonkeyEmpty")
+								    .css(
+									    "display",
+									    "");
 								}
 							    });
 						});
@@ -298,6 +305,7 @@
 						    $("#spinner").css(
 							    "display", "");
 						    $("#soloMonkey").empty();
+						    $("#soloMonkeyEmpty").empty();
 						    $
 							    .ajax({
 								url : "/movies/recommendation/solo",
@@ -315,11 +323,11 @@
 										    "");
 								    console
 									    .log(result);
-									if(result.length == 0) {
+									if(result.length < 9) {
 
 										$(
-											"#soloMonkey")
-											.append("<p>Nothing to recommend. Please rate more movies!</p>");
+											"#soloMonkeyEmpty")
+											.append("<h2>Please rate more movies!</h2>");
 									}
 								    result
 									    .forEach(function(
@@ -367,6 +375,11 @@
 									    .css(
 										    "display",
 										    "");
+								    $(
+								    "#soloMonkeyEmpty")
+								    .css(
+									    "display",
+									    "");
 
 								}
 							    });
