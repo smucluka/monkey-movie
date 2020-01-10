@@ -138,7 +138,7 @@ public class RecommendationService {
 
 		Map<Long, List<Ratings>> usersMap = new HashMap<Long, List<Ratings>>();
 		
-		for (int i=0; i<NUM_NEIGHBOURHOODS*12; i++) {
+		for (int i=0; i<NUM_NEIGHBOURHOODS*10; i++) {
 			if(added.size() == 0) break;
 			int index = random.nextInt(added.size());
 			usersMap.put(added.get(index), ratingsRepository.findByUserId(added.get(index)));
@@ -185,9 +185,9 @@ public class RecommendationService {
 		List<Movie> finalRecommendations = new ArrayList<Movie>();
 		int i = 0;
 		DecimalFormat df = new DecimalFormat("#.##");
-		while (entries.hasNext() && i < NUM_RECOMMENDATIONS + 25) {
+		while (entries.hasNext() && i < NUM_RECOMMENDATIONS + 15) {
 			Map.Entry entry = (Map.Entry) entries.next();
-			if ((double) entry.getValue() >= MIN_VALUE_RECOMMENDATION) {
+			if ((double) entry.getValue() >= 0) {
 				List<Movie> moviesList = movieRepository.findByMovieId(Long.valueOf("" + entry.getKey()));
 
 				
@@ -199,9 +199,14 @@ public class RecommendationService {
 					mov.setPoster_path(movie.getPoster_path());
 					mov.setOverview(movie.getOverview());
 					mov.setAverageRating(movie.getVote_average());
-					String[] date = movie.getRelease_date().split("-");
-					if(date != null && date.length > 0) {
-						mov.setYear(date[0]);
+					String releaseDate = movie.getRelease_date();
+					if(releaseDate != null) {
+						String[] date = movie.getRelease_date().split("-");
+						if(date != null && date.length > 0) {
+							mov.setYear(date[0]);
+						}							
+					}else {
+						mov.setYear("0");
 					}
 					
 					if(movie.getGenres() != null) {
@@ -223,9 +228,9 @@ public class RecommendationService {
 				//15% - year
 				//15% - imdb rating
 				double userSimilartyValue = 40 * ((double) entry.getValue()) ;
-				double genreBonus = 30 * calculateGenreBonus(genreBonusMap, mov.getGenres());
-				double yearBonus = 15 * calculateYearBonus(mov.getYear());
-				double imdbBonus = 15 * calculateImdbBonus(mov.getAverageRating());
+				double genreBonus = 20 * calculateGenreBonus(genreBonusMap, mov.getGenres());
+				double yearBonus = 20 * calculateYearBonus(mov.getYear());
+				double imdbBonus = 20 * calculateImdbBonus(mov.getAverageRating());
 				
 				double value = userSimilartyValue + genreBonus + yearBonus + imdbBonus;
         
