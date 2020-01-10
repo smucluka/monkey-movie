@@ -262,12 +262,13 @@
 												<span>Like-O-Meter</span>\
 												</div> \
 												<div class="row justify-content-center"> \
-												<span>'+value.recommendationValue+'%</span>\
+												<a data-toggle="tooltip" data-placement="bottom" title="'+value.recommendationExplained+'">'+value.recommendationValue+'</a>\
 												</div> \
 												</div> \
 											</div> \
 										</div>');
-									    });
+									    })
+									    	$('[data-toggle="tooltip"]').tooltip();
 								    $(
 									    "#soloMonkey")
 									    .css(
@@ -354,12 +355,13 @@
 													<span>Like-O-Meter</span>\
 													</div> \
 													<div class="row justify-content-center"> \
-													<span>'+value.recommendationValue+'%</span>\
+													<a href="#" data-toggle="tooltip" data-placement="bottom" title="'+value.recommendationExplained+'">'+value.recommendationValue+'</a>\
 													</div> \
 													</div> \
 												</div> \
 											</div>');
 									    });
+								    	$('[data-toggle="tooltip"]').tooltip();
 								    $(
 									    "#soloMonkey")
 									    .css(

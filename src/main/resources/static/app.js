@@ -1,5 +1,4 @@
 $(document).ready(function() {
-	
 	$(".addWatchlist").click(function() {
 		var id = this.id;
 		$.ajax({

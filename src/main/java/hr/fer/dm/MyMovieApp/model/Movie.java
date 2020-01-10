@@ -16,6 +16,7 @@ public class Movie {
 	private String year;
 	private String averageRating;
 	private String recommendationValue;
+	private String recommendationExplained;
 	
 	public Long getId() {
 		return id;
@@ -82,6 +83,12 @@ public class Movie {
 	}
 	public void setRecommendationValue(String recommendationValue) {
 		this.recommendationValue = recommendationValue;
+	}
+	public String getRecommendationExplained() {
+		return recommendationExplained;
+	}
+	public void setRecommendationExplained(String recommendationExplained) {
+		this.recommendationExplained = recommendationExplained;
 	}
 	
 }

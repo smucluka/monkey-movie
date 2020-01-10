@@ -52,8 +52,7 @@ public class RecommendationService {
 	private Map<Long, List<Double>> friendsMap;
 
 	public List<Movie> getRecommendation(Long id, List<Long> friends) {
-		
-	
+
 		List<WatchedMovie> myWatchedMovies = null;
 
 		if (friends == null) {
@@ -178,16 +177,18 @@ public class RecommendationService {
 		Map<Long, Double> sortedRecommendations = new TreeMap<>(valueComparator);
 		sortedRecommendations.putAll(recommendations);
 
+		
 		entries = sortedRecommendations.entrySet().iterator();
 		
-		User user = userService.getUserFromDB(id);
 		HashMap<String, Double> genreBonusMap = getGenreBonusMap(myWatchedMovies);
 		List<Movie> finalRecommendations = new ArrayList<Movie>();
 		int i = 0;
 		DecimalFormat df = new DecimalFormat("#.##");
-		while (entries.hasNext() && i < NUM_RECOMMENDATIONS + 15) {
+		while (entries.hasNext() && i < NUM_NEIGHBOURHOODS + 20) {
+			
 			Map.Entry entry = (Map.Entry) entries.next();
-			if ((double) entry.getValue() >= 0) {
+			
+			if ((double) entry.getValue() >= MIN_VALUE_RECOMMENDATION) {
 				List<Movie> moviesList = movieRepository.findByMovieId(Long.valueOf("" + entry.getKey()));
 
 				
@@ -227,12 +228,11 @@ public class RecommendationService {
 				//30% - genre
 				//15% - year
 				//15% - imdb rating
-				double userSimilartyValue = 40 * ((double) entry.getValue()) ;
-				double genreBonus = 20 * calculateGenreBonus(genreBonusMap, mov.getGenres());
+				double genreBonus = 50 * calculateGenreBonus(genreBonusMap, mov.getGenres());
 				double yearBonus = 20 * calculateYearBonus(mov.getYear());
-				double imdbBonus = 20 * calculateImdbBonus(mov.getAverageRating());
+				double imdbBonus = 30 * calculateImdbBonus(mov.getAverageRating());
 				
-				double value = userSimilartyValue + genreBonus + yearBonus + imdbBonus;
+				double value = genreBonus + yearBonus + imdbBonus;
         
 				/*
 				if(mov.getGenres().contains("Animation")) {
@@ -289,6 +289,12 @@ public class RecommendationService {
 					str += ".0";
 				}
 				mov.setRecommendationValue(str);
+				
+				String strExp = "Genre points: " + df.format(genreBonus) + "/50";
+				strExp += "\nRating points: " + df.format(imdbBonus) + "/30";
+				strExp += "\nYear points: " + df.format(yearBonus) + "/20";
+				
+				mov.setRecommendationExplained(strExp);
 
 				i++;
 				finalRecommendations.add(mov);
@@ -323,7 +329,7 @@ public class RecommendationService {
 		}
 		
 		for(Map.Entry<String, Double> entry : bonusMap.entrySet()) {
-			entry.setValue(entry.getValue()/cnt);
+			entry.setValue(entry.getValue()/watchedMovies.size());
 		}
 		return bonusMap;
 	}
@@ -336,7 +342,7 @@ public class RecommendationService {
 				bonusSum += (percentage / genres.split("\\|").length);
 			}
 		}
-		
+		if(bonusSum > 1.0) bonusSum = 1.0;
 		return bonusSum;
 	}
 	
@@ -346,15 +352,19 @@ public class RecommendationService {
 		if(yearTmp > 2010) {
 			perc = 1.0;
 		}else if(yearTmp > 2000) {
+			perc = 0.9;
+		}else if(yearTmp > 1990) {
 			perc = 0.8;
 		}else if(yearTmp > 1990) {
 			perc = 0.7;
-		}else if(yearTmp > 1990) {
-			perc = 0.6;
 		}else if(yearTmp > 1980){
+			perc = 0.6;
+		}else if(yearTmp > 1970){
 			perc = 0.5;
-		}else{
+		}else if(yearTmp > 1960){
 			perc = 0.4;
+		}else {
+			perc = 0.3;
 		}
 		
 		return perc;
@@ -384,9 +394,7 @@ public class RecommendationService {
 				double predictedRating = 0;
 				if (denominator > 0) {
 					predictedRating = userAverage + numerator / denominator;
-					//avg rating=5
-					//TODO check max rating for scaling
-					predictedRating = 2*predictedRating/10;
+					if(predictedRating > 5) predictedRating = 5;
 				}
 				predictedRatings.put(movie, predictedRating);
 			}
