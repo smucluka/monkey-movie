@@ -147,32 +147,32 @@
 				</div>-->
 			<div class="col-12 col-md-8 text-center">
 				<div>
-					<p th:each="rating : ${movie.omdbMovie.ratings}">
-					<div class="row justify-content-center"
-						th:if="${rating.source == 'Internet Movie Database'}">
-						<img src="/imdb.png"
-							style="float: left; max-width: 2em; max-height: 2em; margin-left: -20px"
-							alt="Internet Movie Database"></img>
-						<span class="align-self-center col-1" th:text="${rating.value}">
-						</span>
+					<div th:each="rating : ${movie.omdbMovie.ratings}" class="row justify-content-center">
+						<div class="row justify-content-center"
+							th:if="${rating.source == 'Internet Movie Database'}" style="margin-bottom: 5px">
+							<img src="/imdb.png"
+								style="float: left; max-width: 2em; max-height: 2em; margin-left: -20px"
+								alt="Internet Movie Database"></img>
+							<span class="align-self-center col-1" th:text="${rating.value}">
+							</span>
+						</div>
+						<div class="row justify-content-center"
+							th:if="${rating.source == 'Rotten Tomatoes'}" style="margin-bottom: 5px">
+							<img src="/rotten.png"
+								style="float: left; max-width: 2em; max-height: 2em; margin-left: -20px"
+								alt="Rotten Tomatoes"></img>
+							<span class="align-self-center col-1" th:text=" ${rating.value}">
+							</span>
+						</div>
+						<div class="row justify-content-center"
+							th:if="${rating.source == 'Metacritic'}" style="margin-bottom: 5px">
+							<img src="/metacritic.png"
+								style="float: left; max-width: 2em; max-height: 2em; margin-left: -20px"
+								alt="Metacritic"></img>
+							<span class="align-self-center col-1" th:text="${rating.value}"></span>
+						</div>
 					</div>
-					<div class="row justify-content-center"
-						th:if="${rating.source == 'Rotten Tomatoes'}">
-						<img src="/rotten.png"
-							style="float: left; max-width: 2em; max-height: 2em; margin-left: -20px"
-							alt="Rotten Tomatoes"></img>
-						<span class="align-self-center col-1" th:text=" ${rating.value}">
-						</span>
-					</div>
-					<div class="row justify-content-center"
-						th:if="${rating.source == 'Metacritic'}">
-						<img src="/metacritic.png"
-							style="float: left; max-width: 2em; max-height: 2em; margin-left: -20px"
-							alt="Metacritic"></img>
-						<span class="align-self-center col-1" th:text="${rating.value}"></span>
-					</div>
-					</p>
-					<ul class="col-12 justify-content-center nav nav-tabs" id="myTab"
+					<ul style="margin-top: 8px;" class="col-12 justify-content-center nav nav-tabs" id="myTab"
 						role="tablist">
 						<li class="nav-item">
 							<a class="nav-link active" style="color: #dc6464;" id="home-tab"
@@ -347,8 +347,7 @@
 						<br />
 						<div class="row justify-content-center">
 							<div class="col-12 col-md-10">
-								<table
-									class="table table-dark table-striped table-responsive">
+								<table class="table table-dark table-striped table-responsive">
 									<!--  class="table table-striped"-->
 									<thead>
 										<tr>

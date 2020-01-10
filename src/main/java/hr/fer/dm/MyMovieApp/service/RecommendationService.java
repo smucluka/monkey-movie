@@ -138,7 +138,7 @@ public class RecommendationService {
 
 		Map<Long, List<Ratings>> usersMap = new HashMap<Long, List<Ratings>>();
 		
-		for (int i=0; i<NUM_NEIGHBOURHOODS*15; i++) {
+		for (int i=0; i<NUM_NEIGHBOURHOODS*12; i++) {
 			if(added.size() == 0) break;
 			int index = random.nextInt(added.size());
 			usersMap.put(added.get(index), ratingsRepository.findByUserId(added.get(index)));
@@ -185,18 +185,25 @@ public class RecommendationService {
 		List<Movie> finalRecommendations = new ArrayList<Movie>();
 		int i = 0;
 		DecimalFormat df = new DecimalFormat("#.##");
-		while (entries.hasNext() && i < NUM_RECOMMENDATIONS + 6) {
+		while (entries.hasNext() && i < NUM_RECOMMENDATIONS + 25) {
 			Map.Entry entry = (Map.Entry) entries.next();
 			if ((double) entry.getValue() >= MIN_VALUE_RECOMMENDATION) {
 				List<Movie> moviesList = movieRepository.findByMovieId(Long.valueOf("" + entry.getKey()));
 
 				
 				Movie mov = moviesList.get(0);
-				if (mov.getOverview() == null || mov.getPoster_path() == null || mov.getGenres() == null) {
+				if (mov.getOverview() == null || mov.getPoster_path() == null || mov.getGenres() == null 
+						|| mov.getYear() == null || mov.getAverageRating() == null) {
 					TmdbMovie movie = tmdbService.getMovieByTmdbId(mov.getId());
 					mov.setTitle(movie.getTitle());
 					mov.setPoster_path(movie.getPoster_path());
 					mov.setOverview(movie.getOverview());
+					mov.setAverageRating(movie.getVote_average());
+					String[] date = movie.getRelease_date().split("-");
+					if(date != null && date.length > 0) {
+						mov.setYear(date[0]);
+					}
+					
 					if(movie.getGenres() != null) {
 						String genre = "";
 						for(Genre gen : movie.getGenres()) {
@@ -211,12 +218,18 @@ public class RecommendationService {
 					if(mov.getTitle() == null || mov.getTitle() == "") continue;
 				}
 				
-				double userSimilartyValue = ((double) entry.getValue()*10) ;
-				double genreBonus = (double) calculateBonus(genreBonusMap, mov.getGenres());
+				//40% - similarity
+				//30% - genre
+				//15% - year
+				//15% - imdb rating
+				double userSimilartyValue = 40 * ((double) entry.getValue()) ;
+				double genreBonus = 30 * calculateGenreBonus(genreBonusMap, mov.getGenres());
+				double yearBonus = 15 * calculateYearBonus(mov.getYear());
+				double imdbBonus = 15 * calculateImdbBonus(mov.getAverageRating());
 				
-				double value = userSimilartyValue * genreBonus;
+				double value = userSimilartyValue + genreBonus + yearBonus + imdbBonus;
         
-				//OUTLIER GENERS!!!
+				/*
 				if(mov.getGenres().contains("Animation")) {
 					if(genreBonusMap.containsKey("Animation")) {
 						Double total = genreBonusMap.get("Animation");
@@ -261,7 +274,7 @@ public class RecommendationService {
 							value /= 1.5;
 						}
 					}
-				}
+				}*/
 				
 				if(value > 100){
                     value = 100;
@@ -310,8 +323,8 @@ public class RecommendationService {
 		return bonusMap;
 	}
 	
-	public Double calculateBonus(HashMap<String, Double> bonusMap, String genres){
-		double bonusSum = 1;
+	public Double calculateGenreBonus(HashMap<String, Double> bonusMap, String genres){
+		double bonusSum = 0;
 		for(String gen : genres.split("\\|")) {
 			if(bonusMap.containsKey(gen)) {
 				Double percentage = bonusMap.get(gen);
@@ -320,6 +333,29 @@ public class RecommendationService {
 		}
 		
 		return bonusSum;
+	}
+	
+	public Double calculateYearBonus(String year){
+		Double perc; 
+		Double yearTmp = Double.valueOf(year);
+		if(yearTmp > 2010) {
+			perc = 1.0;
+		}else if(yearTmp > 2000) {
+			perc = 0.8;
+		}else if(yearTmp > 1990) {
+			perc = 0.7;
+		}else if(yearTmp > 1990) {
+			perc = 0.6;
+		}else if(yearTmp > 1980){
+			perc = 0.5;
+		}else{
+			perc = 0.4;
+		}
+		
+		return perc;
+	}
+	public Double calculateImdbBonus(String imdbRating){		
+		return Double.valueOf(imdbRating)/10;
 	}
 	
 	public Map<Long, Double> getRecommendations(Map<Long, Double> userRatings, Map<Long, Double> neighbourhoods,
@@ -343,6 +379,9 @@ public class RecommendationService {
 				double predictedRating = 0;
 				if (denominator > 0) {
 					predictedRating = userAverage + numerator / denominator;
+					//avg rating=5
+					//TODO check max rating for scaling
+					predictedRating = 2*predictedRating/10;
 				}
 				predictedRatings.put(movie, predictedRating);
 			}

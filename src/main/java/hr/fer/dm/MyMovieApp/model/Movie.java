@@ -13,6 +13,8 @@ public class Movie {
 	private String poster_path;
 	private String rated;
 	private String genres;
+	private String year;
+	private String averageRating;
 	private String recommendationValue;
 	
 	public Long getId() {
@@ -62,6 +64,18 @@ public class Movie {
 	}
 	public void setGenres(String genres) {
 		this.genres = genres;
+	}
+	public String getYear() {
+		return year;
+	}
+	public void setYear(String year) {
+		this.year = year;
+	}
+	public String getAverageRating() {
+		return averageRating;
+	}
+	public void setAverageRating(String averageRating) {
+		this.averageRating = averageRating;
 	}
 	public String getRecommendationValue() {
 		return recommendationValue;
