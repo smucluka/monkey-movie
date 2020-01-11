@@ -1,7 +1,5 @@
 package hr.fer.dm.MyMovieApp.model;
 
-import java.io.Serializable;
-
 import org.springframework.data.annotation.Id;
 
 public class Ratings {

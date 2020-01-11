@@ -18,6 +18,7 @@ public class TmdbMovie {
 	private String release_date;
 	private String poster_path;
 	private List<Genre> genres;
+	private String adult;
 	
 	public Long getId() {
 		return id;
@@ -84,6 +85,12 @@ public class TmdbMovie {
 	}
 	public void setGenres(List<Genre> genres) {
 		this.genres = genres;
+	}
+	public String getAdult() {
+		return adult;
+	}
+	public void setAdult(String adult) {
+		this.adult = adult;
 	}
 	
 }

@@ -2,8 +2,6 @@ package hr.fer.dm.MyMovieApp.model;
 
 import java.util.List;
 
-import javax.annotation.Generated;
-
 import org.springframework.data.annotation.Id;
 
 public class User {

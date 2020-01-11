@@ -7,11 +7,10 @@ public class Movie {
 	@Id
 	private Long id;
 	private Long movieId;
-	private String imdb_id;
 	private String title;
 	private String overview;
 	private String poster_path;
-	private String rated;
+	private String adult;
 	private String genres;
 	private String year;
 	private String averageRating;
@@ -23,12 +22,6 @@ public class Movie {
 	}
 	public void setId(Long id) {
 		this.id = id;
-	}
-	public String getImdb_id() {
-		return imdb_id;
-	}
-	public void setImdb_id(String imdb_id) {
-		this.imdb_id = imdb_id;
 	}
 	public String getTitle() {
 		return title;
@@ -48,11 +41,11 @@ public class Movie {
 	public void setPoster_path(String poster_path) {
 		this.poster_path = poster_path;
 	}
-	public String getRated() {
-		return rated;
+	public String getAdult() {
+		return adult;
 	}
-	public void setRated(String rated) {
-		this.rated = rated;
+	public void setAdult(String adult) {
+		this.adult = adult;
 	}
 	public Long getMovieId() {
 		return movieId;

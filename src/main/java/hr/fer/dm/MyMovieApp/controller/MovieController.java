@@ -73,11 +73,10 @@ public class MovieController {
 	@RequestMapping(value = "/movies/details", method = RequestMethod.GET)
 	public String getMovieDetails(@RequestParam("id") Long id, Principal principal, Model model) {
 		boolean isAuthenticatedUser = securityHelper.isAuthenticatedUser(principal);
-		MovieDetailed movie;
 		if (isAuthenticatedUser) {
 			if (id != null) {
-				movie = movieService.getMovieDetails(id);
-				model.addAttribute("movie", movie);
+				model.addAttribute("movie", movieService.getMovieDetails(id));
+				model.addAttribute("movieSimple", movieService.getMovieFromDB(id));
 				model.addAttribute("watched", movieService.getWatchedMoviesIds(((Long) session.getAttribute("userId"))).contains(id));
 				model.addAttribute("watchlisted", movieService.getMovieWatchListIds(((Long) session.getAttribute("userId"))).contains(id));
 			}

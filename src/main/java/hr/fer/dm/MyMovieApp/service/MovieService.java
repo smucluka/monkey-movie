@@ -1,8 +1,8 @@
 package hr.fer.dm.MyMovieApp.service;
 
-import java.sql.Time;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -86,9 +86,20 @@ public class MovieService {
 			NyTimesReview nyTimesReview = nyTimesService.getReviewByQuery(tmdbMovie.getTitle());
 			List<Soundtrack> soundtrackList = soundtrackService.getSoundtracksByMovieTitle(tmdbMovie.getTitle());
 
-			movie.setTmdbMovie(tmdbMovie);
-			movie.setOmdbMovie(omdbMovie);
-			movie.setYoutubeTrailer(youtubeTrailer);
+			movie.setId(id);
+			movie.setImdbId(omdbMovie.getImdbID());
+			movie.setRuntime(omdbMovie.getRuntime());
+			movie.setProduction(omdbMovie.getProduction());
+			movie.setCountry(omdbMovie.getCountry());
+			movie.setLanguage(omdbMovie.getLanguage());
+			movie.setDirector(omdbMovie.getDirector());
+			movie.setWriter(omdbMovie.getWriter());
+			movie.setActors(omdbMovie.getActors());
+			movie.setAwards(omdbMovie.getAwards());
+			movie.setBoxOffice(omdbMovie.getBoxOffice());
+			movie.setRatings(omdbMovie.getRatings());
+			movie.setYear(omdbMovie.getYear());
+			movie.setYoutubeTrailer(youtubeTrailer.getUrl());
 			movie.setNyTimesReview(nyTimesReview);
 			movie.setSoundtracks(soundtrackList);
 
@@ -96,21 +107,6 @@ public class MovieService {
 		}
 
 		return movie;
-	}
-	
-	public String getRating(Long id) {
-		Movie movie = getMovieFromDB(id);
-
-		if (movie == null || movie.getRated() == null) {
-			
-			TmdbMovie tmdbMovie = tmdbService.getMovieByTmdbId(id);
-			OmdbMovie omdbMovie = omdbService.getMovieByImdbId(tmdbMovie.getImdb_id());
-			movie.setRated(omdbMovie.getRated());
-			saveMovie(movie);
-			return omdbMovie.getRated();
-		}else {
-			return movie.getRated();
-		}
 	}
 
 //	public List<Movie> getFacebookMovies(FBMovies fbMovies) {
@@ -334,18 +330,25 @@ public class MovieService {
 	private MovieDetailed getDetailedMovie(Long id) {
 		MovieDetailed movie = null;
 		try {
-			movie = movieDetailedRepository.findById(String.valueOf(id)).get();
-			return movie;
+			Optional<MovieDetailed> mov = movieDetailedRepository.findById(String.valueOf(id));
+			if(mov.isPresent()) {
+				movie = mov.get();
+				return movie;
+			}
 		} catch (Exception e) {
 			System.err.println(e);
-			return null;
 		}
+		return null;
 	}
 
-	private Movie getMovieFromDB(Long movieId) {
+	public Movie getMovieFromDB(Long movieId) {
 		Movie movie = null;
 		try {
-			movie = movieRepository.findById(movieId).get();
+			Optional<Movie> mov = movieRepository.findById(movieId);
+			if(mov.isPresent()) {
+				movie = mov.get();
+				return movie;
+			}
 		} catch (Exception e) {
 			System.err.println(e);
 		}

@@ -7,9 +7,9 @@
 
 <style>
 @media only screen and (min-width: 600px) {
-  img {
-    max-width: 70%;
-  }
+	img {
+		max-width: 70%;
+	}
 }
 </style>
 <body style="background-color: #000000c9; color: white;">
@@ -24,12 +24,59 @@
 		<br />
 		<div class="row justify-content-center" style="margin: 5px;">
 			<h1 class="text-center">Recommendation</h1>
-			<a href="" id="refresh" style="display: none;">
-				<i class="fa fa-refresh"></i>
+		</div>
+
+		<div class="row justify-content-center" id="refresh"
+			style="display: none;">
+			<a href="#" id="backToFriends" style="margin-right: 7.5px">
+				<i class="fa fa-arrow-circle-left" style="font-size: 1.6em;"></i>
 			</a>
-			<a id="refresh2" href="" style="display: none;">
-				<i class="fa fa-refresh"></i>
+			<a id="refreshBtn1" href="" style="margin-left: 7.5px">
+				<i class="fa fa-refresh" style="font-size: 1.6em"></i>
 			</a>
+		</div>
+
+		<div class="row justify-content-center" id="refresh2"
+			style="display: none;">
+			<a href="/movies/recommendation" style="margin-right: 7.5px">
+				<i class="fa fa-arrow-circle-left" style="font-size: 1.6em;"></i>
+			</a>
+			<a id="refreshBtn2" href="" style="margin-left: 7.5px">
+				<i class="fa fa-refresh" style="font-size: 1.6em"></i>
+			</a>
+		</div>
+
+		<div id="friends" style="display: none;">
+			<div class="row justify-content-center">
+				<a href="/movies/recommendation">
+					<i class="fa fa-arrow-circle-left" style="font-size: 1.6em;"></i>
+				</a>
+			</div>
+			<br />
+			<br />
+			<div class="row justify-content-center">
+				<h4 class="text-center">Add up to 5 friends to the party</h4>
+			</div>
+			<br />
+			<div class="row justify-content-center">
+				<div class="row">
+					<div class="col-8">
+
+						<select class="selectpicker" multiple="multiple"
+							data-live-search="true" data-max-options="5">
+							<option th:each="userTemp : ${friends}"
+								th:text="${userTemp.name}" th:value="${userTemp.id}"></option>
+						</select>
+
+					</div>
+					<div class="col-2">
+
+						<button id="nextBtn" disabled="disabled" class="btn btn-primary">Next</button>
+					</div>
+				</div>
+			</div>
+			<br />
+			<br />
 
 		</div>
 		<br />
@@ -47,12 +94,10 @@
 						<div class="card-block px-2">
 							<br />
 							<h2 class="card-title text-center">Party Monkeys</h2>
-							<br />
 							<p class="card-text text-center"
 								style="padding-left: 10px; padding-right: 10px;">Don't know
 								what to watch with your friends? No worries! Choose up to 5
 								friends and get the best recommendation for movies!</p>
-							<br />
 							<div class="row justify-content-center">
 								<a id="partyMonkeyBtn" style="cursor: pointer;"
 									class="btn btn-success text-center">GO</a>
@@ -78,12 +123,10 @@
 						<div class="card-block px-2">
 							<br />
 							<h2 class="card-title text-center">Solo Monkey</h2>
-							<br />
 							<p class="card-text text-center"
 								style="padding-left: 10px; padding-right: 10px;">Want to
 								watch a movie but don't know which one? Try out our
 								recommendation system. You will not be dissapointed.</p>
-							<br />
 							<div class="row justify-content-center">
 								<a id="soloMonkeyBtn" style="cursor: pointer;"
 									class="btn btn-success text-center">GO</a>
@@ -93,33 +136,6 @@
 					</div>
 				</div>
 			</div>
-		</div>
-
-		<div id="friends" style="display: none;">
-			<div class="row justify-content-center">
-				<h4>Add up to 5 friends to the party</h4>
-			</div>
-			<br />
-			<div class="row justify-content-center">
-				<div class="row">
-					<div class="col-8">
-
-						<select class="selectpicker" multiple="multiple"
-							data-live-search="true" data-max-options="5">
-							<option th:each="userTemp : ${friends}"
-								th:text="${userTemp.name}" th:value="${userTemp.id}"></option>
-						</select>
-
-					</div>
-					<div class="col-2">
-
-						<button id="nextBtn" disabled="disabled" class="btn btn-primary">Next</button>
-					</div>
-				</div>
-			</div>
-			<br />
-			<br />
-
 		</div>
 
 		<div id="spinner" class="row justify-content-center"
@@ -188,8 +204,17 @@
 					$("#nextBtn").prop('disabled', false);
 				    }
 				});
+				
+				$("#backToFriends").click(function(e){
+				    $("#partyCard").css("display", "none");
+				    $("#soloCard").css("display", "none");
+				    $("#soloMonkey").css("display", "none");
+				    $("#soloMonkeyEmpty").css("display", "none");
+				    $("#refresh").css("display", "none");
+				    $("#friends").css("display", "");
+				});
 
-				$("#nextBtn, #refresh")
+				$("#nextBtn, #refreshBtn1")
 					.click(
 						function(e) {
 						    e.preventDefault();
@@ -203,7 +228,8 @@
 						    $("#spinner").css(
 							    "display", "");
 						    $("#soloMonkey").empty();
-						    $("#soloMonkeyEmpty").empty();
+						    $("#soloMonkeyEmpty")
+							    .empty();
 						    $
 							    .ajax({
 								url : "/movies/recommendation/party",
@@ -226,62 +252,68 @@
 										    "");
 								    console
 									    .log(result);
-								    if(result.length < 9) {
+								    if (result.length < 9) {
 
 									$(
 										"#soloMonkeyEmpty")
-										.append("<h2>Please rate more movies!</h2>");
-								}
+										.append(
+											"<h2>Please rate more movies!</h2>");
+								    }
 								    result
 									    .forEach(function(
 										    value,
 										    i) {
 										$(
 											"#soloMonkey")
-											.append('<div class="card col-md-3 col-12" style="color: white; padding: 10px; margin: 2px; background-color: rgba(0,0,0,0.2); border-radius: 10px"> \
+											.append(
+												'<div class="card col-md-3 col-12" style="color: white; padding: 10px; margin: 2px; background-color: rgba(0,0,0,0.2); border-radius: 10px"> \
 												<div class="row justify-content-center"> \
 												<div class="card-body col-5 col-md-12 text-center"> \
 													<a href="/movies/details?id='
-												+ value.id
-												+ '"> \
+													+ value.id
+													+ '"> \
 														<img src="'
-												+ value.poster_path
-												+ '" class="text-center card-img-top" style="border-radius: 10px; position: relative; top: 50%; transform: translateY(-50%);" onerror="this.src=\'/no-cover.png\'" /> \
+													+ value.poster_path
+													+ '" class="text-center card-img-top" style="border-radius: 10px; position: relative; top: 50%; transform: translateY(-50%);" onerror="this.src=\'/no-cover.png\'" /> \
 													</a> \
 												</div> \
 												<div class="col-7 col-md-12 card-body"> \
 													<div class="row justify-content-center"> \
 														<a href="/movies/details?id='
-												+ value.id
-												+ '" class="text-center col-11" style="font-size: 22px; color: white; cursor: pointer">'
-												+ value.title
-												+ '</a> \
+													+ value.id
+													+ '" class="text-center col-11" style="font-size: 22px; color: white; cursor: pointer">'
+													+ value.title
+													+ '</a> \
 													</div> \
 													<br/> \
 													<p class="card-text text-center giveMeEllipsis">'
-												+ value.overview
-												+ '</p> \
+													+ value.overview
+													+ '</p> \
 												<div class="row justify-content-center"> \
 												<span>Like-O-Meter</span>\
 												</div> \
 												<div class="row justify-content-center"> \
-												<a href="#" data-toggle="tooltip" data-placement="bottom" title="'+value.recommendationExplained+'">'+value.recommendationValue+'</a>\
+												<a href="#" data-toggle="tooltip" data-placement="bottom" title="'+value.recommendationExplained+'">'
+													+ value.recommendationValue
+													+ '</a>\
 												</div> \
 												</div> \
 											</div> \
 										</div>');
 									    })
-								    	$('[data-toggle="tooltip"]').tooltip();
+								    $(
+									    '[data-toggle="tooltip"]')
+									    .tooltip();
 								    $(
 									    "#soloMonkey")
 									    .css(
 										    "display",
 										    "");
 								    $(
-								    "#soloMonkeyEmpty")
-								    .css(
-									    "display",
-									    "");
+									    "#soloMonkeyEmpty")
+									    .css(
+										    "display",
+										    "");
 								}
 							    });
 						});
@@ -293,7 +325,7 @@
 				    $("#friends").css("display", "");
 				});
 
-				$("#soloMonkeyBtn, #refresh2")
+				$("#soloMonkeyBtn, #refreshBtn2")
 					.click(
 						function(e) {
 						    e.preventDefault();
@@ -305,7 +337,8 @@
 						    $("#spinner").css(
 							    "display", "");
 						    $("#soloMonkey").empty();
-						    $("#soloMonkeyEmpty").empty();
+						    $("#soloMonkeyEmpty")
+							    .empty();
 						    $
 							    .ajax({
 								url : "/movies/recommendation/solo",
@@ -323,12 +356,13 @@
 										    "");
 								    console
 									    .log(result);
-									if(result.length < 9) {
+								    if (result.length < 9) {
 
-										$(
-											"#soloMonkeyEmpty")
-											.append("<h2>Please rate more movies!</h2>");
-									}
+									$(
+										"#soloMonkeyEmpty")
+										.append(
+											"<h2>Please rate more movies!</h2>");
+								    }
 								    result
 									    .forEach(function(
 										    value,
@@ -363,23 +397,27 @@
 													<span>Like-O-Meter</span>\
 													</div> \
 													<div class="row justify-content-center"> \
-													<a href="#" data-toggle="tooltip" data-placement="bottom" title="'+value.recommendationExplained+'">'+value.recommendationValue+'</a>\
+													<a href="#" data-toggle="tooltip" data-placement="bottom" title="'+value.recommendationExplained+'">'
+													+ value.recommendationValue
+													+ '</a>\
 													</div> \
 													</div> \
 												</div> \
 											</div>');
 									    });
-								    	$('[data-toggle="tooltip"]').tooltip();
+								    $(
+									    '[data-toggle="tooltip"]')
+									    .tooltip();
 								    $(
 									    "#soloMonkey")
 									    .css(
 										    "display",
 										    "");
 								    $(
-								    "#soloMonkeyEmpty")
-								    .css(
-									    "display",
-									    "");
+									    "#soloMonkeyEmpty")
+									    .css(
+										    "display",
+										    "");
 
 								}
 							    });

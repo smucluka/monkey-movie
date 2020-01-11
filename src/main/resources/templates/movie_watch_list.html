@@ -20,12 +20,11 @@
 		</div>
 		<br />
 		<br />
-		<div class="row justify-content-center" style="padding: 5px;">
-			<table id="myMoviesTable" class="table col-12"
-				style="background: transparent; color: white;">
+		<div class="justify-content-center">
+			<table id="myMoviesTable" class="table dt-responsive nowrap table-dark" style="width: 100%">
 				<thead>
 					<tr>
-						<th>Title</th>
+						<th class="text-center">Title</th>
 						<th class="text-center">Info</th>
 						<th class="text-center">Mark as watched</th>
 						<th class="text-center">Remove</th>
@@ -33,7 +32,7 @@
 				</thead>
 				<tbody>
 					<tr th:each="mov : ${movieWatchList}">
-						<td th:text="${mov.title}"></td>
+						<td class="text-center" th:text="${mov.title}"></td>
 						<td class="text-center">
 							<a th:href="@{/movies/details?id=} + ${mov.id}">
 								<i class="fa fa-info-circle"
@@ -86,6 +85,7 @@
 				</tbody>
 			</table>
 		</div>
+		<br/><br/>
 	</div>
 
 	<th:block th:replace="layout :: script"></th:block>

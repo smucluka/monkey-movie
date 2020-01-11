@@ -76,3 +76,8 @@ header p {
    -webkit-box-orient: vertical;
    -webkit-line-clamp: 4; /* number of lines to show */
 }
+
+.page-item.active .page-link{
+	border-color: transparent !important;
+	background-color: #343a40 !important;
+}

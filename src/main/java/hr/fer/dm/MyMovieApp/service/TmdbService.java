@@ -51,8 +51,7 @@ public class TmdbService {
 
 				Object title = arr.getJSONObject(i).get("title");
 				Object overview = arr.getJSONObject(i).get("overview");
-				Object poster_path = arr.getJSONObject(i).get("poster_path");
-
+				Object poster_path = arr.getJSONObject(i).get("poster_path");				
 				
 				Optional<Movie> mov = movieRepository.findById(id);
 				Movie newMovie = null;
@@ -178,6 +177,7 @@ public class TmdbService {
 			Object vote_average = obj.get("vote_average");
 			Object release_date = obj.get("release_date");
 			Object poster_path = obj.get("poster_path");
+			Object adult = obj.get("adult");
 
 			List<Genre> genresList = new ArrayList<>();
 			JSONArray genres = obj.getJSONArray("genres");
@@ -198,6 +198,7 @@ public class TmdbService {
 			movieDetailed.setRelease_date(release_date.toString());
 			movieDetailed.setPoster_path("https://image.tmdb.org/t/p/w300_and_h450_bestv2" + poster_path.toString());
 			movieDetailed.setGenres(genresList);
+			movieDetailed.setAdult(adult.toString());
 
 		} catch (Exception err) {
 
