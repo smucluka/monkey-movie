@@ -136,7 +136,7 @@ public class RecommendationService {
 
         //puta 2 zbog brzine
         //na serveru puta 15-20
-		for (int i = 0; i < NUM_NEIGHBOURHOODS * 13; i++) {
+		for (int i = 0; i < NUM_NEIGHBOURHOODS * 15; i++) {
 			if (added.size() == 0)
 				break;
 			int index = random.nextInt(added.size());
