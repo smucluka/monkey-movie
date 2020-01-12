@@ -134,7 +134,9 @@ public class RecommendationService {
 
 		Map<Long, List<Ratings>> usersMap = new HashMap<Long, List<Ratings>>();
 
-		for (int i = 0; i < NUM_NEIGHBOURHOODS * 12; i++) {
+        //puta 2 zbog brzine
+        //na serveru puta 15-20
+		for (int i = 0; i < NUM_NEIGHBOURHOODS * 13; i++) {
 			if (added.size() == 0)
 				break;
 			int index = random.nextInt(added.size());
@@ -288,20 +290,20 @@ public class RecommendationService {
 		int cnt = 0;
 		HashMap<String, Double> bonusMap = new HashMap<>();
 		for (WatchedMovie wm : watchedMovies) {
-			if (wm.getMovie().getGenres() == null)
+			if (wm.getMovie().getGenres() == null || wm.getRating() == null || wm.getRating()<3)
 				continue;
+			cnt++;
 			for (String genre : wm.getMovie().getGenres().split("\\|")) {
 				if (!bonusMap.containsKey(genre)) {
 					bonusMap.put(genre, 1.0);
 				} else {
 					bonusMap.put(genre, bonusMap.get(genre) + 1);
 				}
-				cnt++;
 			}
 		}
 
 		for (Map.Entry<String, Double> entry : bonusMap.entrySet()) {
-			entry.setValue(entry.getValue() / watchedMovies.size());
+			entry.setValue(entry.getValue() / cnt);
 		}
 		return bonusMap;
 	}
