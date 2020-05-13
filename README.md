@@ -1,8 +1,6 @@
 <h1>Open Source Movie Database - Monkey Movie</h1>
-<p>&nbsp;</p>
-<p>Access Monkey Movie with this&nbsp;<a title="Monkey Movie" href="https://monkeymovie.herokuapp.com">link</a></p>
+<p>Access via this&nbsp;<a title="Monkey Movie" href="https://monkeymovie.herokuapp.com">link</a></p>
 <p>Check out our website&nbsp;<a title="METHIT" href="https://methit.com">METHIT</a></p>
-<p>&nbsp;</p>
 <h3>Features:</h3>
 <ul>
 <li>Facebook login (using OAuth 2.0)</li>
