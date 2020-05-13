@@ -20,7 +20,6 @@
 </li>
 <li>View whats trending</li>
 </ul>
-<p>&nbsp;</p>
 <h3>Used APIs:</h3>
 <ul>
 <li>OMDb API</li>
