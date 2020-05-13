@@ -3,8 +3,8 @@
 <p>Check out our website&nbsp;<a title="METHIT" href="https://methit.com">METHIT</a></p>
 <ul>
 <li>Spring Boot</li>
-<li>Thymeleaf</li>
 <li>Bootstrap + custom CSS &amp; JS</li>
+<li>Thymeleaf</li>
 </ul>
 <h3>Features:</h3>
 <ul>
