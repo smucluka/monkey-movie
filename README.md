@@ -1,6 +1,4 @@
 <h1>Open Source Movie Web Application - Monkey Movie</h1>
-<p>Access via this&nbsp;<a title="Monkey Movie" href="https://monkeymovie.herokuapp.com">link</a> (wait for server to wake up)</p>
-<p>Check out our website&nbsp;<a title="METHIT" href="https://methit.com">METHIT</a></p>
 <ul>
 <li>Spring Boot</li>
 <li>Bootstrap + custom CSS &amp; JS</li>
